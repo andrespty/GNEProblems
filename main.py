@@ -32,7 +32,7 @@ def test_solver():
         player_constraints,
         bounds,
         player_vector_sizes,
-        useBounds=True
+        useBounds=False
     )
     x1 = np.array([[0]], dtype=np.float64)
     x2 = np.array([[0]], dtype=np.float64)
