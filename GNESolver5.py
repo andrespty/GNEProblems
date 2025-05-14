@@ -415,7 +415,10 @@ class GeneralizedNashEquilibriumSolver:
                 translated_solution = self.translate_solution(self.result.x)
             print('Time: ', self.time)
             print('Iterations: ', self.result.nit)
-            print('Translated Solution: \n', translated_solution)
+            if not self.useBounds:
+                print('Translated Solution: \n', translated_solution)
+            if paper_res:
+                print('Paper Result: \n', paper_res)
             print('Solution: \n', self.result.x)
             print('Total Energy: ', self.wrapper(self.result.x))
             if paper_res:
@@ -424,12 +427,12 @@ class GeneralizedNashEquilibriumSolver:
                 calculated_obj = self.calculate_main_objective(construct_vectors(computed_actions, self.action_sizes))
                 paper_obj = self.calculate_main_objective(construct_vectors(paper, self.action_sizes))
                 print('Difference: ', sum(deconstruct_vectors(calculated_obj)) - sum(deconstruct_vectors(paper_obj)))
-            
-            
-    def NE_check(self, epsilon=1e-3):
+
+    def nash_check(self, epsilon=1e-3):
         if not self.result:
             print('No solution found')
-        return
+            return
+        print("Checking Nash Equilibrium")
         computed_NE = np.array(self.result.x[:sum(self.action_sizes)]).reshape(-1,1)
         check_nash_equillibrium(
           computed_NE, 
