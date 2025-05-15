@@ -377,7 +377,7 @@ class GeneralizedNashEquilibriumSolver:
         result = basinhopping(
             self.wrapper,
             initial_guess,
-            stepsize=0.001,
+            stepsize=0.01,
             niter=1000,
             minimizer_kwargs=minimizer_kwargs,
             interval=1,

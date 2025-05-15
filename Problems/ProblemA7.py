@@ -110,7 +110,6 @@ class A7:
         x4 = x[3]
         A1 = A7.matrix()[0:5, 0:5]
         B1 = A7.matrix()[0:5, 5:20]
-
         x_n1 = np.vstack((x2, x3, x4))
         return A7.obj_func(x1, x_n1, A1, B1)
 
@@ -120,8 +119,9 @@ class A7:
         x2 = x[1]
         x3 = x[2]
         x4 = x[3]
-        A2 = A7.matrix()[5:10, 0:5]
-        B2 = A7.matrix()[5:10, 5:20]
+        A2 = A7.matrix()[5:10, 5:10] #[x,y]
+        B2 = np.hstack((A7.matrix()[5:10, 0:5], A7.matrix()[5:10, 10:20]))
+
         x_n2 = np.vstack((x1, x3, x4))
         return A7.obj_func(x2, x_n2, A2, B2)
 
@@ -131,9 +131,8 @@ class A7:
         x2 = x[1]
         x3 = x[2]
         x4 = x[3]
-        A3 = A7.matrix()[10:15, 0:5]
-        B3 = A7.matrix()[10:15, 5:20]
-
+        A3 = A7.matrix()[10:15, 10:15]
+        B3 = np.hstack((A7.matrix()[10:15, 0:10], A7.matrix()[10:15, 15:20]))
         x_n3 = np.vstack((x1, x2, x4))
         return A7.obj_func(x3, x_n3, A3, B3)
 
@@ -142,9 +141,8 @@ class A7:
         x2 = x[1]
         x3 = x[2]
         x4 = x[3]
-        A4 = A7.matrix()[15:20, 0:5]
-        B4 = A7.matrix()[15:20, 5:20]
-
+        A4 = A7.matrix()[15:20, 15:20]
+        B4 = A7.matrix()[15:20, 0:15]
         x_n4 = np.vstack((x1, x2, x3))
         return A7.obj_func(x4, x_n4, A4, B4)
 
@@ -178,8 +176,8 @@ class A7:
         x2 = x[1]
         x3 = x[2]
         x4 = x[3]
-        A2 = A7.matrix()[5:10, 0:5]
-        B2 = A7.matrix()[5:10, 5:20]
+        A2 = A7.matrix()[5:10, 5:10]
+        B2 = np.hstack((A7.matrix()[5:10, 0:5], A7.matrix()[5:10, 10:20]))
         x_n2 = np.vstack((x1, x3, x4))
         return A7.obj_func_der(x2, x_n2, A2, B2)
 
@@ -189,8 +187,8 @@ class A7:
         x2 = x[1]
         x3 = x[2]
         x4 = x[3]
-        A3 = A7.matrix()[10:15, 0:5]
-        B3 = A7.matrix()[10:15, 5:20]
+        A3 = A7.matrix()[10:15, 10:15]
+        B3 = np.hstack((A7.matrix()[10:15, 0:10], A7.matrix()[10:15, 15:20]))
 
         x_n3 = np.vstack((x1, x2, x4))
         return A7.obj_func_der(x3, x_n3, A3, B3)
@@ -201,8 +199,8 @@ class A7:
         x2 = x[1]
         x3 = x[2]
         x4 = x[3]
-        A4 = A7.matrix()[15:20, 0:5]
-        B4 = A7.matrix()[15:20, 5:20]
+        A4 = A7.matrix()[15:20, 15:20]
+        B4 = A7.matrix()[15:20, 0:15]
 
         x_n4 = np.vstack((x1, x2, x3))
         return A7.obj_func_der(x4, x_n4, A4, B4)
