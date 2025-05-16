@@ -21,7 +21,8 @@ def get_initial_point(action_sizes, player_constraints, dual_initial_point=10):
     return primal, dual
 
 if __name__ == '__main__':
-    problem = A8
+    # Testing: Change the next line to test a problem
+    problem = A5
 
     problem_funcs = get_problem(problem)
     constraints, player = problem_funcs[3:]
