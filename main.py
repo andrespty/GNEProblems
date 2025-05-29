@@ -2,6 +2,8 @@ from GNESolver5 import *
 from Problems.ProblemA8 import A8
 from Problems.ProblemA7 import A7
 from Problems.ProblemA5 import A5
+from Problems.ProblemA11 import A11
+from Problems.ProblemA12 import A12
 
 def get_problem(problem_n):
     # Define the problem
@@ -22,7 +24,7 @@ def get_initial_point(action_sizes, player_constraints, dual_initial_point=10):
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A7
+    problem = A12
 
     problem_funcs = get_problem(problem)
     constraints, player = problem_funcs[3:]
