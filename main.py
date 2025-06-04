@@ -1,4 +1,8 @@
 from GNESolver5 import *
+from Problems.ProblemA1 import A1
+from Problems.ProblemA2 import A2
+from Problems.ProblemA3 import A3
+from Problems.ProblemA4 import A4
 from Problems.ProblemA8 import A8
 from Problems.ProblemA7 import A7
 from Problems.ProblemA5 import A5
@@ -24,7 +28,7 @@ def get_initial_point(action_sizes, player_constraints, dual_initial_point=10):
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A12
+    problem = A3
 
     problem_funcs = get_problem(problem)
     constraints, player = problem_funcs[3:]
@@ -46,7 +50,7 @@ if __name__ == '__main__':
 
     # Set Initial Point
     primal, dual = get_initial_point(player_vector_sizes, constraints)
-
+    print(flatten_variables(primal, dual))
     # # Solve Problem
     sol = solver1.solve_game(flatten_variables(primal, dual), bounds_training)
     print('\n\n')

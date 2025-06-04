@@ -248,7 +248,6 @@ class GeneralizedNashEquilibriumSolver:
         scaled_dual_actions = self.vectorized_sigmoid(dual_actions, bounds_dual)
         return self.energy_function(scaled_actions, scaled_dual_actions)
 
-
     def energy_function(self, actions: npt.NDArray[np.float64], dual_actions: npt.NDArray[np.float64]) -> float:
         """
         Input:
@@ -342,7 +341,6 @@ class GeneralizedNashEquilibriumSolver:
                     result[start_idx:end_idx] += grad_constraint
 
         return result
-
 
     # Gradient of dual player
     def calculate_gradient_dual(self, actions: npt.NDArray[np.float64], dual_actions: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
