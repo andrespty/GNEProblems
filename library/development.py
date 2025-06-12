@@ -1,8 +1,7 @@
-# from GNESolver5 import *
-from GNESolver5 import *
-# from library.GNESolver6 import *
+from GNESolver6 import *
+from misc import *
 from Problems.ProblemA8 import A8
-
+from ProblemA8_BL import A8_BL
 
 def get_problem(problem_n):
     # Define the problem
@@ -23,10 +22,10 @@ def get_initial_point(action_sizes, player_constraints, dual_initial_point=10):
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A8
+    problem = A8_BL
 
     problem_funcs = get_problem(problem)
-    constraints, player = problem_funcs[3:]
+    constraints_der, player = problem_funcs[3:]
     (player_vector_sizes,
      player_objective_functions,
      player_constraints,
@@ -34,25 +33,35 @@ if __name__ == '__main__':
      bounds_training) = player
 
     # Define the problem solver
-    solver1 = GeneralizedNashEquilibriumSolver(
+    """
+        GNESolverBoundless requires:
+        obj_funcs:                      list of functions
+        derivative_obj_funcs:           list of functions
+        constraints:                    list of functions
+        derivative_constraints:         list of functions
+        
+        player_obj_func:                list of indexes
+        player_constraints:             list of list of indexes [[0,1], [0,2],...,[None]]
+        bounds:                         list of tuples
+        player_vector_sizes:            list of numbers
+    """
+    solver1 = GNESolverBoundless(
         *get_problem(problem)[:4],
         player_objective_functions,
         player_constraints,
         bounds,
-        player_vector_sizes,
-        useBounds=True
+        player_vector_sizes
     )
 
     # Set Initial Point
-    primal, dual = get_initial_point(player_vector_sizes, constraints)
-    print(flatten_variables(primal, dual))
+    primal, dual = get_initial_point(player_vector_sizes, constraints_der)
+    print('Initial Guess: ',flatten_variables(primal, dual))
     # # Solve Problem
     sol = solver1.solve_game(flatten_variables(primal, dual), bounds_training)
     print('\n\n')
     solver1.summary(problem.paper_solution()[0])
     print('\n\n')
     solver1.nash_check()
-
 
 
 
