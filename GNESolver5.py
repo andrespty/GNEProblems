@@ -358,6 +358,7 @@ class GeneralizedNashEquilibriumSolver:
 
         return dual_objective_values.reshape(-1,1)
 
+    #step 1
     def solve_game(self, initial_guess: List[float], bounds: List[Tuple[float, float]], disp=True):
         """
         Input:

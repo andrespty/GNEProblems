@@ -65,4 +65,4 @@ class A11:
 
     @staticmethod
     def g0_der(x: npt.NDArray[np.float64]) -> float:
-        return np.array([[1.0]]).reshape(-1, 1)
+        return np.array([[1, 1]]).reshape(-1, 1)

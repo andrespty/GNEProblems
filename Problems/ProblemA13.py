@@ -39,7 +39,7 @@ class A13:
 
     @staticmethod
     def constraint_derivatives():
-        return [A13.g0_der, A13.g1_der, A13.g2_der, A13.g3_der, A13.g4_der, A13.g5_der]
+        return [A13.g0_der, A13.g1_der]
 
     @staticmethod
     def obj_func(
@@ -61,7 +61,7 @@ class A13:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
-        S = x1+x2+x3
+        S = x1 + x2 + x3
         c1 = 0.10
         c2 = 0.01
         return A13.obj_func(x1, c1, c2, S)
@@ -141,24 +141,11 @@ class A13:
 
     @staticmethod
     def g0_der(x: npt.NDArray[np.float64]) -> float:
-        return 3.25
+        return np.array([3.25, 1.25, 4.125]).reshape(-1, 1)
+    # np.array([3.25, 1.25, 4.125]).reshape(-1, 1)
 
     @staticmethod
     def g1_der(x: npt.NDArray[np.float64]) -> float:
-        return 1.25
+        return np.array([2.2915, 1.5625, 2.814]).reshape(-1, 1)
 
-    @staticmethod
-    def g2_der(x: npt.NDArray[np.float64]) -> float:
-        return 4.125
-
-    @staticmethod
-    def g3_der(x: npt.NDArray[np.float64]) -> float:
-        return 2.2915
-
-    @staticmethod
-    def g4_der(x: npt.NDArray[np.float64]) -> float:
-        return 1.5625
-
-    @staticmethod
-    def g5_der(x: npt.NDArray[np.float64]) -> float:
-        return 2.814
+    

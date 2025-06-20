@@ -228,19 +228,31 @@ class A7:
     @staticmethod
     # partial g0 / partial x1
     def g0_der(x1):
-        return np.array([[1, 2, -1, 3, -4]]).reshape(-1, 1)
+        return np.array([[1, 2, -1, 3, -4,
+                          0, -3, 0, 0, 0,
+                          0, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0]]).reshape(-1, 1)
 
     @staticmethod
     # partial g1 / partial x1
     def g1_der(x1):
-        return np.array([[-1, 3, -2, 1, 3]]).reshape(-1, 1)
+        return np.array([[0, 0, 0, 0, 0,
+                          -1, 3, -2, 1, 3,
+                          1, 0, 0, 0, -3,
+                          0, 0, 2, 0, 0]]).reshape(-1, 1)
 
     @staticmethod
     # partial g2 / partial x2
     def g2_der(x1):
-        return np.array([[-2, 3, 1, -1, -2]]).reshape(-1, 1)
+        return np.array([[1, 0, 0, 0, 0,
+                          0, 0, 0, 0, 0,
+                          -2, 3, 1, -1, -2,
+                          0, 0, 0, 0, -4 ]]).reshape(-1, 1)
 
     @staticmethod
     # partial g3 / partial x3
     def g3_der(x1):
-        return np.array([[4, -2, -3, -6, 5]]).reshape(-1, 1)
+        return np.array([[1, 1, 0, 0, 0,
+                          0, 0, 0, 0, 0, 
+                          0, 0, 0, 0, 0, 
+                          4, -2, -3, -6, 5]]).reshape(-1, 1)

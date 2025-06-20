@@ -115,32 +115,32 @@ class A18:
    
     @staticmethod
     def g0_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([1, 1, 1, 0, 0, 0])
+        return np.array ([1, 1, 1, 0, 0, 0]).reshape(-1, 1)
    
     @staticmethod
     def g1_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([0, 1, 1, 1, 0, 0])
+        return np.array ([0, 1, 1, 1, 0, 0]).reshape(-1, 1)
    
     @staticmethod
     def g2_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([0, 0, 1, 1, 1, 0])
+        return np.array ([0, 0, 1, 1, 1, 0]).reshape(-1, 1)
    
     @staticmethod
     def g3_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([0, 0, 0, 1, 1, 1])
+        return np.array ([0, 0, 0, 1, 1, 1]).reshape(-1, 1)
    
     @staticmethod
     def g4_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([[-40/500, 35/400, 0, 40/500, -35/400, 0]
-                          [40/500, -35,400, 0, 40/500, -35/400, 0]])
+        return np.array ([-40/500, 35/400, 0, -40/500, -35/400, 0,
+                          40/500, -35,400, 0, -40/500, -35/400, 0]).reshape(-1, 1)
 
     @staticmethod
-    def g4_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([[-40/500, 0, 32/600, 40/500, 32/600, 0]
-                          [40/500, 0, 32,600, 40/500, 0, 32/600]])
+    def g5_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+        return np.array ([-40/500, 0, -32/600, -40/500, 0, -32/600, 
+                          -40/500, 0, -32/600, -40/500, 0, -32,600]).reshape(-1, 1)
    
     @staticmethod
     @staticmethod
-    def g4_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([[0, -35/400, 32/600, 0, 35/400, 32/600]
-                          [0, 35,400, 32/600, 0, 35/400, 32/600]])
+    def g6_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+        return np.array ([0, -35/400, -32/600, 0, -35/400, -32/600,
+                          0, -35,400, -32/600, 0, -35/400, -32/600]).reshape(-1, 1)

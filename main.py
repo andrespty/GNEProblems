@@ -1,7 +1,20 @@
 # from GNESolver5 import *
 from GNESolver5 import *
 # from library.GNESolver6 import *
+from Problems.ProblemA1 import A1
+from Problems.ProblemA2 import A2
+from Problems.ProblemA3 import A3
+from Problems.ProblemA4 import A4
+from Problems.ProblemA5 import A5
+from Problems.ProblemA6 import A6
+from Problems.ProblemA7 import A7
 from Problems.ProblemA8 import A8
+from Problems.ProblemA11 import A11
+from Problems.ProblemA12 import A12
+from Problems.ProblemA13 import A13
+from Problems.ProblemA17 import A17
+from Problems.ProblemA18 import A18
+
 
 
 def get_problem(problem_n):
@@ -23,7 +36,7 @@ def get_initial_point(action_sizes, player_constraints, dual_initial_point=10):
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A8
+    problem = A18
 
     problem_funcs = get_problem(problem)
     constraints, player = problem_funcs[3:]
