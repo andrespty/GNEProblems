@@ -133,12 +133,12 @@ def A8_ex(myinput):
 
   return (p1eng+p2eng+p3eng+d1eng+d2eng)
 
-minimizer_kwargs = dict(method="SLSQP")
-ip1=[0,0,0,0,0]
-start = timeit.default_timer()
-res1=basinhopping(A8_ex, ip1, stepsize=0.0001, niter=5000, minimizer_kwargs=minimizer_kwargs, niter_success=1000, interval=1, disp = True)
-
-stop = timeit.default_timer()
-
-print('Time: ', stop - start)
-print(res1.x)
+# minimizer_kwargs = dict(method="SLSQP")
+# ip1=[0,0,0,0,0]
+# start = timeit.default_timer()
+# res1=basinhopping(A8_ex, ip1, stepsize=0.0001, niter=5000, minimizer_kwargs=minimizer_kwargs, niter_success=1000, interval=1, disp = True)
+#
+# stop = timeit.default_timer()
+#
+# print('Time: ', stop - start)
+# print(res1.x)

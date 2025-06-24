@@ -1,7 +1,10 @@
 from GNESolver6 import *
 from misc import *
-from Problems.ProblemA8 import A8
-from ProblemA8_BL import A8_BL
+# from Problems.ProblemA8 import A8
+# from ProblemA8_BL import A8_BL
+from ProblemA3_BL import A3_BL
+from ProblemA2_BL import A2_BL
+from ProblemA7_BL import A7_BL
 
 def get_problem(problem_n):
     # Define the problem
@@ -22,7 +25,7 @@ def get_initial_point(action_sizes, player_constraints, dual_initial_point=10):
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A8_BL
+    problem = A2_BL
 
     problem_funcs = get_problem(problem)
     constraints_der, player = problem_funcs[3:]
@@ -31,7 +34,6 @@ if __name__ == '__main__':
      player_constraints,
      bounds,
      bounds_training) = player
-
     # Define the problem solver
     """
         GNESolverBoundless requires:
@@ -45,7 +47,7 @@ if __name__ == '__main__':
         bounds:                         list of tuples
         player_vector_sizes:            list of numbers
     """
-    solver1 = GNESolverBoundless(
+    solver1 = GNEP_Solver(
         *get_problem(problem)[:4],
         player_objective_functions,
         player_constraints,
@@ -53,15 +55,17 @@ if __name__ == '__main__':
         player_vector_sizes
     )
 
-    # Set Initial Point
+    # # Set Initial Point
     primal, dual = get_initial_point(player_vector_sizes, constraints_der)
-    print('Initial Guess: ',flatten_variables(primal, dual))
-    # # Solve Problem
-    sol = solver1.solve_game(flatten_variables(primal, dual), bounds_training)
-    print('\n\n')
-    solver1.summary(problem.paper_solution()[0])
-    print('\n\n')
-    solver1.nash_check()
+    ip = flatten_variables(primal, dual)
+    print('Initial Guess: ',ip)
+    solver1.wrapper(ip)
+    # # # Solve Problem
+    # sol = solver1.solve_game(flatten_variables(primal, dual), bounds_training)
+    # print('\n\n')
+    # solver1.summary(problem.paper_solution()[0])
+    # print('\n\n')
+    # solver1.nash_check()
 
 
 

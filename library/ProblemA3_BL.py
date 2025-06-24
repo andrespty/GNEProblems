@@ -169,22 +169,22 @@ class A3_BL:
     @staticmethod
     # partial g0 / partial x1
     def g0_der(x1):
-        return np.array([[1, 1, 1]]).reshape(-1, 1)
+        return np.array([[1, 1, 1, 1, 1, 1, 1]]).reshape(-1, 1)
 
     @staticmethod
     # partial g1 / partial x1
     def g1_der(x1):
-        return np.array([[1, 1, -1]]).reshape(-1, 1)
+        return np.array([[1, 1, -1, -1, 0, 0, 1]]).reshape(-1, 1)
 
     @staticmethod
     # partial g2 / partial x2
     def g2_der(x1):
-        return np.array([[1, 1]]).reshape(-1, 1)
+        return np.array([[0, -1, -1, 1, 1, 1, 0]]).reshape(-1, 1)
 
     @staticmethod
     # partial g3 / partial x3
     def g3_der(x1):
-        return np.array([[0, 1]]).reshape(-1, 1)
+        return np.array([[-1, 0, 1, 1, 0, 0, 1]]).reshape(-1, 1)
 
 def get_engval(myvar, gradval, mylb, myub):
     if gradval<=0:
@@ -211,20 +211,18 @@ def A3_ex(vars):
     grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3))
     grad = grad_obj + grad_cons
     # print("Grad: ", grad)
-    # eng = np.where(
-    #     grad <= 0,
-    #     (ub - np.array(vars[:7]).reshape(-1,1)) * np.log(1 - grad),
-    #     (np.array(vars[:7]).reshape(-1,1) - lb) * np.log(1 + grad)
-    # )
-    # print("Eng: ", eng)
-    eng = ((ub - np.array(vars[:7]).reshape(-1,1))**2)  * ((np.array(vars[:7]).reshape(-1,1) - lb)**2) * grad**2
+    eng = np.where(
+        grad <= 0,
+        (ub - np.array(vars[:7]).reshape(-1,1)) * np.log(1 - grad),
+        (np.array(vars[:7]).reshape(-1,1) - lb) * np.log(1 + grad)
+    )
+
     grad_cons_1 = -A3_BL.g0(players)
     grad_cons_2 = -A3_BL.g1(players)
     grad_cons_3 = -A3_BL.g2(players)
     grad_cons_4 = -A3_BL.g3(players)
     grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3, grad_cons_4))
-    # eng_cons = [get_engval(dplayer, grad_cons[i],0,100) for i, dplayer in enumerate(dual)]
-    eng_cons = [ ((100-dplayer)**2) * ((dplayer)**2) * grad_cons[i]**2 for i, dplayer in enumerate(dual)]
+    eng_cons = [get_engval(dplayer, grad_cons[i],0,100) for i, dplayer in enumerate(dual)]
     return sum(eng)[0] + sum(eng_cons)[0]
 
 def A3_sig(vars):
@@ -251,9 +249,7 @@ def A3_sig(vars):
     grad_cons_3 = dual[3] * A3_BL.g3_der(players)   # (2,1)
     grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3))
     grad = grad_obj + grad_cons
-    # print("Grad: ", grad)
     eng = np.abs(grad)**2
-    # print("Eng: ", eng)
 
     grad_cons_1 = -A3_BL.g0(players)
     grad_cons_2 = -A3_BL.g1(players)
@@ -263,42 +259,78 @@ def A3_sig(vars):
     eng_cons = np.abs(grad_cons)**2
     return sum(eng) + sum(eng_cons)
 
-x1 = np.array([[0], [0], [0]])
-x2 = np.array([[0], [0]])
-x3 = np.array([[0], [0]])
-x = np.array([x1, x2, x3], dtype=object)
-d = np.array([0,0,0,0])
-ip = flatten_variables(x, d)
-print("Energy: ",A3_sig(ip))
+def fisher_func(a,b, epsilon=1e-3):
+    return a+b - np.sqrt(a**2 + b**2 + 2*epsilon**2)
 
-isTransform = False
+def A3_fb(vars):
+    players = construct_vectors(np.array(vars[:7]).reshape(-1,1), [3,2,2])
+    raw_players = np.array(vars[:7]).reshape(-1,1)
+    dual_player = np.array(vars[7:11]).reshape(-1,1)
+    dual_lb = np.array(vars[11:18]).reshape(-1,1)
+    dual_ub = np.array(vars[18:25]).reshape(-1,1)
+    dual_lb_dp = np.array(vars[25:29]).reshape(-1,1)
+    dual_ub_dp = np.array(vars[29:33]).reshape(-1,1)
+    lb = np.array([-10,-10,-10,-10,-10,-10,-10]).reshape(-1,1)
+    ub = np.array([10,10,10, 10,10,10, 10]).reshape(-1,1)
 
-if isTransform:
-    minimizer_kwargs = dict(method="L-BFGS-B")
-    start = timeit.default_timer()
-    res1 = basinhopping(A3_sig, ip, stepsize=0.0001, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1 ,
-                        niter_success=100, disp=True)
-    stop = timeit.default_timer()
-    lb_t = np.array([-10,-10,-10, -10,-10,-10, -10]).reshape(-1,1)
-    ub_t = np.array([10,10,10, 10,10,10, 10]).reshape(-1,1)
-    x_t = np.clip(np.array(res1.x[:7]).reshape(-1, 1), -500, 500)
-    xd_t = np.clip(res1.x[7:], -500, 500)
-    actions_primal = (ub_t - lb_t) * (1 / (1 + np.exp(-x_t))) + lb_t
-    actions_dual = 100 / (1 + np.exp(-xd_t))
-else:
-    bounds = Bounds([-10,-10,-10, -10,-10,-10, -10, 0,0,0,0], [10,10,10, 10,10,10, 10,100,100,100,100])
-    minimizer_kwargs = dict(method="SLSQP", bounds=bounds)
-    start = timeit.default_timer()
-    res1=basinhopping(A3_ex, ip, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1, niter_success=100, disp = True)
-    stop = timeit.default_timer()
+    grad_obj_1 = A3_BL.obj_func_der_1(players) # (3,1)
+    grad_obj_2 = A3_BL.obj_func_der_2(players) # (2,1)
+    grad_obj_3 = A3_BL.obj_func_der_3(players) # (2,1)
+    grad_obj = np.vstack((grad_obj_1, grad_obj_2, grad_obj_3))
 
+    grad_cons_1 = dual_player[0] * A3_BL.g0_der(players) + dual_player[1] * A3_BL.g1_der(players) # (3,1)
+    grad_cons_2 = dual_player[2] * A3_BL.g2_der(players)   # (2,1)
+    grad_cons_3 = dual_player[3] * A3_BL.g3_der(players)   # (2,1)
+    grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3))
+    grad = grad_obj + grad_cons
+    # print(grad)
+    eng = (grad - dual_lb + dual_ub)**2 + fisher_func(dual_lb, raw_players-lb)**2 + fisher_func(dual_ub,ub-raw_players)**2
 
-print("Result: ", res1.x)
-if isTransform and actions_primal.any() and actions_dual.any():
-    print('Primal Translated: ', actions_primal)
-    print('Dual Translated: ', actions_dual)
-    # print(sum(actions_primal))
-    # print(A2_BL.g0(actions_primal))
-    # print(A2_BL.g1(actions_primal))
-print("Energy: ", A3_ex(res1.x) if isTransform else A3_ex(res1.x))
-# print("Gradients: ", get_grad(res1.x, translate=isTransform))
+    grad_cons_1 = -A3_BL.g0(players)
+    grad_cons_2 = -A3_BL.g1(players)
+    grad_cons_3 = -A3_BL.g2(players)
+    grad_cons_4 = -A3_BL.g3(players)
+    grad_dual = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3, grad_cons_4))
+    eng_dual = (grad_dual - dual_lb_dp + dual_ub_dp) ** 2 + fisher_func(dual_lb_dp, dual_player) ** 2 + fisher_func(dual_ub_dp, 100 - dual_player) ** 2
+    return sum(eng) + sum(eng_dual)
+
+# x1 = np.array([[0], [0], [0]])
+# x2 = np.array([[0], [0]])
+# x3 = np.array([[0], [0]])
+# x = np.array([x1, x2, x3], dtype=object)
+# d = np.array([0,0,0,0])
+# ip = flatten_variables(x, d).tolist()
+# ip1 = ip + [1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,2,2,2,2]
+# # print("Energy: ",A3_sig(ip))
+#
+# isTransform = True
+#
+# if isTransform:
+#     minimizer_kwargs = dict(method="L-BFGS-B")
+#     start = timeit.default_timer()
+#     res1 = basinhopping(A3_fb, ip1, stepsize=0.0001, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1 ,
+#                         niter_success=100, disp=True)
+#     stop = timeit.default_timer()
+#
+# else:
+#     bounds = Bounds([-10,-10,-10, -10,-10,-10, -10, 0,0,0,0], [10,10,10, 10,10,10, 10,100,100,100,100])
+#     minimizer_kwargs = dict(method="SLSQP", bounds=bounds)
+#     start = timeit.default_timer()
+#     res1=basinhopping(A3_ex, ip, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1, niter_success=100, disp = True)
+#     stop = timeit.default_timer()
+#
+# if isTransform:
+#     print("Result: ", res1.x[:7])
+#     print("Time: ", stop - start)
+#     print("Constraints: ", res1.x[7:11])
+#     print("Lower Bounds: ", res1.x[11:18])
+#     print("Upper Bounds: ", res1.x[18:25])
+#     print("Constraints Lower Bounds: ", res1.x[25:29])
+#     print("Constraints Upper Bounds: ", res1.x[29:33])
+#
+#     print("Energy: ", A3_fb(res1.x))
+#     print("OG Energy: ", A3_ex(res1.x[:11]))
+# else:
+#     print("Result: ", res1.x)
+#     print("Energy: ", A3_ex(res1.x) if isTransform else A3_ex(res1.x))
+# # print("Gradients: ", get_grad(res1.x, translate=isTransform))

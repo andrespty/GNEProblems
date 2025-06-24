@@ -7,6 +7,8 @@ import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
 
+from GNESolver5 import check_nash_equillibrium
+
 
 class A2_BL:
     @staticmethod
@@ -88,13 +90,32 @@ class A2_BL:
     def g0(x):
         # x: numpy array (N,1)
         B = 1
-        return x.sum() - B
+        return sum(x) - B
 
     @staticmethod
     def g1(x):
+        return 0.3 - x[0]
+
+    @staticmethod
+    def g2(x):
+        return x[0] - 0.5
+
+    @staticmethod
+    def g3(x):
+        mask = np.ones(x.shape, dtype=bool)
+        mask[0] = False
+        return 0.01 - x[mask]
+    @staticmethod
+    def g4(x):
         # x: numpy array (N,1)
         B = 1
-        return 0.99 - x.sum()
+        return 0.99 - sum(x)
+    @staticmethod
+    def g5(x):
+        return x[8] - 0.06
+    @staticmethod
+    def g6(x):
+        return x[9] - 0.05
 
     @staticmethod
     def g0_der(x):
@@ -136,79 +157,140 @@ def A2_ex(vars):
     eng_dual_2 = get_engval(dual[1], cost_dual_2, 0, 100)
     return sum(eng) + eng_dual_1 + eng_dual_2
 
-def A2_sig(vars):
-    players = np.array(vars[:10]).reshape(-1,1)
-    dual = np.array(vars[10:]).reshape(-1,1)
-    lb = np.array([0.3,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01]).reshape(-1,1)
-    ub = np.array([0.5,1,1,1,1,1,1,1,0.06,0.05]).reshape(-1,1)
+def fisher_func(a,b, epsilon=1e-6):
+    return a+b - np.sqrt(a**2 + b**2)
 
-    # Transformed actions
-    x = np.clip(players, -500, 500)
-    xd = np.clip(dual, -500, 500)
-    actions = (ub - lb) * (1/(1+np.exp(-x))) + lb     # (10,1)
-    dual_actions = 100/(1+np.exp(-xd))               # (2,1)
-
+def A2_fb(vars):
+    players = np.array(vars[:10]).reshape(-1,1)                 # (10,1)
+    dual_constraints = np.array(vars[10:]).reshape(-1,1)        # (7,1)
+    player_constraints = [[1, 2], [0, 3], [0, 3], [0, 3], [0, 3, 4], [0, 3, 4], [0, 3], [0, 3], [0, 3, 5], [0, 3, 6]]
+    grad_constraints = np.array([1, -1, 1, -1, -1, 1, 1]).reshape(-1, 1)
+    constraints = [A2_BL.g0, A2_BL.g1, A2_BL.g2, A2_BL.g3,A2_BL.g4,A2_BL.g5,A2_BL.g6]
     # Gradients
-    grad_obj1 = A2_BL.obj_func_der_1(actions)                      # (10,1)
-    grad_obj2 = A2_BL.obj_func_der_2(actions)                      # (10,1)
+    grad_obj1 = A2_BL.obj_func_der_1(players)                      # (10,1)
+    grad_obj2 = A2_BL.obj_func_der_2(players)                      # (10,1)
     grad_obj = np.copy(grad_obj1)
-    grad_obj[1:5] += grad_obj2[1:5]
-    grad_cons_1 = np.hstack(([0], np.ones(9, int))).reshape(-1,1) * dual_actions[0]
-    grad_cons_2 = np.hstack((np.zeros(4), np.ones(2, int), np.zeros(4))).reshape(-1, 1) * -dual_actions[1]
-    grad = grad_obj + grad_cons_1 + grad_cons_2
-    # eng = (grad**2)/(1+grad**2)
-    eng = np.abs(grad)
+    grad_obj[1:5] = grad_obj2[1:5]
+    for idx, player_const in enumerate(player_constraints):
+        for jdx in player_const:
+            grad_obj[idx] += dual_constraints[jdx] * grad_constraints[jdx]
+    eng = grad_obj.T @ grad_obj
 
-    grad_dual_1 = -A2_BL.g0(actions) #* (dual_actions * (1-dual_actions)) * 100
-    grad_dual_2 = -A2_BL.g1(actions) #* (dual_actions * (1-dual_actions)) * 100
-    # eng_dual = (grad_dual**2)/(1+grad_dual**2)
-    eng_dual_1 = np.abs(grad_dual_1)
-    eng_dual_2 = np.abs(grad_dual_2)
-    return np.sum(eng) + eng_dual_1 + eng_dual_2
+    fisher_res = []
+    for jdx, constraint in enumerate(constraints):
+        fisher = fisher_func(-constraint(players), dual_constraints[jdx])
+        fisher_res.append(fisher.flatten())
+    fisher_res = np.concatenate(fisher_res).reshape(-1, 1)
+    eng_fisher = fisher_res.T @ fisher_res
 
-def get_grad(vars, translate=False):
-    players = np.array(vars[:10]).reshape(-1, 1)
-    dual = np.array(vars[10:]).reshape(-1,1)
-    lb = np.array([0.3, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]).reshape(-1, 1)
-    ub = np.array([0.5,1,1,1,1,1,1,1,0.06, 0.05]).reshape(-1, 1)
-    if translate:
-        x = np.clip(players, -500, 500)
-        players = (ub - lb) * (1 / (1 + np.exp(-x))) + lb  # (10,1)
-        dual = 100 / (1 + np.exp(-dual))
-    grad_obj1 = A2_BL.obj_func_der_1(players)  # (10,1)
-    grad_obj2 = A2_BL.obj_func_der_2(players)  # (10,1)
-    grad_obj = np.copy(grad_obj1)
-    grad_obj[1:5] += grad_obj2[1:5]
-    grad_cons_1 = np.hstack(([0], np.ones(9, int))).reshape(-1, 1) * dual[0]
-    grad_cons_2 = np.hstack((np.zeros(4), np.ones(2, int), np.zeros(4))).reshape(-1, 1) * -dual[1]
-    grad = grad_obj + grad_cons_1 + grad_cons_2
+    return eng + eng_fisher
 
-    grad_dual_1 = -A2_BL.g0(players)  # * (dual_actions * (1-dual_actions)) * 100
-    grad_dual_2 = -A2_BL.g1(players)
-    return grad, grad_dual_1, grad_dual_2
+def obj(x):
+    players = np.array(x).reshape(-1,1)
+    obj1 = A2_BL.obj_func_1(players)  # (10,1)
+    obj2 = A2_BL.obj_func_2(players)  # (10,1)
+    o = np.copy(obj1)
+    o[1:5] = obj2[1:5]
+    return o
 
-ip1=[0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 10, 10]
-print(A2_ex(ip1))
+def wrap_func(func, fixed_x, idx):
+    def w_obj(p_var):
+        player_var_opt = np.array(p_var).reshape(-1, 1).item()
+        new_vars = np.array(fixed_x[:idx] + [player_var_opt] + fixed_x[idx + 1:]).reshape(-1, 1)
+        return func(new_vars)
+    return w_obj
+
+def wrap_obj_func(func, fixed_x, idx):
+    def w_obj(p_var):
+        player_var_opt = np.array(p_var).reshape(-1, 1).item()
+        new_vars = np.array(fixed_x[:idx] + [player_var_opt] + fixed_x[idx + 1:]).reshape(-1, 1)
+        return func(new_vars)[idx]
+    return w_obj
+
+
+def NE_check(x_star):
+    # x_star is a list of only player actions
+    print('NE check')
+    conclusion = np.zeros_like(x_star).reshape(-1, 1)
+    C = [A2_BL.g0, A2_BL.g4]
+    C_i = [[None], [0], [0], [0], [0, 1], [0, 1], [0], [0], [0], [0]]
+    print("x_star: ", x_star)
+    for idx, player in enumerate(x_star):
+        x_i = 0
+        optimization_constraints = []
+        for cdx in C_i[idx]:
+            if cdx is not None:
+                optimization_constraints.append(
+                    {'type': 'ineq', 'fun': lambda x: wrap_func(C[cdx], x_star, idx)(x)}
+                )
+
+        wrapped_obj = wrap_obj_func(obj, x_star, idx)
+        bounds = [(0.3, 0.5), (0.01, 1.0), (0.01, 1.0), (0.01, 1.0), (0.01, 1.0), (0.01, 1.0), (0.01, 1.0), (0.01, 1.0),
+                  (0.01, 0.06), (0.01, 0.05)]
+        player_bounds = [bounds[idx]]
+        result = minimize(
+            wrapped_obj,
+            x_i,
+            method='SLSQP',
+            bounds=player_bounds,
+            constraints=optimization_constraints,
+            options={
+                'disp': False,
+                'maxiter': 1000,
+                'ftol': 1e-5,
+            }
+        )
+        # Report
+        fixed_vars = x_star[:idx] + x_star[idx + 1:]
+        opt_actions = np.array(result.x).reshape(-1, 1).item()
+        new_vars = fixed_vars[:idx] + [opt_actions] + fixed_vars[idx:]
+        opt_obj_func = obj(new_vars)
+        comp_obj_func = obj(x_star)
+        print(f"Player {idx + 1}")
+        print(f"Computed Actions: {x_star[idx]}")
+        print(f"Optimized Actions: {result.x}\nOptimized Objective Function: {opt_obj_func[idx]}")
+        print('Computed Objective Functions: ', np.array(comp_obj_func).reshape(-1, 1)[idx])
+        print('Optimized Constraints: ', constraints_check(new_vars, idx))
+        print('Computed Constraints: ', constraints_check(x_star, idx))
+
+        print()
+        conclusion[idx] = np.array(comp_obj_func).reshape(-1, 1)[idx] - opt_obj_func[idx] > 1e-3
+    print(conclusion)
+    return
+
+def constraints_check(x_star, idx):
+    C = [A2_BL.g0, A2_BL.g4]
+    C_i = [[None], [0], [0], [0], [0, 1], [0, 1], [0], [0], [0], [0]]
+    result = []
+    for cdx in C_i[idx]:
+        if cdx is not None:
+            result.append(C[cdx](x_star))
+
+    return result
+
+ip1=[0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
+players_ip1 = [0, 0, 0, 0, 0, 0, 0]
+
+ip1 = ip1 + players_ip1
+print("Initial point: ",ip1)
+print('Energy: ',A2_fb(ip1))
 
 isTransform = True
+optimize = False
+# ip = [0.29962898846513, 0.00997828313762, 0.00997828313762,
+#                    0.00997828313762, 0.59745624992082, 0.02220301920403,
+#                    0.01013441012117, 0.01013441012117, 0.01013441012117,
+#                    0.01013441012117]
+# NE_check(ip)
 
-if isTransform:
+if isTransform and optimize:
     minimizer_kwargs = dict(method="L-BFGS-B")
-    ip1 = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0]
     start = timeit.default_timer()
-    res1 = basinhopping(A2_sig, ip1, stepsize=0.0001, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1 ,
+    res1 = basinhopping(A2_fb, ip1, stepsize=0.0001, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1 ,
                         niter_success=100, disp=True)
     stop = timeit.default_timer()
-    lb_t = np.array([0.3, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]).reshape(-1, 1)
-    ub_t = np.array([0.5,1,1,1,1,1,1,1,0.06, 0.05]).reshape(-1, 1)
-    x_t = np.clip(np.array(res1.x[:10]).reshape(-1, 1), -500, 500)
-    xd_t = np.clip(res1.x[10:], -500, 500)
-    actions_primal = (ub_t - lb_t) * (1 / (1 + np.exp(-x_t))) + lb_t
-    actions_dual = 100 / (1 + np.exp(-xd_t))
-    print('Result translated: ', actions_primal)
-    print(actions_dual)
 
-else:
+elif not isTransform and optimize:
     bounds = Bounds([0.3,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0, 0], [0.5,1,1,1,1,1,1,1,0.06,0.05,100, 100])
     minimizer_kwargs = dict(method="SLSQP", bounds=bounds)
     ip1=[0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0, 0]
@@ -216,13 +298,19 @@ else:
     res1=basinhopping(A2_ex, ip1, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1, niter_success=100, disp = True)
     stop = timeit.default_timer()
 
+if isTransform:
+    print("Result: ", res1.x[:10])
+    print("Time: ", stop - start)
+    print("Constraints: ", res1.x[10:])
+    # print("Constraints Upper Bounds: ", res1.x[22:24])
+    NE_check(res1.x[:10].tolist())
 
-print("Result: ", res1.x)
-if isTransform and actions_primal.any() and actions_dual.any():
-    print('Primal Translated: ', actions_primal)
-    print('Dual Translated: ', actions_dual)
-    print(sum(actions_primal))
-    # print(A2_BL.g0(actions_primal))
-    # print(A2_BL.g1(actions_primal))
-print("Energy: ", A2_sig(res1.x) if isTransform else A2_ex(res1.x))
-print("Gradients: ", get_grad(res1.x, translate=isTransform))
+    print("Energy: ", A2_fb(res1.x))
+else:
+    print("Result: ", res1.x)
+    print("Time: ", stop - start)
+    NE_check(res1.x[:10].tolist())
+
+# print("Energy: ", A2_fb(res1.x) if isTransform else A2_ex(res1.x))
+# print("Gradients: ", get_grad(res1.x, translate=isTransform))
+

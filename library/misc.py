@@ -214,3 +214,34 @@ def vectorized_sigmoid(x: npt.NDArray[np.float64], bounds: npt.NDArray[np.float6
     ub = bounds[:, 1].reshape(-1,1)
     sigmoid = 1 / (1 + np.exp(-x))
     return sigmoid * (ub - lb) + lb
+
+
+import numpy as np
+
+
+def one_hot_encoding(c_i, sizes, num_functions):
+    """
+    Builds a binary matrix (sum(sizes), num_functions)
+    where M[row, col] = 1 if function col uses the variable at row.
+
+    c_i: list of lists of function indices (or [None])
+    sizes: list of sizes of variable sets
+    num_functions: total number of functions (len(C))
+    """
+    assert len(c_i) == len(sizes), "c_i and sizes must match in length"
+
+    total_vars = sum(sizes)
+    M = np.zeros((total_vars, num_functions), dtype=int)
+
+    # Row offsets per variable set
+    offsets = np.cumsum([0] + sizes[:-1])
+
+    for var_idx, funcs in enumerate(c_i):
+        # Treat [None] as "uses no functions"
+        if funcs == [None]:
+            continue
+        start = offsets[var_idx]
+        end = start + sizes[var_idx]
+        M[start:end, funcs] = 1
+
+    return M
