@@ -192,19 +192,20 @@ class A4:
     # partial g0 / partial x1
     @staticmethod
     def g0_der(x1):
-        return np.array([[1, 1, 1]]).reshape(-1, 1)
+        return np.array([[1, 1, 1, 1, 1, 1, 1]]).reshape(-1, 1)
 
     # partial g1 / partial x1
     @staticmethod
     def g1_der(x1):
-        return np.array([[1, 1, -1]]).reshape(-1, 1)
+        return np.array([[1, 1, -1, -1, 0, 0, 1]]).reshape(-1, 1)
 
     # partial g2 / partial x2
     @staticmethod
     def g2_der(x1):
-        return np.array([[1, 1]]).reshape(-1, 1)
+        return np.array([[0, -1, -1, 1, 1, 1, 0]]).reshape(-1, 1)
 
     # partial g3 / partial x3
     @staticmethod
     def g3_der(x1):
-        return np.array([[0, 1]]).reshape(-1, 1)
+        return np.array([[-1, 0, -1, 1, 0, 
+                          0, 1]]).reshape(-1, 1)

@@ -39,42 +39,44 @@ class A18:
    
     #@staticmethod
     def abbreviations(x: npt.NDArray[np.float64]) -> float:
-        S1 = 40 - (40/500)* (x[0] + x[5] + x[8] + x[11])
-        S2 = 35 - 0.07* (x[3] + x[6] + x[9] + x[12])
-        S3 = 32 - 0.0533* (x[4] + x[7] + x[10] + x[13])
+        S1 = 40 - (40/500)* (x[0] + x[3] + x[6] + x[9])
+        S2 = 35 - (35/400)* (x[1] + x[4] + x[7] + x[10])
+        S3 = 32 - (32/600)* (x[3] + x[5] + x[8] + x[11])
 
     @staticmethod
     def obj_func_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        S1 = 40 - 40/500 * (x[0] + x[5] + x[8] + x[11])
-        S2 = 35 - 35/400 * (x[3] + x[6] + x[9] + x[12])
-        S3 = 32 - 32/600 * (x[4] + x[7] + x[10] + x[13])
-        return (15 - S1)(x[0] + x[5]) + (15 - S2)(x[2] + x[6]) + (15 - S3)(x[3] + x[6])
+        S1 = 40 - 40/500 * (x[0] + x[3] + x[6] + x[9])
+        S2 = 35 - 35/400 * (x[1] + x[4] + x[7] + x[10])
+        S3 = 32 - 32/600 * (x[2] + x[5] + x[8] + x[11])
+        return (15 - S1)(x[0] + x[3]) + (15 - S2)(x[1] + x[4]) + (15 - S3)(x[2] + x[5])
 
     @staticmethod
     def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        S1 = 40 - 40/500 * (x[0] + x[5] + x[8] + x[11])
-        S2 = 35 - 35/400 * (x[3] + x[6] + x[9] + x[12])
-        S3 = 32 - 32/600 * (x[4] + x[7] + x[10] + x[13])
-        return (15 - S1)(x[6] + x[10]) + (15 - S2)(x[9] + x[12]) + (15 - S3)(x[10] + x[12])
+        S1 = 40 - 40/500 * (x[0] + x[3] + x[6] + x[9])
+        S2 = 35 - 35/400 * (x[1] + x[4] + x[7] + x[10])
+        S3 = 32 - 32/600 * (x[2] + x[5] + x[8] + x[11])
+        return (15 - S1)(x[6] + x[9]) + (15 - S2)(x[7] + x[10]) + (15 - S3)(x[8] + x[11])
    
     @staticmethod
     def obj_func_der_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array([15 - 40 - 80/500*x[0],
-                         15 - 40 - 80/500*x[1],
-                         15 - 35 - 70/400*x[2],
-                         15 - 35 - 70/400*x[3],
-                         15 - 32 - 64/600*x[4],
-                         15 - 32 - 64/600*x[5]])
+        return np.array([15 - 40 - 80/500*x[0] - 80/500*x[3] - 40/500*x[6], - 40/500*x[9],
+                         15 - 35 - 70/400*x[1] - 70/400*x[4] - 35/400*x[7], - 35/400*x[10],
+                         15 - 32 - 64/600*x[2] - 64/600*x[5] - 32/600*x[8], - 32/600*x[11],
+
+                         15 - 40 - 80/500*x[3] - 80/500*x[0] - 40/500*x[6], - 40/500*x[9],
+                         15 - 35 - 70/400*x[4] - 70/400*x[1] - 35/400*x[7], - 35/400*x[10],
+                         15 - 32 - 64/600*x[5] - 64/600*x[2] - 32/600*x[8], - 32/600*x[11]])
    
    
     @staticmethod
     def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array([15 - 40 - 80/500*x[6],
-                         15 - 40 - 80/500*x[7],
-                         15 - 35 - 70/400*x[8],
-                         15 - 35 - 70/400*x[9],
-                         15 - 32 - 64/600*x[10],
-                         15 - 32 - 64/600*x[11]])
+        return np.array([15 - 40 - 80/500*x[6] - 80/500*x[9] - 40/500*x[0] - 40/500*x[3],
+                         15 - 35 - 70/400*x[7] - 70/400*x[10] - 35/400*x[1] - 35/400*x[4],
+                         15 - 32 - 64/600*x[8] - 64/600*x[11] - 32/600*x[2] - 32/600*x[5],
+
+                         15 - 40 - 80/500*x[9] - 80/500*x[6] - 40/500*x[0] - 40/500*x[3],
+                         15 - 35 - 70/400*x[10] - 70/400*x[7] - 35/400*x[1] - 35/400*x[4],
+                         15 - 32 - 64/600*x[11] - 64/600*x[8] - 32/600*x[2] - 32/600*x[5]])
 
     @staticmethod
     def g0(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -115,32 +117,36 @@ class A18:
    
     @staticmethod
     def g0_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([1, 1, 1, 0, 0, 0])
+        return np.array ([1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
    
     @staticmethod
     def g1_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([0, 1, 1, 1, 0, 0])
+        return np.array ([0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0])
    
     @staticmethod
     def g2_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([0, 0, 1, 1, 1, 0])
+        return np.array ([0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0])
    
     @staticmethod
     def g3_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([0, 0, 0, 1, 1, 1])
+        return np.array ([0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1])
    
     @staticmethod
     def g4_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([[-40/500, 35/400, 0, 40/500, -35/400, 0]
+        return np.array ([[-40/500, 35/400, 0, 40/500, -35/400, 0], 
                           [40/500, -35,400, 0, 40/500, -35/400, 0]])
 
     @staticmethod
-    def g4_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([[-40/500, 0, 32/600, 40/500, 32/600, 0]
+    def g5_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+        return np.array ([[-40/500, 0, 32/600, 40/500, 32/600, 0],
                           [40/500, 0, 32,600, 40/500, 0, 32/600]])
    
     @staticmethod
+    def g6_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+        return np.array ([[0, -35/400, 32/600, 0, 35/400, 32/600],
+                          [0, 35,400, 32/600, 0, 35/400, 32/600]])
+    
     @staticmethod
-    def g4_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array ([[0, -35/400, 32/600, 0, 35/400, 32/600]
+    def g7_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+        return np.array ([[0, -35/400, 32/600, 0, 35/400, 32/600],
                           [0, 35,400, 32/600, 0, 35/400, 32/600]])
