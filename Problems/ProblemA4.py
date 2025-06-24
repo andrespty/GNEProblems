@@ -207,4 +207,5 @@ class A4:
     # partial g3 / partial x3
     @staticmethod
     def g3_der(x1):
-        return np.array([[-1, 0, -1, 1, 0, 0, 1]]).reshape(-1, 1)
+        return np.array([[-1, 0, -1, 1, 0, 
+                          0, 1]]).reshape(-1, 1)

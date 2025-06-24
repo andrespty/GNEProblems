@@ -247,7 +247,7 @@ class A7:
         return np.array([[1, 0, 0, 0, 0,
                           0, 0, 0, 0, 0,
                           -2, 3, 1, -1, -2,
-                          0, 0, 0, 0, -4 ]]).reshape(-1, 1)
+                          0, 0, 0, 0, -4]]).reshape(-1, 1)
 
     @staticmethod
     # partial g3 / partial x3

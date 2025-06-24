@@ -141,11 +141,8 @@ class A13:
 
     @staticmethod
     def g0_der(x: npt.NDArray[np.float64]) -> float:
-        return np.array([3.25, 1.25, 4.125]).reshape(-1, 1)
-    # np.array([3.25, 1.25, 4.125]).reshape(-1, 1)
+        return np.array[3.25, 1.25, 4.125].reshape(-1, 1)
 
     @staticmethod
     def g1_der(x: npt.NDArray[np.float64]) -> float:
-        return np.array([2.2915, 1.5625, 2.814]).reshape(-1, 1)
-
-    
+        return np.array[2.2915, 1.5625, 2.814].reshape(-1,1)
