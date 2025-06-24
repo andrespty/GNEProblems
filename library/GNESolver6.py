@@ -6,7 +6,7 @@ from scipy.optimize import basinhopping
 import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
-from misc import *
+from library.misc import *
 
 class GNEP_Solver:
     def __init__(self,

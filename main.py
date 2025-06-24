@@ -1,5 +1,6 @@
 # from GNESolver5 import *
 from GNESolver5 import *
+from library.GNESolver6 import *
 # from library.GNESolver6 import *
 from Problems.ProblemA1 import A1
 from Problems.ProblemA2 import A2
@@ -36,7 +37,7 @@ def get_initial_point(action_sizes, player_constraints, dual_initial_point=10):
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A3
+    problem = A13
 
     problem_funcs = get_problem(problem)
     constraints, player = problem_funcs[3:]
@@ -47,13 +48,13 @@ if __name__ == '__main__':
      bounds_training) = player
 
     # Define the problem solver
-    solver1 = GeneralizedNashEquilibriumSolver(
+    solver1 = GNEP_Solver(
         *get_problem(problem)[:4],
         player_objective_functions,
         player_constraints,
         bounds,
         player_vector_sizes,
-        useBounds=True
+        # useBounds=True
     )
 
     # Set Initial Point
