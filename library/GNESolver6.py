@@ -117,6 +117,9 @@ class GNEP_Solver:
                 result[start_idx:end_idx] = o
         # Add constraints
         for c_idx, p_vector in enumerate(self.player_constraints.T):
+            print("Constraint ", c_idx)
+            print(p_vector.shape)
+            print(self.constraint_derivatives[c_idx](actions))
             result += p_vector.reshape(-1,1) * dual_actions[c_idx] * self.constraint_derivatives[c_idx](actions)
         return result
 
@@ -181,17 +184,16 @@ class GNEP_Solver:
     def summary(self, paper_res=None):
         if self.result:
             print(self.result.x)
-            translated_solution = self.translate_solution(self.result.x).tolist()
+            # translated_solution = self.translate_solution(self.result.x).tolist()
             print('Time: ', self.time)
             print('Iterations: ', self.result.nit)
-            print('Translated Solution: \n', translated_solution)
             if paper_res:
                 print('Paper Result: \n', paper_res)
-            print('Solution: \n', translated_solution)
-            print('Total Energy: ', self.wrapper(translated_solution))
+            print('Solution: \n', self.result.x)
+            print('Total Energy: ', self.wrapper(self.result.x))
             if paper_res:
                 paper = np.array(paper_res).reshape(-1,1)
-                computed_actions = np.array(translated_solution[:sum(self.action_sizes)]).reshape(-1,1)
+                computed_actions = np.array(self.result.x[:sum(self.action_sizes)]).reshape(-1,1)
                 calculated_obj = self.calculate_main_objective(construct_vectors(computed_actions, self.action_sizes))
                 paper_obj = self.calculate_main_objective(construct_vectors(paper, self.action_sizes))
                 print('Difference: ', sum(deconstruct_vectors(calculated_obj)) - sum(deconstruct_vectors(paper_obj)))

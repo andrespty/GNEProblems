@@ -158,13 +158,13 @@ class A18:
     @staticmethod
     def g4_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         return np.array ([[40/500, 35/400, 0, 40/500, 35/400, 0,
-                           40/500, 35,400, 0, 40/500, 35/400, 0]]).reshape(-1, 1)
+                           40/500, 35/400, 0, 40/500, 35/400, 0]]).reshape(-1, 1)
     
 
     @staticmethod
     def g5_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         return np.array ([[40/500, 0, 32/600, 40/500, 0, 32/600, 
-                           40/500, 0, 32/600, 40/500, 0, 32,600]]).reshape(-1, 1)
+                           40/500, 0, 32/600, 40/500, 0, 32/600]]).reshape(-1, 1)
     
    
     @staticmethod
