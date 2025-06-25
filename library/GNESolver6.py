@@ -60,20 +60,19 @@ class GNEP_Solver:
         Output:
           total energy: float value
         """
-        engval=gradient**2
-        # if isDual:
-        #     # print('DUAL GRADIENT: ',gradient)
-        #     bounds = self.bounds[self.N:]
-        # else:
-        #     # print('PRIMAL GRADIENT: ',gradient)
-        #     bounds = repeat_items(self.bounds[:self.N], self.action_sizes)
-        # lb = bounds[:, 0].reshape(-1, 1)
-        # ub = bounds[:, 1].reshape(-1, 1)
-        # engval = np.where(
-        #     gradient <= 0,
-        #     (ub - actions) * np.log(1 - gradient),
-        #     (actions - lb) * np.log(1 + gradient)
-        # )
+        if isDual:
+            # print('DUAL GRADIENT: ',gradient)
+            bounds = self.bounds[self.N:]
+        else:
+            # print('PRIMAL GRADIENT: ',gradient)
+            bounds = repeat_items(self.bounds[:self.N], self.action_sizes)
+        lb = bounds[:, 0].reshape(-1, 1)
+        ub = bounds[:, 1].reshape(-1, 1)
+        engval = np.where(
+            gradient <= 0,
+            (ub - actions) * np.log(1 - gradient),
+            (actions - lb) * np.log(1 + gradient)
+        )
         return engval
 
     def primal_energy_function(self, actions: npt.NDArray[np.float64], dual_actions: npt.NDArray[np.float64]) -> float:
@@ -94,7 +93,7 @@ class GNEP_Solver:
           dual_actions: 2d np.array shape (N_d,1
         """
         gradient = self.calculate_gradient_dual(actions, dual_actions)
-        return self.energy_handler(gradient, actions, isDual=True)
+        return self.energy_handler(gradient, dual_actions, isDual=True)
 
     # Gradient of primal player
     def calculate_gradient(self, actions: npt.NDArray[np.float64], dual_actions: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
