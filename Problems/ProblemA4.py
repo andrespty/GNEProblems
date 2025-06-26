@@ -27,7 +27,8 @@ class A4:
         player_vector_sizes = [3, 2, 2]
         player_objective_functions = [0, 1, 2]
         player_constraints = [[0, 1], [2], [3]]
-        bounds = [(1, 10), (1, 10), (1, 10), (0, 100), (0, 100), (0, 100), (0, 100)]
+        bounds = [(1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (0, 100), (0, 100), (0, 100),
+                           (0, 100)]
         bounds_training = [(1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (0, 100), (0, 100), (0, 100),
                            (0, 100)]
         return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]

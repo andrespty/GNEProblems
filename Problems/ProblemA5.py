@@ -28,7 +28,7 @@ class A5:
         player_vector_sizes = [3, 2, 2]
         player_objective_functions = [0, 1, 2]
         player_constraints = [[0, 1],[2],[3]]
-        bounds = [(0, 10), (0, 10), (0, 10), (0, 100), (0, 100), (0, 100), (0, 100)]
+        bounds = [(0, 10), (0, 10), (0, 10), (0, 10), (0, 10), (0, 10), (0, 10),(0, 100), (0, 100), (0, 100), (0, 100)]
         bounds_training = [(0, 10), (0, 10), (0, 10), (0, 10), (0, 10), (0, 10), (0, 10),(0, 100), (0, 100), (0, 100), (0, 100)]
         return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
 

@@ -62,10 +62,10 @@ class GNEP_Solver:
         """
         if isDual:
             # print('DUAL GRADIENT: ',gradient)
-            bounds = self.bounds[self.N:]
+            bounds = self.bounds[sum(self.action_sizes):]
         else:
             # print('PRIMAL GRADIENT: ',gradient)
-            bounds = repeat_items(self.bounds[:self.N], self.action_sizes)
+            bounds = self.bounds[:sum(self.action_sizes)]
         lb = bounds[:, 0].reshape(-1, 1)
         ub = bounds[:, 1].reshape(-1, 1)
         engval = np.where(
@@ -117,9 +117,6 @@ class GNEP_Solver:
                 result[start_idx:end_idx] = o
         # Add constraints
         for c_idx, p_vector in enumerate(self.player_constraints.T):
-            print("Constraint ", c_idx)
-            print(p_vector.shape)
-            print(self.constraint_derivatives[c_idx](actions))
             result += p_vector.reshape(-1,1) * dual_actions[c_idx] * self.constraint_derivatives[c_idx](actions)
         return result
 
@@ -147,7 +144,7 @@ class GNEP_Solver:
           result: scipy.optimize.optimize.OptimizeResult object
           time: float
         """
-        minimizer_kwargs = dict(method="SLSQP")
+        minimizer_kwargs = dict(method="SLSQP", bounds=bounds)
         start = timeit.default_timer()
         result = basinhopping(
             self.wrapper,
@@ -184,7 +181,6 @@ class GNEP_Solver:
     def summary(self, paper_res=None):
         if self.result:
             print(self.result.x)
-            # translated_solution = self.translate_solution(self.result.x).tolist()
             print('Time: ', self.time)
             print('Iterations: ', self.result.nit)
             if paper_res:
