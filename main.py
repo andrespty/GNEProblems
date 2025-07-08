@@ -14,6 +14,7 @@ from Problems.ProblemA11 import A11
 from Problems.ProblemA12 import A12
 from Problems.ProblemA13 import A13
 from Problems.ProblemA14 import A14
+from Problems.ProblemA16 import A16
 from Problems.ProblemA17 import A17
 from Problems.ProblemA18 import A18
 
@@ -38,7 +39,7 @@ def get_initial_point(action_sizes, player_constraints, dual_initial_point=10):
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A14
+    problem = A16
     problem_funcs = get_problem(problem)
     constraints, player = problem_funcs[3:]
     (player_vector_sizes,
