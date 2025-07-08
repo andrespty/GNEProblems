@@ -13,6 +13,7 @@ from Problems.ProblemA8 import A8
 from Problems.ProblemA11 import A11
 from Problems.ProblemA12 import A12
 from Problems.ProblemA13 import A13
+from Problems.ProblemA14 import A14
 from Problems.ProblemA17 import A17
 from Problems.ProblemA18 import A18
 
@@ -37,8 +38,7 @@ def get_initial_point(action_sizes, player_constraints, dual_initial_point=10):
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A2
-
+    problem = A14
     problem_funcs = get_problem(problem)
     constraints, player = problem_funcs[3:]
     (player_vector_sizes,
@@ -64,6 +64,7 @@ if __name__ == '__main__':
     sol = solver1.solve_game(flatten_variables(primal, dual), bounds_training)
     print('\n\n')
     solver1.summary(problem.paper_solution()[0])
+    # solver1.summary()
     print('\n\n')
     solver1.nash_check()
 
