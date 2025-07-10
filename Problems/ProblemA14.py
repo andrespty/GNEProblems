@@ -51,21 +51,21 @@ class A14:
         B = 1
         if W <= 0:
             return 0.0
-            return float((x[0] / W) * (1 - W/B))
+        return float((x[0] / W) * (1 - W/B))
 
     @staticmethod
     def obj_func_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         W = sum(x)
         if W <= 0:
             return np.zeros_like(x)
-            w_i = x[0]
-            grad = (W - w_i) / W**2 - 1
-            return grad
+        w_i = x[0]
+        grad = (W - w_i) / W**2 - 1
+        return grad
 
     @staticmethod
     def g0(x):
         B = 1
-        return x.sum() - B
+        return sum(x) - B
 
     @staticmethod
     def g0_der(x):
