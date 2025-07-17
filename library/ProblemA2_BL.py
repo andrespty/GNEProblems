@@ -171,6 +171,7 @@ def A2_fb(vars):
     grad_obj2 = A2_BL.obj_func_der_2(players)                      # (10,1)
     grad_obj = np.copy(grad_obj1)
     grad_obj[1:5] = grad_obj2[1:5]
+    print(grad_obj)
     for idx, player_const in enumerate(player_constraints):
         for jdx in player_const:
             grad_obj[idx] += dual_constraints[jdx] * grad_constraints[jdx]
@@ -184,6 +185,38 @@ def A2_fb(vars):
     eng_fisher = fisher_res.T @ fisher_res
 
     return eng + eng_fisher
+
+def A2_eng(vars):
+    players = np.array(vars[:10]).reshape(-1,1)                 # (10,1)
+    dual_constraints = np.array(vars[10:]).reshape(-1,1)
+    player_constraints = [[1, 2], [0, 3], [0, 3], [0, 3], [0, 3, 4], [0, 3, 4], [0, 3], [0, 3], [0, 3, 5], [0, 3, 6]]
+    grad_constraints = np.array([1, -1, 1, -1, -1, 1, 1]).reshape(-1, 1)
+    constraints = [A2_BL.g0, A2_BL.g1, A2_BL.g2, A2_BL.g3, A2_BL.g4, A2_BL.g5, A2_BL.g6]
+
+    grad_obj1 = A2_BL.obj_func_der_1(players)  # (10,1)
+    grad_obj2 = A2_BL.obj_func_der_2(players)  # (10,1)
+    grad_obj = np.copy(grad_obj1)
+    grad_obj[1:5] = grad_obj2[1:5]
+    print(grad_obj)
+    for idx, player_const in enumerate(player_constraints):
+        for jdx in player_const:
+            grad_obj[idx] += dual_constraints[jdx] * grad_constraints[jdx]
+    eng = grad_obj.T @ grad_obj
+
+    grad_dual = []
+    for jdx, constraint in enumerate(constraints):
+        g = -constraint(players)
+        # g = np.where(
+        #     g <= 0,
+        #     g**2,
+        #     g**2 * np.tanh(dual_constraints[jdx])
+        # )
+        g = (dual_constraints[jdx] ** 2 / (1 + dual_constraints[jdx] ** 2)) * (g ** 2 / (1 + g ** 2)) + np.exp(-dual_constraints[jdx] ** 2) * (
+                    np.maximum(0, -g) ** 2 / (1 + np.maximum(0, -g) ** 2))
+        grad_dual.append(g.flatten())
+    g_dual = np.concatenate(grad_dual).reshape(-1, 1)
+
+    return eng + np.sum(g_dual)
 
 def obj(x):
     players = np.array(x).reshape(-1,1)
@@ -273,32 +306,16 @@ players_ip1 = [0, 0, 0, 0, 0, 0, 0]
 
 ip1 = ip1 + players_ip1
 print("Initial point: ",ip1)
-print('Energy: ',A2_fb(ip1))
+print('Energy: ',A2_eng(ip1))
 
-isTransform = True
 optimize = False
-# ip = [0.29962898846513, 0.00997828313762, 0.00997828313762,
-#                    0.00997828313762, 0.59745624992082, 0.02220301920403,
-#                    0.01013441012117, 0.01013441012117, 0.01013441012117,
-#                    0.01013441012117]
-# NE_check(ip)
-
-if isTransform and optimize:
+if optimize:
     minimizer_kwargs = dict(method="L-BFGS-B")
     start = timeit.default_timer()
     res1 = basinhopping(A2_fb, ip1, stepsize=0.0001, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1 ,
                         niter_success=100, disp=True)
     stop = timeit.default_timer()
 
-elif not isTransform and optimize:
-    bounds = Bounds([0.3,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0, 0], [0.5,1,1,1,1,1,1,1,0.06,0.05,100, 100])
-    minimizer_kwargs = dict(method="SLSQP", bounds=bounds)
-    ip1=[0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0, 0]
-    start = timeit.default_timer()
-    res1=basinhopping(A2_ex, ip1, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1, niter_success=100, disp = True)
-    stop = timeit.default_timer()
-
-if isTransform:
     print("Result: ", res1.x[:10])
     print("Time: ", stop - start)
     print("Constraints: ", res1.x[10:])
@@ -306,11 +323,3 @@ if isTransform:
     NE_check(res1.x[:10].tolist())
 
     print("Energy: ", A2_fb(res1.x))
-else:
-    print("Result: ", res1.x)
-    print("Time: ", stop - start)
-    NE_check(res1.x[:10].tolist())
-
-# print("Energy: ", A2_fb(res1.x) if isTransform else A2_ex(res1.x))
-# print("Gradients: ", get_grad(res1.x, translate=isTransform))
-

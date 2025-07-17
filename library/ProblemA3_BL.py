@@ -167,24 +167,34 @@ class A3_BL:
         return (x3[1] - x1[0] - x1[2] + x2[0] - 4)
 
     @staticmethod
+    def g4(x):
+        x1, x2, x3 = x
+        return -10 - np.vstack((x1.reshape(-1,1), x2.reshape(-1,1), x3.reshape(-1,1)))
+
+    @staticmethod
+    def g5(x):
+        x1, x2, x3 = x
+        return np.vstack((x1.reshape(-1,1), x2.reshape(-1,1), x3.reshape(-1,1))) - 10
+
+    @staticmethod
     # partial g0 / partial x1
     def g0_der(x1):
-        return np.array([[1, 1, 1, 1, 1, 1, 1]]).reshape(-1, 1)
+        return np.array([[1, 1, 1]]).reshape(-1, 1)
 
     @staticmethod
     # partial g1 / partial x1
     def g1_der(x1):
-        return np.array([[1, 1, -1, -1, 0, 0, 1]]).reshape(-1, 1)
+        return np.array([[1, 1, -1]]).reshape(-1, 1)
 
     @staticmethod
     # partial g2 / partial x2
     def g2_der(x1):
-        return np.array([[0, -1, -1, 1, 1, 1, 0]]).reshape(-1, 1)
+        return np.array([1, 1]).reshape(-1, 1)
 
     @staticmethod
     # partial g3 / partial x3
     def g3_der(x1):
-        return np.array([[-1, 0, 1, 1, 0, 0, 1]]).reshape(-1, 1)
+        return np.array([[ 0, 1]]).reshape(-1, 1)
 
 def get_engval(myvar, gradval, mylb, myub):
     if gradval<=0:
@@ -226,38 +236,41 @@ def A3_ex(vars):
     return sum(eng)[0] + sum(eng_cons)[0]
 
 def A3_sig(vars):
-    raw_players = np.array(vars[:7]).reshape(-1,1)
+    # players = np.array(vars[:7]).reshape(-1,1)
+    players = construct_vectors(np.array(vars[:7]).reshape(-1, 1), [3, 2, 2])
     dual = np.array(vars[7:]).reshape(-1,1)
-    lb = np.array([-10,-10,-10, -10,-10,-10, -10]).reshape(-1,1)
-    ub = np.array([10,10,10, 10,10,10, 10]).reshape(-1,1)
-
-    # Transformed actions
-    x = np.clip(raw_players, -500, 500)
-    xd = np.clip(dual, -500, 500)
-    players = construct_vectors((ub - lb) * (1/(1+np.exp(-x))) + lb, [3,2,2])    # (10,1)
-    dual = 100/(1+np.exp(-xd))
-
+    constraints = [A3_BL.g0, A3_BL.g1, A3_BL.g2, A3_BL.g3, A3_BL.g4, A3_BL.g5]
     # print(players)
-    grad_obj_1 = A3_BL.obj_func_der_1(players) # (3,1)
-    grad_obj_2 = A3_BL.obj_func_der_2(players) # (2,1)
-    grad_obj_3 = A3_BL.obj_func_der_3(players) # (2,1)
+    grad_obj_1 = A3_BL.obj_func_der_1(players).reshape(-1,1) # (3,1)
+    grad_obj_2 = A3_BL.obj_func_der_2(players).reshape(-1,1) # (2,1)
+    grad_obj_3 = A3_BL.obj_func_der_3(players).reshape(-1,1) # (2,1)
     grad_obj = np.vstack((grad_obj_1, grad_obj_2, grad_obj_3))
-    # print(grad_obj)
 
-    grad_cons_1 = dual[0] * A3_BL.g0_der(players) + dual[1] * A3_BL.g1_der(players) # (3,1)
-    grad_cons_2 = dual[2] * A3_BL.g2_der(players)   # (2,1)
-    grad_cons_3 = dual[3] * A3_BL.g3_der(players)   # (2,1)
+    grad_cons_1 = dual[0] * A3_BL.g0_der(players) + dual[1] * A3_BL.g1_der(players) - dual[4] + dual[5]# (3,1)
+    grad_cons_2 = dual[2] * A3_BL.g2_der(players) - dual[4] + dual[5]  # (2,1)
+    grad_cons_3 = dual[3] * A3_BL.g3_der(players) - dual[4] + dual[5]  # (2,1)
     grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3))
+    # print(grad_cons_1.shape)
     grad = grad_obj + grad_cons
-    eng = np.abs(grad)**2
+    eng = grad.T @ grad
 
-    grad_cons_1 = -A3_BL.g0(players)
-    grad_cons_2 = -A3_BL.g1(players)
-    grad_cons_3 = -A3_BL.g2(players)
-    grad_cons_4 = -A3_BL.g3(players)
-    grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3, grad_cons_4))
-    eng_cons = np.abs(grad_cons)**2
-    return sum(eng) + sum(eng_cons)
+    grad_dual = []
+    for jdx, constraint in enumerate(constraints):
+        g = -constraint(players)
+        # g = np.where(
+
+        #     g <= 0,
+        #     g**2,
+        #     g**2 * np.tanh(dual[jdx])
+        # )
+        g = (dual[jdx] ** 2 / (1 + dual[jdx] ** 2)) * (g ** 2 / (1 + g ** 2)) + np.exp(-dual[jdx] ** 2) * (
+                    np.maximum(0, -g) ** 2 / (1 + np.maximum(0, -g) ** 2))
+        grad_dual.append(g.flatten())
+    g_dual = np.concatenate(grad_dual).reshape(-1, 1)
+
+    # grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3, grad_cons_4))
+    # eng_cons = np.abs(grad_cons)**2
+    return eng + np.sum(g_dual)
 
 def fisher_func(a,b, epsilon=1e-3):
     return a+b - np.sqrt(a**2 + b**2 + 2*epsilon**2)
@@ -294,43 +307,26 @@ def A3_fb(vars):
     eng_dual = (grad_dual - dual_lb_dp + dual_ub_dp) ** 2 + fisher_func(dual_lb_dp, dual_player) ** 2 + fisher_func(dual_ub_dp, 100 - dual_player) ** 2
     return sum(eng) + sum(eng_dual)
 
-# x1 = np.array([[0], [0], [0]])
-# x2 = np.array([[0], [0]])
-# x3 = np.array([[0], [0]])
-# x = np.array([x1, x2, x3], dtype=object)
-# d = np.array([0,0,0,0])
-# ip = flatten_variables(x, d).tolist()
-# ip1 = ip + [1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,2,2,2,2]
-# # print("Energy: ",A3_sig(ip))
-#
-# isTransform = True
-#
-# if isTransform:
-#     minimizer_kwargs = dict(method="L-BFGS-B")
-#     start = timeit.default_timer()
-#     res1 = basinhopping(A3_fb, ip1, stepsize=0.0001, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1 ,
-#                         niter_success=100, disp=True)
-#     stop = timeit.default_timer()
-#
-# else:
-#     bounds = Bounds([-10,-10,-10, -10,-10,-10, -10, 0,0,0,0], [10,10,10, 10,10,10, 10,100,100,100,100])
-#     minimizer_kwargs = dict(method="SLSQP", bounds=bounds)
-#     start = timeit.default_timer()
-#     res1=basinhopping(A3_ex, ip, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1, niter_success=100, disp = True)
-#     stop = timeit.default_timer()
-#
-# if isTransform:
-#     print("Result: ", res1.x[:7])
-#     print("Time: ", stop - start)
-#     print("Constraints: ", res1.x[7:11])
-#     print("Lower Bounds: ", res1.x[11:18])
-#     print("Upper Bounds: ", res1.x[18:25])
-#     print("Constraints Lower Bounds: ", res1.x[25:29])
-#     print("Constraints Upper Bounds: ", res1.x[29:33])
-#
-#     print("Energy: ", A3_fb(res1.x))
-#     print("OG Energy: ", A3_ex(res1.x[:11]))
-# else:
-#     print("Result: ", res1.x)
-#     print("Energy: ", A3_ex(res1.x) if isTransform else A3_ex(res1.x))
-# # print("Gradients: ", get_grad(res1.x, translate=isTransform))
+x1 = np.array([[0], [0], [0]])
+x2 = np.array([[0], [0]])
+x3 = np.array([[0], [0]])
+x = np.array([x1, x2, x3], dtype=object)
+d = np.array([1,1,1,1,1,1])
+ip = flatten_variables(x, d).tolist()
+# ip1 = ip + [1,1,1,1,1,1]
+# print("Energy: ",A3_sig(ip))
+
+optimize = True
+if optimize:
+    minimizer_kwargs = dict(method="L-BFGS-B")
+    start = timeit.default_timer()
+    res1=basinhopping(A3_sig, ip, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1, niter_success=100, disp = True)
+    stop = timeit.default_timer()
+
+    print("Result: ", res1.x[:7])
+    print("Time: ", stop - start)
+    print("Constraints: ", res1.x[7:])
+
+    print("Energy: ", A3_sig(res1.x))
+    print("OG Energy: ", A3_ex(res1.x[:11]))
+

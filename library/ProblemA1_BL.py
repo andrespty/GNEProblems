@@ -66,7 +66,9 @@ class A1_BL:
         # x: numpy array (N,1)
         # B: constant
         B=1
+        print(x)
         S = sum(x)
+        print("S: ", S)
         obj = ((x - S) / (S ** 2)) + (1 / B)
         return obj
 
@@ -116,96 +118,68 @@ def A1_ex(vars):
 
 def A1_eng(vars):
     players = np.array(vars[:10]).reshape(-1,1)
-    dual = vars[10:]
-    lb = np.array([0.3,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01]).reshape(-1,1)
-    ub = np.array([0.5,1,1,1,1,1,1,1,1,1]).reshape(-1,1)            # scalar
-
+    dual = np.array(vars[10:]).reshape(-1,1)
     # Gradients
-    grad_obj = A1_BL.obj_func_der(players)                      # (10,1)
-    grad_cons = np.hstack(([0], np.ones(9, int))).reshape(-1,1) * dual
-    grad = grad_obj + grad_cons
+    grad, grad_dual = get_grad(vars) # grad = (10,1), grad_dual = (4,1)
+    print(grad)
     eng = grad**2
+    # eng_dual = np.where(
+    #     grad_dual <= 0,
+    #     grad_dual**2,
+    #     grad_dual**2 * np.tanh(dual)**2
+    # )
+    # eng_dual = (dual**2/(1+dual**2)) * (grad_dual**2/(1+grad_dual**2)) + np.exp(-dual**2) * (np.maximum(0,-grad_dual)**2/(1+np.maximum(0,-grad_dual)**2))
+    # eng_dual = dual**2 * grad_dual**2 + np.maximum(0,-grad_dual)**2
 
-    grad_dual = -A1_BL.g0(players) #* (dual_actions * (1-dual_actions)) * 100
-    eng_dual = grad_dual * dual**2 if grad_dual > 0 else dual**2 * grad_dual +100* grad_dual**2
-    return np.sum(eng) + eng_dual
+    return np.sum(eng) + np.sum(grad_dual)
 
-def fisher_func(a,b, epsilon=1e-9):
-    return a+b - np.sqrt(a**2 + b**2)
 
-def A1_fb(vars):
-    players = np.array(vars[:10]).reshape(-1, 1)            # (10,1)
-    dual_constraints = np.array(vars[10:]).reshape(-1, 1)   # (4,1)
-    player_constraints = [[1,2], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3]]
-    grad_constraints = np.array([1,-1, 1, -1]).reshape(-1, 1)
-    constraints = [A1_BL.g0, A1_BL.g1, A1_BL.g2, A1_BL.g3]
-    grad_obj = A1_BL.obj_func_der(players)                  # (10,1)
-    for idx, player_const in enumerate(player_constraints):
-        for jdx in player_const:
-            grad_obj[idx] += dual_constraints[jdx] * grad_constraints[jdx]
-    eng = grad_obj.T @ grad_obj
-
-    fisher_res = []
-    for jdx, constraint in enumerate(constraints):
-        fisher = fisher_func(-constraint(players), dual_constraints[jdx])
-        fisher_res.append(fisher.flatten())
-    fisher_res = np.concatenate(fisher_res).reshape(-1,1)
-    eng_fisher = fisher_res.T @ fisher_res
-    return eng + eng_fisher
-
-def get_grad(vars, translate=False):
+def get_grad(vars):
     players = np.array(vars[:10]).reshape(-1, 1)
-    dual = vars[10:][0]
-    lb = np.array([0.3, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]).reshape(-1, 1)
-    ub = np.array([0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1]).reshape(-1, 1)
-    if translate:
-        x = np.clip(players, -500, 500)
-        players = (ub - lb) * (1 / (1 + np.exp(-x))) + lb  # (10,1)
-        dual = 100 / (1 + np.exp(-dual))
-    grad_obj = A1_BL.obj_func_der(players)  # (10,1)
-    grad_cons = np.hstack(([0], np.ones(9, int))).reshape(-1, 1) * dual
-    grad = (grad_obj + grad_cons)
+    dual = np.array(vars[10:]).reshape(-1, 1)  # (12,1)
 
-    grad_dual = -A1_BL.g0(players)
-    return grad, grad_dual
+    print(players, dual)
+    grad_obj = A1_BL.obj_func_der(players)  # (10,1)
+    print(grad_obj)
+    grad_cons_0 = np.hstack(([0], np.ones(9, int))).reshape(-1, 1) * dual[0]
+    grad_cons_1 = np.hstack(([-1], np.zeros(9, int))).reshape(-1, 1) * dual[1]
+    grad_cons_2 = np.hstack(([1], np.zeros(9, int))).reshape(-1, 1) * dual[2]
+    grad_cons_3 = np.vstack((np.zeros((1,9), dtype=int), -np.identity(9, dtype=int))) * dual[3]
+    grad = (grad_obj + grad_cons_0 + grad_cons_1 + grad_cons_2 + np.sum(grad_cons_3, axis=1).reshape(-1,1))
+
+    grad_dual = []
+    constraints = [A1_BL.g0, A1_BL.g1, A1_BL.g2, A1_BL.g3]
+    for jdx, constraint in enumerate(constraints):
+        g = -constraint(players)
+        g = (dual[jdx]**2/(1+dual[jdx]**2)) * (g**2/(1+g**2)) + np.exp(-dual[jdx]**2) * (np.maximum(0,-g)**2/(1+np.maximum(0,-g)**2))
+        grad_dual.append(g.flatten())
+    g_dual = np.concatenate(grad_dual).reshape(-1, 1)
+    return grad, g_dual
 
 
 player_vars = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
-constraint_vars = [0, 0, 0,0]
+constraint_vars = [0, 0, 0, 0]
+# constraint_vars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 
 ip1 = player_vars + constraint_vars
-print(A1_fb(ip1))
-print(A1_BL.g3(np.array(player_vars)))
-
+print(A1_eng(ip1))
 minimizer_kwargs = dict(method="L-BFGS-B")
-# res1 = basinhopping(A1_fb, ip1, stepsize=0.0001, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1 ,niter_success=100, disp=True)
-isTransform = False
-optimize = True
 
-if isTransform and optimize:
+optimize = False
+
+if optimize:
     minimizer_kwargs = dict(method="L-BFGS-B")
-    ip1 = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0, 0, 0, 0]
-    start = timeit.default_timer()
-    res1 = basinhopping(A1_fb, ip1, stepsize=0.0001, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1 ,
-                        niter_success=100, disp=True)
-    stop = timeit.default_timer()
-elif not isTransform and optimize:
-    bounds = Bounds([0.3,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0], [0.5,1,1,1,1,1,1,1,1,1,10])
-    minimizer_kwargs = dict(method="SLSQP", bounds=bounds)
-    ip1=[0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0]
+    player_vars = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
+    constraint_vars = [0, 0, 0, 0]#, 0, 0, 0, 0, 0, 0, 0, 0]
+    ip1=player_vars + constraint_vars
     start = timeit.default_timer()
     res1=basinhopping(A1_eng, ip1, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1, niter_success=100, disp = True)
     stop = timeit.default_timer()
 
-if isTransform:
-    print("Result: ", res1.x[:10])
-    print("Time: ", stop - start)
-    print("Constraints: ", res1.x[10:])
+print("Result: ", res1.x[:10])
+print("Time: ", stop - start)
+print("Constraints: ", res1.x[10:])
 
-    print("Energy: ", A1_fb(res1.x))
-    print("OG Energy: ", A1_ex(res1.x[:12]))
-else:
-    print("Result: ", res1.x)
-    print("Energy: ", A1_fb(res1.x) if isTransform else A1_ex(res1.x))
-# print("Gradients: ", get_grad(res1.x, translate=isTransform))
+print("Energy: ", A1_eng(res1.x))
+print("OG Energy: ", A1_ex(res1.x[:12]))

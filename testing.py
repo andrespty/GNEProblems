@@ -1,32 +1,54 @@
 from GNESolver5 import *
-from Problems.ProblemA1 import A1
-from Problems.ProblemA8 import A8
-from Problems.ProblemA7 import A7
-from Problems.ProblemA5 import A5
-from Problems.ProblemA11 import A11
+from Problems_Bounded.ProblemA1 import A1
+from Problems_Bounded.ProblemA2 import A2
+from Problems_Bounded.ProblemA3 import A3
+from Problems_Bounded.ProblemA8 import A8
+from Problems_Bounded.ProblemA7 import A7
+from Problems_Bounded.ProblemA5 import A5
+from Problems_Bounded.ProblemA11 import A11
+from library.misc import *
+from library.GNESolver6 import *
+
+from Problems_Unbounded.ProblemA1U import A1U
+from Problems_Unbounded.ProblemA2U import A2U
+
+def get_problem(problem_n):
+    # Define the problem
+    obj = problem_n.objective_functions()
+    obj_der = problem_n.objective_function_derivatives()
+    c = problem_n.constraints()
+    c_der = problem_n.constraint_derivatives()
+
+    # Describe Players responsibilities
+    p = problem_n.define_players()
+    return [obj,obj_der,c,c_der,p]
+
+def get_initial_point(action_sizes, player_constraints, primal_ip=0.01, dual_initial_point=10):
+    length = len(player_constraints)
+    primal = [np.reshape(np.ones(size, dtype=np.float64) * primal_ip , [-1,1]) for size in action_sizes]
+    dual = [dual_initial_point for _ in range(length)]
+    return primal, dual
 
 
 if __name__ == '__main__':
-    problem = A5
+    problem = A2U
+    problem_funcs = get_problem(problem)
+    constraints, player = problem_funcs[3:]
+    (player_vector_sizes,
+     player_objective_functions,
+     player_constraints) = player
+    # Define the problem solver
 
-    x1 = np.array([[10,10,10]], dtype=np.float64).reshape(-1,1)
-    x2 = np.array([[10,10]], dtype=np.float64).reshape(-1,1)
-    x3 = np.array([[10,10]], dtype=np.float64).reshape(-1,1)
+    solver1 = GNEP_Solver(
+        *get_problem(problem)[:4],
+        player_objective_functions,
+        player_constraints,
+        player_vector_sizes,
+    )
+    primal, dual = get_initial_point(player_vector_sizes, constraints, dual_initial_point=0)
 
-    print(problem.obj_func_1([x1,x2,x3]))
-    # print(problem.obj_func_2([x1,x2]))
-    # print(problem.obj_func_der_1([x1,x2]))
-    # print(problem.obj_func_der_2([x1,x2]))
-
-    x1 = np.array([[10]], dtype=np.float64).reshape(-1, 1)
-    x2 = np.array([[10]], dtype=np.float64).reshape(-1, 1)
-    x3 = np.array([[10]], dtype=np.float64).reshape(-1, 1)
-    x4 = np.array([[10]], dtype=np.float64).reshape(-1, 1)
-    x5 = np.array([[10]], dtype=np.float64).reshape(-1, 1)
-    x6 = np.array([[10]], dtype=np.float64).reshape(-1, 1)
-    x7 = np.array([[10]], dtype=np.float64).reshape(-1, 1)
-    x8 = np.array([[10]], dtype=np.float64).reshape(-1, 1)
-    x9 = np.array([[10]], dtype=np.float64).reshape(-1, 1)
-    x10 = np.array([[10]], dtype=np.float64).reshape(-1, 1)
-    problem = A1
-    print('Problem',problem.obj_func_der([x1, x2, x3, x4, x5, x6, x7, x8, x9, x10]))
+    print(primal, dual)
+    player_vars = [0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
+    constraint_vars = [0, 0, 0, 0, 0, 0, 0]
+    ip = player_vars + constraint_vars
+    print(solver1.wrapper(ip))

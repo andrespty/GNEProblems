@@ -72,6 +72,7 @@ class A2:
     def obj_func_der_1(x):
         # x: numpy array (N,1)
         B = 1
+        x = np.concatenate(x).reshape(-1, 1)
         S = sum(x)
         obj = (x - S) / S ** 2 + 1 / B
         return obj
@@ -80,7 +81,8 @@ class A2:
     def obj_func_der_2(x):
         # x: numpy array (N,1)
         B = 1
-        S = sum(x)
+        x = np.concatenate(x).reshape(-1, 1)
+        S = sum(x) + 1e-3
         obj = (2 * B * (S ** 2) - (B ** 2) * S - S ** 3 - x * (S ** 2) + x * (B ** 2)) / (S ** 2)
         return obj
 
@@ -88,13 +90,13 @@ class A2:
     def g0(x):
         # x: numpy array (N,1)
         B = 1
-        return x.sum() - B
+        return sum(x) - B
 
     @staticmethod
     def g1(x):
         # x: numpy array (N,1)
         B = 1
-        return 0.99 - x.sum()
+        return 0.99 - sum(x)
 
     @staticmethod
     def g0_der(x):

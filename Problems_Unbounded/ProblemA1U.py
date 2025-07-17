@@ -7,7 +7,7 @@ import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
 
-class A1:
+class A1U:
     @staticmethod
     def paper_solution():
         value_1 = [0.29923815223336,
@@ -27,28 +27,24 @@ class A1:
         B = 1
         player_vector_sizes = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         player_objective_functions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # change to all 0s
-        player_constraints = [[None], [0], [0], [0], [0], [0], [0], [0], [0], [0]]
-        bounds = [(0.3, 0.5), (0.01, B), (0.01, B), (0.01, B), (0.01, B), (0.01, B), (0.01, B), (0.01, B), (0.01, B),
-                  (0.01, B), (0, 10)]
-        bounds_training = [(0.3, 0.5), (0.01, B), (0.01, B), (0.01, B), (0.01, B), (0.01, B), (0.01, B), (0.01, B),
-                           (0.01, B), (0.01, B), (0, 10)]
-        return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
+        player_constraints = [[1,2], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3]]
+        return [player_vector_sizes, player_objective_functions, player_constraints]
 
     @staticmethod
     def objective_functions():
-        return [A1.obj_func]
+        return [A1U.obj_func]
 
     @staticmethod
     def objective_function_derivatives():
-        return [A1.obj_func_der]
+        return [A1U.obj_func_der]
 
     @staticmethod
     def constraints():
-        return [A1.g0]
+        return [A1U.g0, A1U.g1, A1U.g2, A1U.g3]
 
     @staticmethod
     def constraint_derivatives():
-        return [A1.g0_der]
+        return [A1U.g0_der, A1U.g1_der, A1U.g2_der, A1U.g3_der]
 
     @staticmethod
     def obj_func(x):
@@ -63,9 +59,11 @@ class A1:
     def obj_func_der(x):
         # x: numpy array (N,1)
         # B: constant
+        x = np.concatenate(x).reshape(-1, 1)
         B=1
-        S = sum(a.item() for a in x)
-        obj = (x - S) / S ** 2 + 1 / B
+        S = sum(x)
+        # print(S)
+        obj = ((x - S) / S ** 2) + (1 / B)
         return obj
 
     # === Constraint Functions ===
@@ -74,8 +72,33 @@ class A1:
         # x: numpy array (N,1)
         # B: constant
         B=1
-        return x.sum() - B
+        return sum(x) - B
+
+    @staticmethod
+    def g1(x):
+        return 0.3 - x[0]
+
+    @staticmethod
+    def g2(x):
+        return x[0] - 0.5
+
+    @staticmethod
+    def g3(x):
+        t = np.vstack([s.reshape(-1,1) for s in x[1:]])
+        return 0.01 - t
 
     @staticmethod
     def g0_der(x):
         return 1
+
+    @staticmethod
+    def g1_der(x):
+        return -1
+
+    @staticmethod
+    def g2_der(x):
+        return 1
+
+    @staticmethod
+    def g3_der(x):
+        return -1
