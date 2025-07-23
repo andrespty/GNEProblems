@@ -227,6 +227,17 @@ class A7_BL:
         return (4 * x4[0] - 2 * x4[1] - 3 * x4[2] - 6 * x4[3] + 5 * x4[4] - 3 + x1[0] + x1[1] - x2[0] - x2[1])[0]
 
     @staticmethod
+    def g4(x):
+        x1, x2, x3, x4 = x
+        return 1 - np.vstack((x1.reshape(-1, 1), x2.reshape(-1, 1), x3.reshape(-1, 1), x4.reshape(-1, 1)))
+
+    @staticmethod
+    def g5(x):
+        x1, x2, x3, x4 = x
+        return np.vstack((x1.reshape(-1, 1), x2.reshape(-1, 1), x3.reshape(-1, 1), x4.reshape(-1, 1))) - 5
+
+
+    @staticmethod
     # partial g0 / partial x1
     def g0_der(x1):
         return np.array([[1, 2, -1, 3, -4]]).reshape(-1, 1)
@@ -245,6 +256,14 @@ class A7_BL:
     # partial g3 / partial x3
     def g3_der(x1):
         return np.array([[4, -2, -3, -6, 5]]).reshape(-1, 1)
+
+    @staticmethod
+    def g4_der(x1):
+        return np.array([[-1, -1, -1, -1, -1, -1, -1]]).reshape(-1, 1)
+
+    @staticmethod
+    def g5_der(x1):
+        return np.array([[1, 1, 1, 1, 1, 1, 1]]).reshape(-1, 1)
 
 # def get_engval(myvar, gradval, mylb, myub):
 #   if gradval<=0:
@@ -300,49 +319,46 @@ def A7_ex(vars):
     return p1_eng + p2_eng + p3_eng + p4_eng + d1_eng + d2_eng + d3_eng + d4_eng
 
 def A7_sig(vars):
-    primal_vars = 20
-    action_sizes = [5,5,5,5]
-    players_vars = [vec.reshape(-1,1)  for vec in construct_vectors(vars[:primal_vars], action_sizes)]
-    dual_vars = vars[primal_vars:]
-    bounds_primal = [vec.reshape(-1,2) for vec in construct_vectors(repeat_items([(1,5)],[primal_vars]), action_sizes)]
-    players = [vectorized_sigmoid(vec, bounds_primal[i])  for i, vec in enumerate(players_vars)]
-    dual = [vectorized_sigmoid(vec, np.array([0,100]).reshape(-1,2))  for i, vec in enumerate(dual_vars)]
-    #
-    # print(players)
-    # print(dual)
+    players = construct_vectors(np.array(vars[:20]).reshape(-1,1), [5,5,5,5])
+    dual = np.array(vars[20:]).reshape(-1, 1)
+    constraints = [A7_BL.g0, A7_BL.g1, A7_BL.g2, A7_BL.g3, A7_BL.g4, A7_BL.g5]
     # Players
-    cost_p1 = (A7_BL.obj_func_der_1(players) + dual[0] * A7_BL.g0_der(dual)) * (players[0] * (1-players[0]))
-    cost_p2 = A7_BL.obj_func_der_2(players) + dual[1] * A7_BL.g1_der(dual) * (players[1] * (1-players[1]))
-    cost_p3 = A7_BL.obj_func_der_3(players) + dual[2] * A7_BL.g2_der(dual) * (players[2] * (1-players[2]))
-    cost_p4 = A7_BL.obj_func_der_4(players) + dual[3] * A7_BL.g3_der(dual) * (players[3] * (1-players[3]))
-    p1_eng = np.linalg.norm(cost_p1) ** 2
-    p2_eng = np.linalg.norm(cost_p2) ** 2
-    p3_eng = np.linalg.norm(cost_p3) ** 2
-    p4_eng = np.linalg.norm(cost_p4) ** 2
+    cost_p1 = A7_BL.obj_func_der_1(players) + dual[0] * A7_BL.g0_der(dual) - dual[4] + dual[5]
+    cost_p2 = A7_BL.obj_func_der_2(players) + dual[1] * A7_BL.g1_der(dual) - dual[4] + dual[5]
+    cost_p3 = A7_BL.obj_func_der_3(players) + dual[2] * A7_BL.g2_der(dual) - dual[4] + dual[5]
+    cost_p4 = A7_BL.obj_func_der_4(players) + dual[3] * A7_BL.g3_der(dual) - dual[4] + dual[5]
+    grad_obj = np.vstack((cost_p1, cost_p2, cost_p3, cost_p4))
+    eng = grad_obj.T @ grad_obj
 
     # Dual
-    cost_d1 = -A7_BL.g0(players) * (dual[0] * (1-dual[0]))
-    cost_d2 = -A7_BL.g1(players) * (dual[1] * (1-dual[1]))
-    cost_d3 = -A7_BL.g2(players) * (dual[2] * (1-dual[2]))
-    cost_d4 = -A7_BL.g3(players) * (dual[3] * (1-dual[3]))
-    d1_eng = np.linalg.norm(cost_d1) ** 2
-    d2_eng = np.linalg.norm(cost_d2) ** 2
-    d3_eng = np.linalg.norm(cost_d3) ** 2
-    d4_eng = np.linalg.norm(cost_d4) ** 2
+    grad_dual = []
+    for jdx, constraint in enumerate(constraints):
+        g = -constraint(players)
+        # g = np.where(
 
-    return p1_eng + p2_eng + p3_eng + p4_eng + d1_eng + d2_eng + d3_eng + d4_eng
+        #     g <= 0,
+        #     g**2,
+        #     g**2 * np.tanh(dual[jdx])
+        # )
+        g = (dual[jdx] ** 2 / (1 + dual[jdx] ** 2)) * (g ** 2 / (1 + g ** 2)) + np.exp(-dual[jdx] ** 2) * (
+                np.maximum(0, -g) ** 2 / (1 + np.maximum(0, -g) ** 2))
+        grad_dual.append(g.flatten())
+    g_dual = np.concatenate(grad_dual).reshape(-1, 1)
+    return eng + np.sum(g_dual)
+primal=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+dual_ip = [10,10,10,10,10,10]
+print(A7_sig(primal+dual_ip))
 
+optimize = True
 #
-# bounds = Bounds([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0], [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,100,100,100,100])
-# minimizer_kwargs = dict(method="SLSQP")
-# ip1=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,10,10,10]
-# start = timeit.default_timer()
-# res1=basinhopping(A7_sig, ip1, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, niter_success=100, interval=1, disp = True)
-# stop = timeit.default_timer()
-#
-# print('Time: ', stop - start)
-# print(res1.x)
-# res_bounds = repeat_items([(1,5), (0,100)], [20,4])
-# scaled_res = vectorized_sigmoid(np.array(res1.x).reshape(-1,1), np.array(res_bounds).reshape(-1, 2))
-# print(scaled_res)
-# print(A7_sig(scaled_res.tolist()))
+if optimize:
+    minimizer_kwargs = dict(method="L-BFGS-B")
+    primal = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    dual_ip = [1, 1, 1, 1, 1, 1]
+    ip1 = primal + dual_ip
+    start = timeit.default_timer()
+    res1=basinhopping(A7_sig, ip1, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, niter_success=100, interval=1, disp = True)
+    stop = timeit.default_timer()
+
+    print('Time: ', stop - start)
+    print(res1.x)

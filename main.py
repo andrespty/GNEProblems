@@ -10,6 +10,8 @@ from Problems_Bounded.ProblemA5 import A5
 from Problems_Bounded.ProblemA6 import A6
 from Problems_Bounded.ProblemA7 import A7
 from Problems_Bounded.ProblemA8 import A8
+# from Problems_Bounded.ProblemA9 import A9
+from Problems_Bounded.ProblemA10a import A10a
 from Problems_Bounded.ProblemA11 import A11
 from Problems_Bounded.ProblemA12 import A12
 from Problems_Bounded.ProblemA13 import A13
@@ -22,6 +24,7 @@ from Problems_Bounded.ProblemA18 import A18
 from Problems_Unbounded.ProblemA1U import A1U # Works
 from Problems_Unbounded.ProblemA2U import A2U
 from Problems_Unbounded.ProblemA3U import A3U
+from Problems_Unbounded.ProblemA7U import A7U
 
 def get_problem(problem_n):
     # Define the problem
@@ -42,7 +45,7 @@ def get_initial_point(action_sizes, player_constraints, primal_initial_point=0, 
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A3U
+    problem = A10a
     problem_funcs = get_problem(problem)
     constraints, player = problem_funcs[3:]
     (player_vector_sizes,
