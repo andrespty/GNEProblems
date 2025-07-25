@@ -46,8 +46,8 @@ def get_initial_point(action_sizes, player_constraints, primal_initial_point=0.0
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A10a
-    bounded = True
+    problem = A5
+    bounded = False
 
     if bounded:
         problem_funcs = get_problem(problem)

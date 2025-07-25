@@ -76,10 +76,12 @@ class A1U:
 
     @staticmethod
     def g1(x):
+        # lower bound
         return 0.3 - x[0]
 
     @staticmethod
     def g2(x):
+        #  upper bound
         return x[0] - 0.5
 
     @staticmethod
