@@ -1,7 +1,7 @@
 # from GNESolver5 import *
-from GNESolver5 import *
+# from GNESolver5copy import *
 from library.GNESolver6 import *
-# from library.GNESolver6 import *
+from library.GNESolverBounded import *
 from Problems_Bounded.ProblemA1 import A1
 from Problems_Bounded.ProblemA2 import A2
 from Problems_Bounded.ProblemA3 import A3
@@ -10,7 +10,8 @@ from Problems_Bounded.ProblemA5 import A5
 from Problems_Bounded.ProblemA6 import A6
 from Problems_Bounded.ProblemA7 import A7
 from Problems_Bounded.ProblemA8 import A8
-# from Problems_Bounded.ProblemA9 import A9
+from Problems_Bounded.ProblemA9a import A9a
+# from Problems_Bounded.ProblemA9b import A9b
 from Problems_Bounded.ProblemA10a import A10a
 from Problems_Bounded.ProblemA11 import A11
 from Problems_Bounded.ProblemA12 import A12
@@ -37,7 +38,7 @@ def get_problem(problem_n):
     p = problem_n.define_players()
     return [obj,obj_der,c,c_der,p]
 
-def get_initial_point(action_sizes, player_constraints, primal_initial_point=0, dual_initial_point=10):
+def get_initial_point(action_sizes, player_constraints, primal_initial_point=0.01, dual_initial_point=10):
     length = len(player_constraints)
     primal = [np.reshape(np.ones(size, dtype=np.float64), [-1,1])*primal_initial_point for size in action_sizes]
     dual = [dual_initial_point for _ in range(length)]
@@ -46,30 +47,65 @@ def get_initial_point(action_sizes, player_constraints, primal_initial_point=0, 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
     problem = A10a
-    problem_funcs = get_problem(problem)
-    constraints, player = problem_funcs[3:]
-    (player_vector_sizes,
-     player_objective_functions,
-     player_constraints) = player
+    bounded = True
 
-    # Define the problem solver
-    solver1 = GNEP_Solver(
-        *get_problem(problem)[:4],
-        player_objective_functions,
-        player_constraints,
-        player_vector_sizes,
-    )
+    if bounded:
+        problem_funcs = get_problem(problem)
+        constraints, player = problem_funcs[3:]
+        (player_vector_sizes,
+         player_objective_functions,
+         player_constraints, bounds, bounds_training) = player
+        print('Here')
+        solver1 = GNEP_Solver_Bounded(
+            *get_problem(problem)[:4],
+            player_objective_functions,
+            player_constraints,
+            bounds_training,
+            player_vector_sizes,
+        )
 
-    # Set Initial Point
-    primal, dual = get_initial_point(player_vector_sizes, constraints, primal_initial_point=0.01, dual_initial_point=1)
-    print(flatten_variables(primal, dual))
-    # # Solve Problem
-    sol = solver1.solve_game(flatten_variables(primal, dual))
-    print('\n\n')
-    solver1.summary(problem.paper_solution()[0])
-    # solver1.summary()
-    print('\n\n')
-    solver1.nash_check()
+        # Set Initial Point
+        primal, dual = get_initial_point(
+            player_vector_sizes,
+            constraints,
+            primal_initial_point=0.01,
+            dual_initial_point=1
+        )
+        print(flatten_variables(primal, dual))
+        # # Solve Problem
+        sol = solver1.solve_game(flatten_variables(primal, dual),bounds=bounds_training )
+        print('\n\n')
+        # solver1.summary(problem.paper_solution()[0])
+        # solver1.summary()
+        print(sol)
+        print('\n\n')
+
+        # solver1.nash_check()
+
+
+    else:
+        problem_funcs = get_problem(problem)
+        constraints, player = problem_funcs[3:]
+        (player_vector_sizes,
+         player_objective_functions,
+         player_constraints) = player
+
+        solver1 = GNEP_Solver(
+            *get_problem(problem)[:4],
+            player_objective_functions,
+            player_constraints,
+            player_vector_sizes,
+        )
+        # Set Initial Point
+        primal, dual = get_initial_point(player_vector_sizes, constraints, primal_initial_point=0.01, dual_initial_point=1)
+        print(flatten_variables(primal, dual))
+        # # Solve Problem
+        sol = solver1.solve_game(flatten_variables(primal, dual))
+        print('\n\n')
+        solver1.summary(problem.paper_solution()[0])
+        # solver1.summary()
+        print('\n\n')
+        solver1.nash_check()
 
 
 

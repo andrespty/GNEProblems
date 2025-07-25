@@ -18,7 +18,9 @@ class A10a:
         player_vector_sizes = [A10a.P for _ in range(A10a.N)]
         player_objective_functions = [0,0,1,2,3,4,5,6]  # change to all 0s
         player_constraints = [[0], [0], [1],[1],[1],[1],[1], [2,3]]
-        return [player_vector_sizes, player_objective_functions, player_constraints]
+        bounds = [(0, 100) for _ in range(A10a.N * A10a.P)] + [(0, 100) for _ in range(len(A10a.constraints()))]
+        bounds_training = [(0, 100) for _ in range(A10a.N * A10a.P)] + [(0, 100) for _ in range(len(A10a.constraints()))]
+        return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
 
     @staticmethod
     def objective_functions():

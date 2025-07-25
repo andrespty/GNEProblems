@@ -74,21 +74,21 @@ class A8:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
-        return -1
+        return np.array([-1]).reshape(-1,1)
 
     @staticmethod
     def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
-        return (2 * x2 - 1)
+        return np.array([2 * x2 - 1]).reshape(-1,1)
 
     @staticmethod
     def obj_func_der_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
-        return (2 * x3 - 3 * x1)
+        return np.array([2 * x3 - 3 * x1]).reshape(-1,1)
 
     @staticmethod
     def g0(x):

@@ -7,32 +7,38 @@ import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
 
-class A9:
-    K=8
+from Problems_Unbounded.ProblemA16 import player_vector_sizes
+from library.misc import construct_vectors
+
+
+class A9b:
+    K=16
     N=7
 
     @staticmethod
     def define_players():
-        player_vector_sizes = [A9.K for _ in range(A9.N)]
-        player_objective_functions = [0 for _ in range(A9.N)]  # change to all 0s
-        player_constraints = [[0] for _ in range(A9.N)]
-        return [player_vector_sizes, player_objective_functions, player_constraints]
+        player_vector_sizes = [A9b.K for _ in range(A9b.N)]
+        player_objective_functions = [0 for _ in range(A9b.N)]  # change to all 0s
+        player_constraints = [[0] for _ in range(A9b.N)]
+        bounds = [(0, 100) for _ in range(A9b.N * A9b.K)] + [(0, 100)]
+        bounds_training = [(0, 100) for _ in range(A9b.N * A9b.K)] + [(0, 100)]
+        return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
 
     @staticmethod
     def objective_functions():
-        return [A9.obj_func]
+        return [A9b.obj_func]
 
     @staticmethod
     def objective_function_derivatives():
-        return [A9.obj_func_der]
+        return [A9b.obj_func_der]
 
     @staticmethod
     def constraints():
-        return [A9.g0]
+        return [A9b.g0]
 
     @staticmethod
     def constraint_derivatives():
-        return [A9.g0_der]
+        return [A9b.g0_der]
 
     @staticmethod
     def obj_func(x):
@@ -42,41 +48,43 @@ class A9:
 
     @staticmethod
     def obj_func_der(x):
-        return np.array([1 for _ in range(A9.N * A9.K)]).reshape(-1,1)
+        return np.array([1 for _ in range(A9b.N * A9b.K)]).reshape(-1,1)
 
     @staticmethod
     def g0_manual(x):
         """
         here for checks only
         """
-        X = np.array(x).reshape(-1,1)
+        X = np.concatenate(x).reshape(-1,1)
         sigma = 0.3162
         values = []
-        for vu in range(A9.N):
+        for vu in range(A9b.N):
             L = 8
-            H = A9.get_h_v(vu).reshape(A9.N, A9.K)
+            H = A9b.get_h_v(vu).reshape(A9b.N, A9b.K)
             hx = H[vu].reshape(-1, 1) * x[vu]
 
             H_ni = np.delete(H, vu, axis=0).reshape(-1,1)
-            X_ni = np.delete(X, slice(vu * A9.K, (vu + 1) * A9.K), axis=0)
+            X_ni = np.delete(X, slice(vu * A9b.K, (vu + 1) * A9b.K), axis=0)
 
-            hx_ni = np.sum((H_ni * X_ni).reshape(A9.N-1, A9.K), axis=0).reshape(-1,1)
+            hx_ni = np.sum((H_ni * X_ni).reshape(A9b.N-1, A9b.K), axis=0).reshape(-1,1)
+            # print(hx_ni)
             constraint = np.log2( 1 + (hx/(sigma**2 + hx_ni)) ) - L
-            values.append(np.sum(constraint).flatten().tolist()[0])
-        return values
+            values.append(np.sum(constraint).flatten())
+        return np.concatenate(values).reshape(-1,1)
 
     @staticmethod
     def g0(x):
-        K, N = A9.K, A9.N
+        K, N = A9b.K, A9b.N
         sigma = 0.3162
-        L = 8
+        L = 16
 
         # Flatten input
-        X = np.array(x).reshape(N * K, 1)  # (K*N, 1)
-        H_all = np.stack([A9.get_h_v(vu).reshape(N, K) for vu in range(N)], axis=0)  # shape: (N, N, K)
+
+        X = np.concatenate(x).reshape(N * K, 1)  # (K*N, 1)
+        H_all = np.stack([A9b.get_h_v(vu).reshape(N, K) for vu in range(N)], axis=0)  # shape: (N, N, K)
 
         # Reshape X to (N, K, 1) for broadcasting
-        X_split = np.array(x).reshape(N, K, 1)  # shape: (N, K, 1)
+        X_split = np.concatenate(x).reshape(N, K, 1)  # shape: (N, K, 1)
 
         # Compute elementwise product: shape (N, N, K, 1)
         HX_all = H_all[..., :, np.newaxis] * X_split[np.newaxis, ...]
@@ -93,20 +101,29 @@ class A9:
         constraint = np.log2(1 + (signal / (sigma ** 2 + interference))) - L  # shape: (N, K, 1)
 
         # Sum over K dimensions per player
-        return np.sum(constraint, axis=1).flatten()  # shape: (N,)
+        return np.sum(constraint, axis=1).reshape(-1,1)  # shape: (N,)
 
     @staticmethod
     def g0_der(x):
-        # needs to be done
-        return
+        sigma = 0.3162
+        result = []
+        for vu in range(A9b.N):
+            H_v = A9b.get_h_v(vu).reshape(A9b.N, A9b.K)
+            players = x.reshape(A9b.N, A9b.K)
+            H_vv = H_v[vu].reshape(-1, 1)
+            D = (sigma ** 2) + np.sum(players * H_v, axis=0).reshape(-1,1)
+            grad = (1/np.log(2))*(H_vv / D)
+            result.append(grad.ravel())
+        result = np.concatenate(result).reshape(-1, 1)
+        return result
 
     @staticmethod
     def get_h_v(vu):
-        if vu > A9.N - 1:
+        if vu > A9b.N - 1:
             print('Cant be done')
             return 1
-        H = A9.h_matrix()
-        # padding = mu * A9.K
+        H = A9b.h_matrix()
+        # padding = mu * A9b.K
         return H[:, vu].reshape(-1,1)
 
     @staticmethod
@@ -169,3 +186,16 @@ class A9:
     [0.0003, 0.0045, 0.0002, 0.0001, 0.0002, 0.0007, 0.0328],
     [0.0005, 0.0035, 0.0006, 0.0000, 0.0008, 0.0008, 0.2950]
 ])
+
+x1 = np.array([1,1,1,1,1,1,1,1]).reshape(-1,1)
+x2 = np.array([2,2,2,2,2,2,2,2]).reshape(-1,1)
+x3 = np.array([3,3,3,3,3,3,3,3]).reshape(-1,1)
+x4 = np.array([4,4,4,4,4,4,4,4]).reshape(-1,1)
+x5 = np.array([5,5,5,5,5,5,5,5]).reshape(-1,1)
+x6 = np.array([6,6,6,6,6,6,6,6]).reshape(-1,1)
+x7 = np.array([7,7,7,7,7,7,7,7]).reshape(-1,1)
+
+x = np.vstack([x1,x2,x3,x4,x5,x6,x7]).reshape(-1,1)
+player_vector_sizes = [A9b.K for _ in range(A9b.N)]
+print(A9b.g0_manual(construct_vectors(x,player_vector_sizes)))
+print(A9b.obj_func_der(x).shape)

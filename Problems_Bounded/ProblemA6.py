@@ -20,11 +20,11 @@ class A6:
 
     @staticmethod
     def define_players():
-        player_vector_sizes = [1, 1, 1]
+        player_vector_sizes = [3, 2, 2]
         player_objective_functions = [0, 1, 2]
         player_constraints = [[0, 1], [0, 1], [None]]
         bounds = [(0, 100), (0, 100), (0, 2), (0, 100), (0, 100)]
-        bounds_training = [(0, 100), (0, 100), (0, 2), (0, 100), (0, 100)]
+        bounds_training = [(1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (1,10), (0, 100), (0, 100)]
         return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
 
     @staticmethod
