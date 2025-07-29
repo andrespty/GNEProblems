@@ -71,8 +71,8 @@ class GNEP_Solver_Bounded:
                 bounds = self.bounds[:-N_d]
         lb = bounds[:, 0].reshape(-1, 1)
         ub = bounds[:, 1].reshape(-1, 1)
-        print(bounds)
-        print(gradient)
+        # print(bounds)
+        # print(gradient)
         engval = np.where(
             gradient <= 0,
             (ub - actions) * np.log(1 - gradient),

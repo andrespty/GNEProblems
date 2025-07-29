@@ -46,8 +46,8 @@ def get_initial_point(action_sizes, player_constraints, primal_initial_point=0.0
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A5
-    bounded = False
+    problem = A15
+    bounded = True
 
     if bounded:
         problem_funcs = get_problem(problem)
@@ -75,9 +75,9 @@ if __name__ == '__main__':
         # # Solve Problem
         sol = solver1.solve_game(flatten_variables(primal, dual),bounds=bounds_training )
         print('\n\n')
-        # solver1.summary(problem.paper_solution()[0])
-        # solver1.summary()
-        print(sol)
+        solver1.summary(problem.paper_solution()[0])
+        solver1.summary()
+        # print(sol)
         print('\n\n')
 
         # solver1.nash_check()
