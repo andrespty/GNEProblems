@@ -9,7 +9,7 @@ class A16:
     K = np.array([5] * N, dtype=float)
     B = np.array([1.2, 1.1, 1.0, 0.9, 0.8], dtype=float)
     Q = 200  # Max total output
- 
+
     @staticmethod
     def paper_solution() -> List[npt.NDArray[np.float64]]:
         value_1 = np.array([10.403965, 13.035817, 15.407354, 17.381556, 18.771308])  # 75
@@ -23,11 +23,9 @@ class A16:
     def define_players():
         player_vector_size = [1, 1, 1, 1, 1]
         player_objective_functions = [0, 1, 2, 3, 4]
-        player_constraints = [0, 0, 0, 0, 0]
-        bounds = [(0, A16.Q)] * 5 + [(0, 1000)] 
-        #([0,0,0,0,0,0], [A16.Q, A16.Q, A16.Q, A16.Q, A16.Q,1000])
+        player_constraints = [[0], [0], [0], [0], [0]]
+        bounds = [(0, A16.Q)] * 5 + [(0, 100)]
         bounds_training = [(0, A16.Q)] * 5 + [(0, 1000)]
-        #([0,0,0,0,0,0], [A16.Q, A16.Q, A16.Q, A16.Q, A16.Q,1000])
         return [player_vector_size, player_objective_functions, player_constraints, bounds, bounds_training]
  
     # --- Objective Functions ---
@@ -143,16 +141,11 @@ class A16:
         return [A16.g0_der]
  
     @staticmethod
-    def g0(q: npt.NDArray[np.float64]) -> float:
-        return np.sum(q[:-1]) - A16.Q
+    def g0(x: npt.NDArray[np.float64]) -> float:
+        return np.sum(x) - A16.Q
  
     @staticmethod
     def g0_der(q: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         grad = np.zeros_like(q)
         grad[:-1] = 1.0  # d/dq_i of sum(q[:-1]) is 1 for all i < N
-        return grad
-    
-psv = A16.define_players()
-player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training = psv
-print(bounds)
-print(bounds_training)
+        return 1

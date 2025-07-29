@@ -18,9 +18,9 @@ class A17:
 
     @staticmethod
     def define_players():
-        player_vector_sizes = [1, 1, 1]
-        player_objective_functions = [0, 0, 1]
-        player_constraints = [[0, 1], [0, 1], [0, 1]]
+        player_vector_sizes = [2, 1]
+        player_objective_functions = [0, 1]
+        player_constraints = [[0, 1], [0, 1]]
         bounds = [(0.0, 100), (0.0, 100), (0.0, 100), (0.0, 100), (0.0, 100)]
         bounds_training = [(0.0, 100), (0.0, 100), (0.0, 100), (0.0, 100), (0.0, 100)]
         return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
@@ -43,52 +43,41 @@ class A17:
 
     @staticmethod
     def obj_func_1(x: npt.NDArray[np.float64]):
-        x1 = x[0]
+        x1 = x[0] # (2,1)
         x2 = x[1]
-        x3 = x[2]
-        return x1 ** 2 + x1 * x2 + x2 ** 2 + x1 * x3 + x2 * x3 - 25 * x1 - 38 * x2
+        return x1[0] ** 2 + x1[0] * x1[1] + x2 ** 2 + np.sum(x1) * x2 - 25 * x1[0] - 38 * x1[1]
 
     @staticmethod
     def obj_func_2(x: npt.NDArray[np.float64]):
-        x1 = x[0]
+        x1 = x[0] # (2,1)
         x2 = x[1]
-        x3 = x[2]
-        return x3 ** 2 + x1 * x3 + x2 * x3 - 25 * x3
+        return x2 ** 2 + np.sum(x1) * x2 - 25 * x2
 
     @staticmethod
     def obj_func_der_1(x: npt.NDArray[np.float64]):
         x1 = x[0]
         x2 = x[1]
-        x3 = x[2]
-        return 2 * x1 + x2 + x3 - 25
+        der1 = 2 * x1[0] + x1[1] + x2 - 25
+        der2 = x1[0] + 2 * x1[1] + x2 - 38
+        return np.array([der1, der2]).reshape(-1,1)
 
     @staticmethod
     def obj_func_der_2(x: npt.NDArray[np.float64]):
         x1 = x[0]
         x2 = x[1]
-        x3 = x[2]
-        return x1 + 2 * x2 + x3 - 38
-
-    @staticmethod
-    def obj_func_der_3(x: npt.NDArray[np.float64]):
-        x1 = x[0]
-        x2 = x[1]
-        x3 = x[2]
-        return 2 * x3 + x1 + x2 - 25
+        return 2 * x2 + x1[0] + x1[1] - 25
 
     @staticmethod
     def g0(x: npt.NDArray[np.float64]):
         x1 = x[0]
         x2 = x[1]
-        x3 = x[2]
-        return x1 + 2 * x2 - x3 - 14
+        return x1[0] + 2 * x1[1] - x2 - 14
 
     @staticmethod
     def g1(x: npt.NDArray[np.float64]):
         x1 = x[0]
         x2 = x[1]
-        x3 = x[2]
-        return 3 * x1 + 2 * x2 + x3 - 30
+        return 3 * x1[0] + 2 * x1[1] + x2 - 30
 
     @staticmethod
     def g0_der(x: npt.NDArray[np.float64]):
