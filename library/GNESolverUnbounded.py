@@ -8,7 +8,7 @@ from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
 from library.misc import *
 
-class GNEP_Solver:
+class GNEP_Solver_Unbounded:
     def __init__(self,
                  obj_funcs:                     List[Callable[[npt.NDArray[np.float64]], npt.NDArray[np.float64]]],
                  derivative_obj_funcs:          List[Callable[[npt.NDArray[np.float64]], npt.NDArray[np.float64]]],

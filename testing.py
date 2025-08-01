@@ -8,7 +8,7 @@ from Problems_Bounded.ProblemA5 import A5
 from Problems_Bounded.ProblemA11 import A11
 from Problems_Bounded.ProblemA10a import A10a
 from library.misc import *
-from library.GNESolver6 import *
+from library.GNESolverUnbounded import *
 
 from Problems_Unbounded.ProblemA1U import A1U
 from Problems_Unbounded.ProblemA2U import A2U

@@ -1,6 +1,6 @@
 # from GNESolver5 import *
 # from GNESolver5copy import *
-from library.GNESolver6 import *
+from library.GNESolverUnbounded import *
 from library.GNESolverBounded import *
 from Problems_Bounded.ProblemA1 import A1
 from Problems_Bounded.ProblemA2 import A2
@@ -90,7 +90,7 @@ if __name__ == '__main__':
          player_objective_functions,
          player_constraints) = player
 
-        solver1 = GNEP_Solver(
+        solver1 = GNEP_Solver_Unbounded(
             *get_problem(problem)[:4],
             player_objective_functions,
             player_constraints,

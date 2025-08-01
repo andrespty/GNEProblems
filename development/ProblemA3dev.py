@@ -10,7 +10,7 @@ import numpy.typing as npt
 from library.misc import *
 
 
-class A3_BL:
+class A3dev:
 
     @staticmethod
     def paper_solution():
@@ -30,30 +30,27 @@ class A3_BL:
         player_vector_sizes = [3, 2, 2]
         player_objective_functions = [0, 1, 2]
         player_constraints = [[0, 1], [2], [3]]
-        bounds = [(-10, 10), (-10, 10), (-10, 10), (0, 100), (0, 100), (0, 100), (0, 100)]
-        bounds_training = [(-10, 10), (-10, 10), (-10, 10), (-10, 10), (-10, 10), (-10, 10), (-10, 10), (0, 100),
-                           (0, 100), (0, 100), (0, 100)]
-        return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
+        return [player_vector_sizes, player_objective_functions, player_constraints]
 
     @staticmethod
     def objective_functions():
-        return [A3_BL.obj_func_1, A3_BL.obj_func_2, A3_BL.obj_func_3]
+        return [A3dev.obj_func_1, A3dev.obj_func_2, A3dev.obj_func_3]
 
     @staticmethod
     def objective_function_derivatives():
-        return [A3_BL.obj_func_der_1, A3_BL.obj_func_der_2, A3_BL.obj_func_der_3]
+        return [A3dev.obj_func_der_1, A3dev.obj_func_der_2, A3dev.obj_func_der_3]
 
     @staticmethod
     def constraints():
-        return [A3_BL.g0, A3_BL.g1, A3_BL.g2, A3_BL.g3]
+        return [A3dev.g0, A3dev.g1, A3dev.g2, A3dev.g3, A3dev.g4, A3dev.g5]
 
     @staticmethod
     def constraint_derivatives():
-        return [A3_BL.g0_der, A3_BL.g1_der, A3_BL.g2_der, A3_BL.g3_der]
+        return [A3dev.g0_der, A3dev.g1_der, A3dev.g2_der, A3dev.g3_der, A3dev.g4_der, A3dev.g5_der]
 
     A1 = np.array([[20, 5, 3], [5, 5, -5], [3, -5, 15]])
     A2 = np.array([[11, -1], [-1, 9]])
-    A3_BL = np.array([[48, 39], [39, 53]])
+    A3 = np.array([[48, 39], [39, 53]])
     B1 = np.array([[-6, 10, 11, 20], [10, -4, -17, 9], [15, 8, -22, 21]])
     B2 = np.array([[20, 1, -3, 12, 1], [10, -4, 8, 16, 21]])
     B3 = np.array([[10, -2, 22, 12, 16], [9, 19, 21, -4, 20]])
@@ -84,7 +81,7 @@ class A3_BL:
         b1 = np.array([[1], [-1], [1]])
         x1 = x[0]
         x_n1 = np.vstack((x[1], x[2]))
-        return A3_BL.obj_func_der(x1, x_n1, A1, B1, b1)
+        return A3dev.obj_func_der(x1, x_n1, A1, B1, b1)
 
     @staticmethod
     def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -93,16 +90,16 @@ class A3_BL:
         b2 = np.array([[1], [0]])
         x2 = x[1]
         x_n2 = np.vstack((x[0], x[2]))
-        return A3_BL.obj_func_der(x2, x_n2, A2, B2, b2)
+        return A3dev.obj_func_der(x2, x_n2, A2, B2, b2)
 
     @staticmethod
     def obj_func_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        A_3 = np.array([[48, 39], [39, 53]])
+        A3 = np.array([[48, 39], [39, 53]])
         B3 = np.array([[10, -2, 22, 12, 16], [9, 19, 21, -4, 20]])
         b3 = np.array([[-1], [2]])
         x3 = x[2]
         x_n3 = np.vstack((x[0], x[1]))
-        return A3_BL.obj_func_der(x3, x_n3, A_3, B3, b3)
+        return A3dev.obj_func_der(x3, x_n3, A3, B3, b3)
 
     @staticmethod
     def obj_func_der(
@@ -125,7 +122,7 @@ class A3_BL:
         b1 = np.array([[1], [-1], [1]])
         x1 = x[0].reshape(-1,1)
         x_n1 = np.vstack((x[1], x[2])).reshape(-1,1)
-        return A3_BL.obj_func_der(x1, x_n1, A1, B1, b1)
+        return A3dev.obj_func_der(x1, x_n1, A1, B1, b1)
 
     @staticmethod
     def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -135,7 +132,7 @@ class A3_BL:
         x2 = x[1].reshape(-1,1)
         # print(np.vstack((x[0], x[2])))
         x_n2 = np.vstack((x[0].reshape(-1,1), x[2].reshape(-1,1)))
-        return A3_BL.obj_func_der(x2, x_n2, A2, B2, b2)
+        return A3dev.obj_func_der(x2, x_n2, A2, B2, b2)
 
     @staticmethod
     def obj_func_der_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -144,12 +141,12 @@ class A3_BL:
         b3 = np.array([[-1], [2]])
         x3 = x[2].reshape(-1,1)
         x_n3 = np.vstack((x[0].reshape(-1,1), x[1].reshape(-1,1)))
-        return A3_BL.obj_func_der(x3, x_n3, A_3, B3, b3)
+        return A3dev.obj_func_der(x3, x_n3, A_3, B3, b3)
 
     @staticmethod
     def g0(x):
         x1, x2, x3 = x
-        return (sum(x1) + sum(x2) + sum(x3) - 20)
+        return (np.sum(x1) + np.sum(x2) +np.sum(x3) - 20)
 
     @staticmethod
     def g1(x):
@@ -196,116 +193,50 @@ class A3_BL:
     def g3_der(x1):
         return np.array([[ 0, 1]]).reshape(-1, 1)
 
-def get_engval(myvar, gradval, mylb, myub):
-    if gradval<=0:
-        engval=(myub-myvar)*np.log(1-gradval)
-    else:
-        engval=(myvar-mylb)*np.log(1+gradval)
-    return engval
+    @staticmethod
+    def g4_der(x1):
+        return -1
 
-def A3_ex(vars):
-    players = construct_vectors(np.array(vars[:7]), [3,2,2])
-    dual = np.array(vars[7:])
-    lb = np.array([-10,-10,-10, -10,-10,-10, -10]).reshape(-1,1)
-    ub = np.array([10,10,10, 10,10,10, 10]).reshape(-1,1)
-    # print(players)
-    grad_obj_1 = A3_BL.obj_func_der_1(players) # (3,1)
-    grad_obj_2 = A3_BL.obj_func_der_2(players) # (2,1)
-    grad_obj_3 = A3_BL.obj_func_der_3(players) # (2,1)
-    grad_obj = np.vstack((grad_obj_1, grad_obj_2, grad_obj_3))
-    # print(grad_obj)
+    @staticmethod
+    def g5_der(x1):
+        return 1
 
-    grad_cons_1 = dual[0] * A3_BL.g0_der(players) + dual[1] * A3_BL.g1_der(players) # (3,1)
-    grad_cons_2 = dual[2] * A3_BL.g2_der(players)   # (2,1)
-    grad_cons_3 = dual[3] * A3_BL.g3_der(players)   # (2,1)
-    grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3))
-    grad = grad_obj + grad_cons
-    # print("Grad: ", grad)
-    eng = np.where(
-        grad <= 0,
-        (ub - np.array(vars[:7]).reshape(-1,1)) * np.log(1 - grad),
-        (np.array(vars[:7]).reshape(-1,1) - lb) * np.log(1 + grad)
-    )
 
-    grad_cons_1 = -A3_BL.g0(players)
-    grad_cons_2 = -A3_BL.g1(players)
-    grad_cons_3 = -A3_BL.g2(players)
-    grad_cons_4 = -A3_BL.g3(players)
-    grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3, grad_cons_4))
-    eng_cons = [get_engval(dplayer, grad_cons[i],0,100) for i, dplayer in enumerate(dual)]
-    return sum(eng)[0] + sum(eng_cons)[0]
+def A3devrun(vars):
+    players = construct_vectors(np.array(vars[:7]).reshape(-1,1), [3,2,2])
+    raw_players = np.array(vars[:7]).reshape(-1,1)
+    dual_player = np.array(vars[7:]).reshape(-1,1)
+    constraints = A3dev.constraints()
 
-def A3_sig(vars):
-    # players = np.array(vars[:7]).reshape(-1,1)
-    players = construct_vectors(np.array(vars[:7]).reshape(-1, 1), [3, 2, 2])
-    dual = np.array(vars[7:]).reshape(-1,1)
-    constraints = [A3_BL.g0, A3_BL.g1, A3_BL.g2, A3_BL.g3, A3_BL.g4, A3_BL.g5]
-    # print(players)
-    grad_obj_1 = A3_BL.obj_func_der_1(players).reshape(-1,1) # (3,1)
-    grad_obj_2 = A3_BL.obj_func_der_2(players).reshape(-1,1) # (2,1)
-    grad_obj_3 = A3_BL.obj_func_der_3(players).reshape(-1,1) # (2,1)
+    grad_obj_1 = A3dev.obj_func_der_1(players) # (3,1)
+    grad_obj_2 = A3dev.obj_func_der_2(players) # (2,1)
+    grad_obj_3 = A3dev.obj_func_der_3(players) # (2,1)
     grad_obj = np.vstack((grad_obj_1, grad_obj_2, grad_obj_3))
 
-    grad_cons_1 = dual[0] * A3_BL.g0_der(players) + dual[1] * A3_BL.g1_der(players) - dual[4] + dual[5]# (3,1)
-    grad_cons_2 = dual[2] * A3_BL.g2_der(players) - dual[4] + dual[5]  # (2,1)
-    grad_cons_3 = dual[3] * A3_BL.g3_der(players) - dual[4] + dual[5]  # (2,1)
+    grad_cons_1 = dual_player[0] * A3dev.g0_der(players) + dual_player[1] * A3dev.g1_der(players) # (3,1)
+    grad_cons_2 = dual_player[2] * A3dev.g2_der(players)   # (2,1)
+    grad_cons_3 = dual_player[3] * A3dev.g3_der(players)   # (2,1)
     grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3))
-    # print(grad_cons_1.shape)
+    grad_cons += dual_player[4] * A3dev.g4_der(players)
+    grad_cons += dual_player[5] * A3dev.g5_der(players)
     grad = grad_obj + grad_cons
+
     eng = grad.T @ grad
 
     grad_dual = []
     for jdx, constraint in enumerate(constraints):
         g = -constraint(players)
         # g = np.where(
-
         #     g <= 0,
         #     g**2,
-        #     g**2 * np.tanh(dual[jdx])
+        #     g**2 * np.tanh(dual_constraints[jdx])
         # )
-        g = (dual[jdx] ** 2 / (1 + dual[jdx] ** 2)) * (g ** 2 / (1 + g ** 2)) + np.exp(-dual[jdx] ** 2) * (
+        g = (dual_player[jdx] ** 2 / (1 + dual_player[jdx] ** 2)) * (g ** 2 / (1 + g ** 2)) + np.exp(-dual_player[jdx] ** 2) * (
                     np.maximum(0, -g) ** 2 / (1 + np.maximum(0, -g) ** 2))
         grad_dual.append(g.flatten())
     g_dual = np.concatenate(grad_dual).reshape(-1, 1)
 
-    # grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3, grad_cons_4))
-    # eng_cons = np.abs(grad_cons)**2
-    return eng + np.sum(g_dual)
-
-def fisher_func(a,b, epsilon=1e-3):
-    return a+b - np.sqrt(a**2 + b**2 + 2*epsilon**2)
-
-def A3_fb(vars):
-    players = construct_vectors(np.array(vars[:7]).reshape(-1,1), [3,2,2])
-    raw_players = np.array(vars[:7]).reshape(-1,1)
-    dual_player = np.array(vars[7:11]).reshape(-1,1)
-    dual_lb = np.array(vars[11:18]).reshape(-1,1)
-    dual_ub = np.array(vars[18:25]).reshape(-1,1)
-    dual_lb_dp = np.array(vars[25:29]).reshape(-1,1)
-    dual_ub_dp = np.array(vars[29:33]).reshape(-1,1)
-    lb = np.array([-10,-10,-10,-10,-10,-10,-10]).reshape(-1,1)
-    ub = np.array([10,10,10, 10,10,10, 10]).reshape(-1,1)
-
-    grad_obj_1 = A3_BL.obj_func_der_1(players) # (3,1)
-    grad_obj_2 = A3_BL.obj_func_der_2(players) # (2,1)
-    grad_obj_3 = A3_BL.obj_func_der_3(players) # (2,1)
-    grad_obj = np.vstack((grad_obj_1, grad_obj_2, grad_obj_3))
-
-    grad_cons_1 = dual_player[0] * A3_BL.g0_der(players) + dual_player[1] * A3_BL.g1_der(players) # (3,1)
-    grad_cons_2 = dual_player[2] * A3_BL.g2_der(players)   # (2,1)
-    grad_cons_3 = dual_player[3] * A3_BL.g3_der(players)   # (2,1)
-    grad_cons = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3))
-    grad = grad_obj + grad_cons
-    # print(grad)
-    eng = (grad - dual_lb + dual_ub)**2 + fisher_func(dual_lb, raw_players-lb)**2 + fisher_func(dual_ub,ub-raw_players)**2
-
-    grad_cons_1 = -A3_BL.g0(players)
-    grad_cons_2 = -A3_BL.g1(players)
-    grad_cons_3 = -A3_BL.g2(players)
-    grad_cons_4 = -A3_BL.g3(players)
-    grad_dual = np.vstack((grad_cons_1, grad_cons_2, grad_cons_3, grad_cons_4))
-    eng_dual = (grad_dual - dual_lb_dp + dual_ub_dp) ** 2 + fisher_func(dual_lb_dp, dual_player) ** 2 + fisher_func(dual_ub_dp, 100 - dual_player) ** 2
-    return sum(eng) + sum(eng_dual)
+    return sum(eng) + sum(g_dual)
 
 x1 = np.array([[0], [0], [0]])
 x2 = np.array([[0], [0]])
@@ -313,20 +244,16 @@ x3 = np.array([[0], [0]])
 x = np.array([x1, x2, x3], dtype=object)
 d = np.array([1,1,1,1,1,1])
 ip = flatten_variables(x, d).tolist()
-# ip1 = ip + [1,1,1,1,1,1]
-# print("Energy: ",A3_sig(ip))
 
 optimize = True
 if optimize:
     minimizer_kwargs = dict(method="L-BFGS-B")
     start = timeit.default_timer()
-    res1=basinhopping(A3_sig, ip, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1, niter_success=100, disp = True)
+    res1=basinhopping(A3devrun, ip, stepsize=0.01, niter=1000, minimizer_kwargs=minimizer_kwargs, interval=1, niter_success=100, disp = True)
     stop = timeit.default_timer()
 
     print("Result: ", res1.x[:7])
     print("Time: ", stop - start)
     print("Constraints: ", res1.x[7:])
 
-    print("Energy: ", A3_sig(res1.x))
-    print("OG Energy: ", A3_ex(res1.x[:11]))
-
+    print("Energy: ", A3devrun(res1.x))
