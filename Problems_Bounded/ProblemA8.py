@@ -7,16 +7,21 @@ import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
 
-class A6:
+class A8:
     @staticmethod
     def paper_solution():
-        value_1 = [0.99987722673822, 2.31570964703584, 0.99989251930167, 1.31499923583926, 0.99989852480755,
-                   0.99992298465841, 1.09709158271764]
-        value_2 = [0.99973555394222, 2.31634992067271, 0.99976846015730, 1.31481981480565, 0.99993110204166,
-                   0.99983409362034, 1.09703474801283]
-        value_3 = [0.99987722673822, 2.31570964703584, 0.99989251930167, 1.31499923583926, 0.99989852480755,
-                   0.99992298465841, 1.09709158271764]
-        return [value_1, value_2, value_3]
+        value_1 = [
+            0.62503131162143,
+            0.37500031253875,
+            0.93754579549990
+        ]
+
+        value_2 = [
+            0.62510047245551,
+            0.37500003126256,
+            0.9376505914769
+        ]
+        return [value_1, value_2]
 
     @staticmethod
     def define_players():
@@ -29,19 +34,19 @@ class A6:
 
     @staticmethod
     def objective_functions():
-        return [A6.obj_func_1, A6.obj_func_2, A6.obj_func_3]
+        return [A8.obj_func_1, A8.obj_func_2, A8.obj_func_3]
 
     @staticmethod
     def objective_function_derivatives():
-        return [A6.obj_func_der_1, A6.obj_func_der_2, A6.obj_func_der_3]
+        return [A8.obj_func_der_1, A8.obj_func_der_2, A8.obj_func_der_3]
 
     @staticmethod
     def constraints():
-        return [A6.g0, A6.g1]
+        return [A8.g0, A8.g1]
 
     @staticmethod
     def constraint_derivatives():
-        return [A6.g0_der, A6.g1_der]
+        return [A8.g0_der, A8.g1_der]
 
     @staticmethod
     def obj_func_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -69,21 +74,21 @@ class A6:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
-        return -1 + 0 * x1
+        return np.array([-1]).reshape(-1,1)
 
     @staticmethod
     def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
-        return 2 * x2 - 1
+        return np.array([2 * x2 - 1]).reshape(-1,1)
 
     @staticmethod
     def obj_func_der_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
-        return 2 * x3 - 3 * x1
+        return np.array([2 * x3 - 3 * x1]).reshape(-1,1)
 
     @staticmethod
     def g0(x):

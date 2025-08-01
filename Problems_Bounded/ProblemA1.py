@@ -63,9 +63,11 @@ class A1:
     def obj_func_der(x):
         # x: numpy array (N,1)
         # B: constant
+        x = np.concatenate(x).reshape(-1, 1)
         B=1
-        S = sum(a.item() for a in x)
-        obj = (x - S) / S ** 2 + 1 / B
+        S = sum(x)
+        # print(S)
+        obj = ((x - S) / S) ** 2 + (1 / B)
         return obj
 
     # === Constraint Functions ===
@@ -74,7 +76,7 @@ class A1:
         # x: numpy array (N,1)
         # B: constant
         B=1
-        return x.sum() - B
+        return sum(x) - B
 
     @staticmethod
     def g0_der(x):

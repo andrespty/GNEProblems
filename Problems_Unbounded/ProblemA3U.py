@@ -7,8 +7,7 @@ import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
 
-
-class A3:
+class A3U:
 
     @staticmethod
     def paper_solution():
@@ -27,32 +26,28 @@ class A3:
     def define_players():
         player_vector_sizes = [3, 2, 2]
         player_objective_functions = [0, 1, 2]
-        player_constraints = [[0, 1], [2], [3]]
-        bounds = [(-10, 10), (-10, 10), (-10, 10), (-10, 10), (-10, 10), (-10, 10), (-10, 10), (0, 100),
-                           (0, 100), (0, 100), (0, 100)]
-        bounds_training = [(-10, 10), (-10, 10), (-10, 10), (-10, 10), (-10, 10), (-10, 10), (-10, 10), (0, 100),
-                           (0, 100), (0, 100), (0, 100)]
-        return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
+        player_constraints = [[0, 1, 4, 5], [2, 4, 5], [3, 4, 5]]
+        return [player_vector_sizes, player_objective_functions, player_constraints]
 
     @staticmethod
     def objective_functions():
-        return [A3.obj_func_1, A3.obj_func_2, A3.obj_func_3]
+        return [A3U.obj_func_1, A3U.obj_func_2, A3U.obj_func_3]
 
     @staticmethod
     def objective_function_derivatives():
-        return [A3.obj_func_der_1, A3.obj_func_der_2, A3.obj_func_der_3]
+        return [A3U.obj_func_der_1, A3U.obj_func_der_2, A3U.obj_func_der_3]
 
     @staticmethod
     def constraints():
-        return [A3.g0, A3.g1, A3.g2, A3.g3]
+        return [A3U.g0, A3U.g1, A3U.g2, A3U.g3, A3U.g4, A3U.g5]
 
     @staticmethod
     def constraint_derivatives():
-        return [A3.g0_der, A3.g1_der, A3.g2_der, A3.g3_der]
+        return [A3U.g0_der, A3U.g1_der, A3U.g2_der, A3U.g3_der, A3U.g4_der, A3U.g5_der]
 
     A1 = np.array([[20, 5, 3], [5, 5, -5], [3, -5, 15]])
     A2 = np.array([[11, -1], [-1, 9]])
-    A3 = np.array([[48, 39], [39, 53]])
+    A3U = np.array([[48, 39], [39, 53]])
     B1 = np.array([[-6, 10, 11, 20], [10, -4, -17, 9], [15, 8, -22, 21]])
     B2 = np.array([[20, 1, -3, 12, 1], [10, -4, 8, 16, 21]])
     B3 = np.array([[10, -2, 22, 12, 16], [9, 19, 21, -4, 20]])
@@ -83,7 +78,7 @@ class A3:
         b1 = np.array([[1], [-1], [1]])
         x1 = x[0]
         x_n1 = np.vstack((x[1], x[2]))
-        return A3.obj_func_der(x1, x_n1, A1, B1, b1)
+        return A3U.obj_func_der(x1, x_n1, A1, B1, b1)
 
     @staticmethod
     def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -92,7 +87,7 @@ class A3:
         b2 = np.array([[1], [0]])
         x2 = x[1]
         x_n2 = np.vstack((x[0], x[2]))
-        return A3.obj_func_der(x2, x_n2, A2, B2, b2)
+        return A3U.obj_func_der(x2, x_n2, A2, B2, b2)
 
     @staticmethod
     def obj_func_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -101,7 +96,7 @@ class A3:
         b3 = np.array([[-1], [2]])
         x3 = x[2]
         x_n3 = np.vstack((x[0], x[1]))
-        return A3.obj_func_der(x3, x_n3, A_3, B3, b3)
+        return A3U.obj_func_der(x3, x_n3, A_3, B3, b3)
 
     @staticmethod
     def obj_func_der(
@@ -124,7 +119,7 @@ class A3:
         b1 = np.array([[1], [-1], [1]])
         x1 = x[0]
         x_n1 = np.vstack((x[1], x[2]))
-        return A3.obj_func_der(x1, x_n1, A1, B1, b1)
+        return A3U.obj_func_der(x1, x_n1, A1, B1, b1)
 
     @staticmethod
     def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -133,7 +128,7 @@ class A3:
         b2 = np.array([[1], [0]])
         x2 = x[1]
         x_n2 = np.vstack((x[0], x[2]))
-        return A3.obj_func_der(x2, x_n2, A2, B2, b2)
+        return A3U.obj_func_der(x2, x_n2, A2, B2, b2)
 
     @staticmethod
     def obj_func_der_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -142,7 +137,7 @@ class A3:
         b3 = np.array([[-1], [2]])
         x3 = x[2]
         x_n3 = np.vstack((x[0], x[1]))
-        return A3.obj_func_der(x3, x_n3, A_3, B3, b3)
+        return A3U.obj_func_der(x3, x_n3, A_3, B3, b3)
 
     @staticmethod
     def g0(x):
@@ -163,6 +158,17 @@ class A3:
     def g3(x):
         x1, x2, x3 = x
         return (x3[1] - x1[0] - x1[2] + x2[0] - 4)[0]
+
+    @staticmethod
+    def g4(x):
+        x1, x2, x3 = x
+        return -10 - np.vstack((x1.reshape(-1, 1), x2.reshape(-1, 1), x3.reshape(-1, 1)))
+
+    @staticmethod
+    def g5(x):
+        x1, x2, x3 = x
+        return np.vstack((x1.reshape(-1, 1), x2.reshape(-1, 1), x3.reshape(-1, 1))) - 10
+
 
     @staticmethod
     # partial g0 / partial x1
@@ -187,3 +193,11 @@ class A3:
     # partial g3 / partial x3
     def g3_der(x1):
         return np.array([[-1, 0, -1, 1, 0, 0, 1]]).reshape(-1, 1)
+
+    @staticmethod
+    def g4_der(x1):
+        return np.array([[-1, -1, -1, -1, -1, -1, -1]]).reshape(-1, 1)
+
+    @staticmethod
+    def g5_der(x1):
+        return np.array([[1, 1, 1, 1, 1, 1, 1]]).reshape(-1, 1)
