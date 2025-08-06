@@ -2,30 +2,9 @@
 # from GNESolver5copy import *
 from library.GNESolverUnbounded import *
 from library.GNESolverBounded import *
-from Problems_Bounded.ProblemA1 import A1
-from Problems_Bounded.ProblemA2 import A2
-from Problems_Bounded.ProblemA3 import A3
-from Problems_Bounded.ProblemA4 import A4
-from Problems_Bounded.ProblemA5 import A5
-from Problems_Bounded.ProblemA6 import A6
-from Problems_Bounded.ProblemA7 import A7
-from Problems_Bounded.ProblemA8 import A8
-from Problems_Bounded.ProblemA9a import A9a
 # from Problems_Bounded.ProblemA9b import A9b
-from Problems_Bounded.ProblemA10a import A10a
-from Problems_Bounded.ProblemA11 import A11
-from Problems_Bounded.ProblemA12 import A12
-from Problems_Bounded.ProblemA13 import A13
-from Problems_Bounded.ProblemA14 import A14
-from Problems_Bounded.ProblemA15 import A15
-from Problems_Bounded.ProblemA16 import A16
-from Problems_Bounded.ProblemA17 import A17
-from Problems_Bounded.ProblemA18 import A18
+from Problems_Unbounded.ProblemA10bU import A10b
 
-from Problems_Unbounded.ProblemA1U import A1U # Works
-from Problems_Unbounded.ProblemA2U import A2U
-from Problems_Unbounded.ProblemA3U import A3U
-from Problems_Unbounded.ProblemA7U import A7U
 
 def get_problem(problem_n):
     # Define the problem
@@ -46,8 +25,8 @@ def get_initial_point(action_sizes, player_constraints, primal_initial_point=0.0
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A18
-    bounded = True
+    problem = A10b
+    bounded = False
 
     if bounded:
         problem_funcs = get_problem(problem)
