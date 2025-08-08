@@ -22,7 +22,7 @@ class A6:
     def define_players():
         player_vector_sizes = [3, 2, 2]
         player_objective_functions = [0, 1, 2]
-        player_constraints = [[0, 1, 2], [3, 4] [5, 6]]
+        player_constraints = [[0, 1, 2], [3, 4], [5, 6]]
         bounds = [(1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (0, 100),
                            (0, 100), (0, 100), (0, 100), (0, 100), (0, 100), (0, 100)]
         bounds_training = [(1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (1, 10), (0, 100),
@@ -192,7 +192,7 @@ class A6:
     @staticmethod
     def g5(x):
         x1, x2, x3 = x
-        return (x3[1] - x1[0] - x1[2] + x1[0] - 4)[0]
+        return (x3[1] - x1[0] - x1[2] + x2[0] - 4)[0]
     
     @staticmethod
     def g6(x):
@@ -210,3 +210,19 @@ class A6:
     @staticmethod
     def g2_der(x1):
         return np.array([[4, 1, -1, 1, 0, 0, 1]]).reshape(-1, 1)
+    
+    @staticmethod
+    def g3_der(x1):
+        return np.array([[0, -1, -1, 1, -1, -1, 0]]).reshape(-1, 1)
+    
+    @staticmethod
+    def g4_der(x1):
+        return np.array([[-2, 0, 0, 2, 2, 0, 0]]).reshape(-1, 1)
+    
+    @staticmethod
+    def g5_der(x1):
+        return np.array([[-1, 0, -1, 1, 1, 0, 1]]).reshape(-1, 1)
+    
+    @staticmethod
+    def g6_der(x1):
+        return np.array([[0, 0, 0, 0, 0, 0, 0]]).reshape(-1, 1)
