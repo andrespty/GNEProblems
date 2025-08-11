@@ -6,8 +6,6 @@ from scipy.optimize import basinhopping
 import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
-
-from Problems_Bounded.ProblemA10a import A10a
 from library.misc import construct_vectors
 
 
@@ -21,7 +19,6 @@ class A10c:
     def define_players():
         player_vector_sizes = [A10c.P for _ in range(A10c.N)]
         player_objective_functions = [0 for _ in range(A10c.N)]  # change to all 0s
-
         f_player_constraints = [[0] for _ in range(A10c.F)]
         c_player_constraints = [[1] for _ in range(A10c.C)]
         player_constraints = f_player_constraints + c_player_constraints + [[2,3]]
@@ -30,7 +27,6 @@ class A10c:
     @staticmethod
     def objective_functions():
         return [A10c.obj_func_firms,
-                A10c.obj_func_consumers_1,
                 A10c.obj_func_market
         ]
 
@@ -53,7 +49,7 @@ class A10c:
         return p.T @ y # returns (1,F) vector
 
     @staticmethod
-    def obj_func_consumers_1(x):
+    def obj_func_consumers(x):
         x = np.hstack(x[A10c.F: A10c.F+A10c.C][0]).reshape(A10c.P, -1)
         Q_i = A10c.get_constants(i=1).get('Q_i')
         b_i = A10c.get_constants(i=1).get('b_i')
@@ -68,47 +64,27 @@ class A10c:
         return p.T @ ( np.sum(x, axis=1, keepdims=True) - np.sum(y, axis=1, keepdims=True) - np.sum(xi, axis=1, keepdims=True) )
 
     @staticmethod
-    def utility_function_1(x_i, a, b, i):
-        """
-        x_i: np.array shape (P,1)
-        a: np.array shape (P,1)
-        b: np.array shape (P,1)
-        i: integer
-        """
-        return np.sum((a + i + A10c.F) * np.log(x_i + b + 2 * (i + A10c.F)), axis=0)
+    def utility_function(x_i, Q_i, b_i):
+        return -0.5 * x_i.T @ Q_i @ x_i + b_i.T @ x_i
 
     @staticmethod
-    def utility_function_1_der(x_i, a, b, i):
-        return (a + i + A10c.F) / ((x_i + b + 2 * (i + A10c.F)) * np.log(10) )
-
-    @staticmethod
-    def utility_function_2(x_i, c, d, i):
-        """
-        x_i: np.array shape (P,1)
-        c: np.array shape (P,1)
-        d: np.array shape (P,1)
-        i: integer
-        """
-        return np.sum((c + i + A10c.F) * np.log(x_i + d + i + A10c.F), axis=0)
-
-    @staticmethod
-    def utility_function_2_der(x_i, c, d, i):
-        return (c + i + A10c.F) / ((x_i + d + i + A10c.F) * np.log(10))
+    def utility_function_der(x_i, Q_i, b_i):
+        return - Q_i @ x_i + b_i
 
     @staticmethod
     def obj_func_consumers_der(x):
-        x = np.hstack(x[A10c.F: A10c.F + A10c.C][0]).reshape(A10c.P, -1)
-        a,b,c,d = A10c.get_constants()
-        der_1_10 = []
-        der_10_20 = []
+        x = np.hstack(x[A10c.F: A10c.F + A10c.C]).reshape(A10c.P, -1)
+        der_1_15 = []
+        der_15_30 = []
         for i in range(int(A10c.C/2)):
-            # print(i, i+ int(A10c.C/2) )
-            p1_10 = A10c.utility_function_1_der(x, a, b, i)
-            p10_20 = A10c.utility_function_2_der(x, c, d, i+ int(A10c.C/2))
-            der_1_10.append(p1_10.flatten())
-            der_10_20.append(p10_20.flatten())
-        obj_der_1 = np.concat(der_1_10).reshape(-1,1)
-        obj_der_2 = np.concat(der_10_20).reshape(-1,1)
+            A, b_i = A10c.get_constants(i+1)
+            B, bb_i = A10c.get_constants(i+1 + int(A10c.C/2))
+            p1_15 = A10c.utility_function_der(x[:,i].reshape(-1,1), A, b_i)
+            p15_30 = A10c.utility_function_der(x[:, i+ int(A10c.C/2)].reshape(-1,1), B, bb_i)
+            der_1_15.append(p1_15.flatten())
+            der_15_30.append(p15_30.flatten())
+        obj_der_1 = np.concat(der_1_15).reshape(-1,1)
+        obj_der_2 = np.concat(der_15_30).reshape(-1,1)
         obj_der = np.vstack((obj_der_1, obj_der_2))
         return obj_der # shape (P*C, 1)
 
@@ -192,22 +168,40 @@ class A10c:
     def get_xi():
         # 1-C/2 is xi1
         # C/2 - C is second xi2
-        xi1 = np.array([2, 3, 4, 1, 6]).reshape(-1, 1)
-        xi2 = np.array([6, 5, 4, 3, 2]).reshape(-1, 1)
+        xi1 = np.array([2, 3, 4, 1, 6, 1]).reshape(-1, 1)
+        xi2 = np.array([6, 5, 4, 3, 2, 8]).reshape(-1, 1)
         xi1s = np.hstack([xi1 for _ in range(int(A10c.C/2))]).reshape(A10c.P,-1)
         xi2s = np.hstack([xi2 for _ in range(int(A10c.C/2))]).reshape(A10c.P,-1)
         xi = np.hstack([xi1s, xi2s])
         return xi
 
     @staticmethod
-    def get_constants():
-        a = np.array([1,2,4,6,8]).reshape(-1,1)
-        b = np.array([20,30,30,40,50]).reshape(-1,1)
-        c = np.array([10,6,4,10,1]).reshape(-1,1)
-        d = np.array([50,40,30,20,20]).reshape(-1,1)
-        return a,b,c,d
+    def get_constants(i=1):
+        if i <= A10c.C:
+            A = [
+                [68.22249416536778, 12.12481199690621, -8.35496210217478, -6.81177486915109, -4.66752803051747, 3.64100170417482],
+                [12.12481199690621, 53.51450780426463, -21.77618227261339, -15.00376305863444, -0.11788350473544, 2.03354709400720],
+                [-8.35496210217478, -21.77618227261339, 35.44033408387684, 4.35160649036518, 19.17472558234163, -3.40090742729160],
+                [-6.81177486915109, -15.00376305863444, 4.35160649036518, 52.25155022199242, -5.99490328518247, 20.40443259092577],
+                [-4.66752803051747, -0.11788350473544, 19.17472558234163, -5.99490328518247, 23.32798561358070, -3.58535668529727],
+                [3.64100170417482, 2.03354709400720, -3.40090742729160, 20.40443259092577, -3.58535668529727, 10.21258119890765]
+            ]
+            b_i = np.array([50 + i + A10c.F, 60 + i + A10c.F, 70 + i + A10c.F, 60 + i + A10c.F, 60 + i + A10c.F, 50 + i + A10c.F]).reshape(-1, 1)
+            return [np.array(A), b_i]
+        else:
+            B  = [
+                [61.74633559943146, -23.83006225091380, 16.78581949473039, 14.42073900860500, -2.75188745616575, 13.44307656650567],
+                [-23.83006225091380, 37.64246654306209, -3.76510322128227, 16.32022449045404, -39.90743633716275, 11.38657250296817],
+                [16.78581949473039, -3.76510322128227, 53.34843665848310, 4.60388415537161, -23.04611587657949, -25.31392346426841],
+                [14.42073900860500, 16.32022449045404, 4.60388415537161, 40.69699687713468, -30.78019133996427, 17.08866411420883],
+                [-2.75188745616575, -39.90743633716275, -23.04611587657949, -30.78019133996427, 66.22678445157413, -12.28091080313848],
+                [13.44307656650567, 11.38657250296817, -25.31392346426841, 17.08866411420883, -12.28091080313848, 41.37849544246254]
+            ]
+            b_i = np.array([50 + 2 * (i + A10c.F), 60 + 2 * (i + A10c.F), 50 + 2 * (i + A10c.F), 70 + 2 * (i + A10c.F), 70 + 2 * (i + A10c.F), 60 + 2 * (i + A10c.F)]).reshape(-1, 1)
+
+            return [np.array(B), b_i]
 #
-# vector_sizes = A10c.define_players()[0]
-# x = [0 for _ in range(A10c.N * A10c.P)]
-# actions = construct_vectors(x, vector_sizes)
-# print(A10c.obj_der(actions).shape)
+vector_sizes = A10c.define_players()[0]
+x = [0 for _ in range(A10c.N * A10c.P)]
+actions = construct_vectors(x, vector_sizes)
+print(A10c.obj_der(actions).shape)

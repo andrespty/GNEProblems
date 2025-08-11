@@ -3,7 +3,10 @@
 from library.GNESolverUnbounded import *
 from library.GNESolverBounded import *
 # from Problems_Bounded.ProblemA9b import A9b
+from Problems_Unbounded.ProblemA9aU import A9aU
+from Problems_Unbounded.ProblemA9bU import A9bU
 from Problems_Unbounded.ProblemA10bU import A10b
+from Problems_Unbounded.ProblemA10cU import A10c
 
 
 def get_problem(problem_n):
@@ -25,7 +28,7 @@ def get_initial_point(action_sizes, player_constraints, primal_initial_point=0.0
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A10b
+    problem = A9bU
     bounded = False
 
     if bounded:
