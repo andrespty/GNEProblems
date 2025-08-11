@@ -5,8 +5,11 @@ from library.GNESolverBounded import *
 # from Problems_Bounded.ProblemA9b import A9b
 from Problems_Unbounded.ProblemA9aU import A9aU
 from Problems_Unbounded.ProblemA9bU import A9bU
-from Problems_Unbounded.ProblemA10bU import A10b
-from Problems_Unbounded.ProblemA10cU import A10c
+from Problems_Unbounded.ProblemA10aU import A10aU
+from Problems_Unbounded.ProblemA10bU import A10bU
+from Problems_Unbounded.ProblemA10cU import A10cU
+from Problems_Unbounded.ProblemA10dU import A10dU
+from Problems_Unbounded.ProblemA10eU import A10eU
 
 
 def get_problem(problem_n):
@@ -28,7 +31,7 @@ def get_initial_point(action_sizes, player_constraints, primal_initial_point=0.0
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A9bU
+    problem = A10eU
     bounded = False
 
     if bounded:
