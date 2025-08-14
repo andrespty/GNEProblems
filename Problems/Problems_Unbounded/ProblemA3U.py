@@ -76,27 +76,27 @@ class A3U:
         A1 = np.array([[20, 5, 3], [5, 5, -5], [3, -5, 15]])
         B1 = np.array([[-6, 10, 11, 20], [10, -4, -17, 9], [15, 8, -22, 21]])
         b1 = np.array([[1], [-1], [1]])
-        x1 = x[0]
-        x_n1 = np.vstack((x[1], x[2]))
-        return A3U.obj_func_der(x1, x_n1, A1, B1, b1)
+        x1 = x[0].reshape(-1,1)
+        x_n1 = np.vstack((x[1], x[2])).reshape(-1,1)
+        return A3U.obj_func(x1, x_n1, A1, B1, b1)
 
     @staticmethod
     def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         A2 = np.array([[11, -1], [-1, 9]])
         B2 = np.array([[20, 1, -3, 12, 1], [10, -4, 8, 16, 21]])
         b2 = np.array([[1], [0]])
-        x2 = x[1]
-        x_n2 = np.vstack((x[0], x[2]))
-        return A3U.obj_func_der(x2, x_n2, A2, B2, b2)
+        x2 = x[1].reshape(-1,1)
+        x_n2 = np.vstack((x[0], x[2])).reshape(-1,1)
+        return A3U.obj_func(x2, x_n2, A2, B2, b2)
 
     @staticmethod
     def obj_func_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         A_3 = np.array([[48, 39], [39, 53]])
         B3 = np.array([[10, -2, 22, 12, 16], [9, 19, 21, -4, 20]])
         b3 = np.array([[-1], [2]])
-        x3 = x[2]
-        x_n3 = np.vstack((x[0], x[1]))
-        return A3U.obj_func_der(x3, x_n3, A_3, B3, b3)
+        x3 = x[2].reshape(-1,1)
+        x_n3 = np.vstack((x[0], x[1])).reshape(-1,1)
+        return A3U.obj_func(x3, x_n3, A_3, B3, b3)
 
     @staticmethod
     def obj_func_der(

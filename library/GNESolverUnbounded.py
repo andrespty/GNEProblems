@@ -6,7 +6,8 @@ from scipy.optimize import basinhopping
 import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
-from library.misc import *
+from .misc import *
+from .utils import *
 
 class GNEP_Solver_Unbounded:
     def __init__(self,
@@ -164,16 +165,6 @@ class GNEP_Solver_Unbounded:
         self.time = elapsed_time
         return result, elapsed_time
 
-    def translate_solution(self, solution):
-        actions = np.array(solution[:sum(self.action_sizes)]).reshape(-1,1)
-        dual_actions = np.array(solution[sum(self.action_sizes):]).reshape(-1,1)
-        bounds_primal = repeat_items(self.bounds[:self.N], self.action_sizes)
-        bounds_dual = self.bounds[self.N:]
-
-        scaled_actions = vectorized_sigmoid(actions, bounds_primal)           # shape(N, 1)
-        scaled_dual_actions = vectorized_sigmoid(dual_actions, bounds_dual)   # shape(N_d,1)
-        return np.vstack((scaled_actions, scaled_dual_actions))
-
     def calculate_main_objective(self, actions):
         objective_values_matrix = [
             self.objective_functions[idx](actions) for idx in self.player_objective_function
@@ -194,22 +185,22 @@ class GNEP_Solver_Unbounded:
                 calculated_obj = self.calculate_main_objective(construct_vectors(computed_actions, self.action_sizes))
                 paper_obj = self.calculate_main_objective(construct_vectors(paper, self.action_sizes))
                 print('Difference: ', sum(deconstruct_vectors(calculated_obj)) - sum(deconstruct_vectors(paper_obj)))
-
-    def nash_check(self, epsilon=1e-3):
-        if not self.result:
-            print('No solution found')
-            return
-        print("Checking Nash Equilibrium")
-        computed_NE = np.array(self.result.x[:sum(self.action_sizes)]).reshape(-1,1)
-        check_nash_equillibrium(
-          computed_NE, 
-          self.action_sizes, 
-          self.player_objective_function,
-          self.objective_functions,
-          self.constraints,
-          self.player_constraints,
-          self.bounds,
-          paper_res=self.result.x[:sum(self.action_sizes)] if self.result.x is not None else None
-        )
-        print('Check finished')
-        return 
+    #
+    # def nash_check(self, epsilon=1e-3):
+    #     if not self.result:
+    #         print('No solution found')
+    #         return
+    #     print("Checking Nash Equilibrium")
+    #     computed_NE = np.array(self.result.x[:sum(self.action_sizes)]).reshape(-1,1)
+    #     check_nash_equillibrium(
+    #       computed_NE,
+    #       self.action_sizes,
+    #       self.player_objective_function,
+    #       self.objective_functions,
+    #       self.constraints,
+    #       self.player_constraints,
+    #       self.bounds,
+    #       paper_res=self.result.x[:sum(self.action_sizes)] if self.result.x is not None else None
+    #     )
+    #     print('Check finished')
+    #     return

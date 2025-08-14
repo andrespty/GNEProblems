@@ -1,42 +1,37 @@
 import numpy as np
-from scipy.optimize import Bounds
-from scipy.optimize import minimize
-from scipy.optimize import LinearConstraint
-from scipy.optimize import basinhopping
-import timeit
-from typing import List, Tuple, Dict, Optional, Callable
-import numpy.typing as npt
 
-from Problems_Unbounded.ProblemA16 import player_vector_sizes
+from tests.Problems_Unbounded.ProblemA16 import player_vector_sizes
 from library.misc import construct_vectors
 
 
-class A9bU:
+class A9b:
     K=16
     N=7
 
     @staticmethod
     def define_players():
-        player_vector_sizes = [A9bU.K for _ in range(A9bU.N)]
-        player_objective_functions = [0 for _ in range(A9bU.N)]  # change to all 0s
-        player_constraints = [[0,1] for _ in range(A9bU.N)]
-        return [player_vector_sizes, player_objective_functions, player_constraints]
+        player_vector_sizes = [A9b.K for _ in range(A9b.N)]
+        player_objective_functions = [0 for _ in range(A9b.N)]  # change to all 0s
+        player_constraints = [[0] for _ in range(A9b.N)]
+        bounds = [(0, 100) for _ in range(A9b.N * A9b.K)] + [(0, 100)]
+        bounds_training = [(0, 100) for _ in range(A9b.N * A9b.K)] + [(0, 100)]
+        return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
 
     @staticmethod
     def objective_functions():
-        return [A9bU.obj_func]
+        return [A9b.obj_func]
 
     @staticmethod
     def objective_function_derivatives():
-        return [A9bU.obj_func_der]
+        return [A9b.obj_func_der]
 
     @staticmethod
     def constraints():
-        return [A9bU.g0, A9bU.g1]
+        return [A9b.g0]
 
     @staticmethod
     def constraint_derivatives():
-        return [A9bU.g0_der, A9bU.g1_der]
+        return [A9b.g0_der]
 
     @staticmethod
     def obj_func(x):
@@ -46,7 +41,7 @@ class A9bU:
 
     @staticmethod
     def obj_func_der(x):
-        return np.array([1 for _ in range(A9bU.N * A9bU.K)]).reshape(-1,1)
+        return np.array([1 for _ in range(A9b.N * A9b.K)]).reshape(-1,1)
 
     @staticmethod
     def g0_manual(x):
@@ -56,15 +51,15 @@ class A9bU:
         X = np.concatenate(x).reshape(-1,1)
         sigma = 0.3162
         values = []
-        for vu in range(A9bU.N):
-            L = 16
-            H = A9bU.get_h_v(vu).reshape(A9bU.N, A9bU.K)
+        for vu in range(A9b.N):
+            L = 8
+            H = A9b.get_h_v(vu).reshape(A9b.N, A9b.K)
             hx = H[vu].reshape(-1, 1) * x[vu]
 
             H_ni = np.delete(H, vu, axis=0).reshape(-1,1)
-            X_ni = np.delete(X, slice(vu * A9bU.K, (vu + 1) * A9bU.K), axis=0)
+            X_ni = np.delete(X, slice(vu * A9b.K, (vu + 1) * A9b.K), axis=0)
 
-            hx_ni = np.sum((H_ni * X_ni).reshape(A9bU.N-1, A9bU.K), axis=0).reshape(-1,1)
+            hx_ni = np.sum((H_ni * X_ni).reshape(A9b.N-1, A9b.K), axis=0).reshape(-1,1)
             # print(hx_ni)
             constraint = np.log2( 1 + (hx/(sigma**2 + hx_ni)) ) - L
             values.append(np.sum(constraint).flatten())
@@ -72,14 +67,14 @@ class A9bU:
 
     @staticmethod
     def g0(x):
-        K, N = A9bU.K, A9bU.N
+        K, N = A9b.K, A9b.N
         sigma = 0.3162
         L = 16
 
         # Flatten input
 
         X = np.concatenate(x).reshape(N * K, 1)  # (K*N, 1)
-        H_all = np.stack([A9bU.get_h_v(vu).reshape(N, K) for vu in range(N)], axis=0)  # shape: (N, N, K)
+        H_all = np.stack([A9b.get_h_v(vu).reshape(N, K) for vu in range(N)], axis=0)  # shape: (N, N, K)
 
         # Reshape X to (N, K, 1) for broadcasting
         X_split = np.concatenate(x).reshape(N, K, 1)  # shape: (N, K, 1)
@@ -102,17 +97,12 @@ class A9bU:
         return np.sum(constraint, axis=1).reshape(-1,1)  # shape: (N,)
 
     @staticmethod
-    def g1(x):
-        X = np.concatenate(x).reshape(-1,1)
-        return 0 - X
-
-    @staticmethod
     def g0_der(x):
         sigma = 0.3162
         result = []
-        for vu in range(A9bU.N):
-            H_v = A9bU.get_h_v(vu).reshape(A9bU.N, A9bU.K)
-            players = x.reshape(A9bU.N, A9bU.K)
+        for vu in range(A9b.N):
+            H_v = A9b.get_h_v(vu).reshape(A9b.N, A9b.K)
+            players = x.reshape(A9b.N, A9b.K)
             H_vv = H_v[vu].reshape(-1, 1)
             D = (sigma ** 2) + np.sum(players * H_v, axis=0).reshape(-1,1)
             grad = (1/np.log(2))*(H_vv / D)
@@ -121,16 +111,12 @@ class A9bU:
         return result
 
     @staticmethod
-    def g1_der(x):
-        return -1
-
-    @staticmethod
     def get_h_v(vu):
-        if vu > A9bU.N - 1:
+        if vu > A9b.N - 1:
             print('Cant be done')
             return 1
-        H = A9bU.h_matrix()
-        # padding = mu * A9bU.K
+        H = A9b.h_matrix()
+        # padding = mu * A9b.K
         return H[:, vu].reshape(-1,1)
 
     @staticmethod
@@ -153,7 +139,6 @@ class A9bU:
     [0.0843, 0.0001, 0.0092, 0.0002, 0.0002, 0.0027, 0.0000],
     [0.0586, 0.0002, 0.0032, 0.0001, 0.0002, 0.0077, 0.0027],
     [0.0028, 0.0288, 0.0208, 0.0004, 0.0000, 0.0002, 0.0011],
-    [0.0066, 0.0136, 0.0127, 0.0000, 0.0001, 0.0000, 0.0006],
     [0.0088, 0.0500, 0.0094, 0.0001, 0.0002, 0.0003, 0.0017],
     [0.0039, 0.0251, 0.0125, 0.0000, 0.0002, 0.0006, 0.0010],
     [0.0016, 0.0091, 0.0147, 0.0000, 0.0001, 0.0003, 0.0003],
@@ -213,56 +198,17 @@ class A9bU:
     [0.0004, 0.0000, 0.0001, 0.0002, 0.1234, 0.0007, 0.0003],
     [0.0007, 0.0001, 0.0000, 0.0006, 0.1248, 0.0013, 0.0000],
     [0.0004, 0.0000, 0.0002, 0.0007, 0.0850, 0.0029, 0.0011],
-    [0.0002, 0.0000, 0.0003, 0.0003, 0.0287, 0.0024, 0.0022],
+    [0.0002, 0.0000, 0.0003, 0.0003, 0.0287, 0.0024, 0.0022]])
 
-    [0.0005, 0.0001, 0.0002, 0.0000, 0.0210, 0.0009, 0.0015],
-    [0.0003, 0.0001, 0.0000, 0.0000, 0.0432, 0.0002, 0.0005],
-    [0.0001, 0.0002, 0.0001, 0.0002, 0.0008, 0.1341, 0.0150],
-    [0.0004, 0.0003, 0.0001, 0.0002, 0.0027, 0.0507, 0.0035],
-    [0.0006, 0.0002, 0.0000, 0.0001, 0.0016, 0.0187, 0.0001],
-    [0.0004, 0.0001, 0.0000, 0.0001, 0.0001, 0.0037, 0.0008],
-    [0.0003, 0.0003, 0.0001, 0.0001, 0.0020, 0.0046, 0.0019],
-    [0.0007, 0.0005, 0.0000, 0.0001, 0.0032, 0.0153, 0.0121],
-    [0.0005, 0.0006, 0.0000, 0.0000, 0.0014, 0.0351, 0.0198],
-    [0.0001, 0.0005, 0.0000, 0.0000, 0.0001, 0.0956, 0.0113],
-    [0.0006, 0.0005, 0.0001, 0.0003, 0.0001, 0.1673, 0.0011],
-    [0.0011, 0.0007, 0.0002, 0.0003, 0.0006, 0.1522, 0.0008],
-    [0.0008, 0.0009, 0.0002, 0.0002, 0.0020, 0.0527, 0.0034],
-    [0.0006, 0.0007, 0.0002, 0.0002, 0.0022, 0.0005, 0.0057],
-    [0.0006, 0.0003, 0.0001, 0.0004, 0.0004, 0.0801, 0.0051],
-    [0.0003, 0.0000, 0.0000, 0.0003, 0.0003, 0.2297, 0.0004],
-    [0.0000, 0.0000, 0.0000, 0.0001, 0.0011, 0.3127, 0.0043],
-    [0.0001, 0.0000, 0.0001, 0.0001, 0.0003, 0.2574, 0.0162],
-    [0.0009, 0.0038, 0.0000, 0.0000, 0.0003, 0.0018, 0.1630],
-    [0.0024, 0.0009, 0.0000, 0.0001, 0.0006, 0.0052, 0.3698],
-    [0.0035, 0.0016, 0.0001, 0.0001, 0.0007, 0.0053, 0.2515],
-    [0.0021, 0.0019, 0.0002, 0.0001, 0.0003, 0.0016, 0.0571],
-    [0.0003, 0.0017, 0.0002, 0.0002, 0.0000, 0.0005, 0.0774],
-    [0.0004, 0.0016, 0.0003, 0.0003, 0.0001, 0.0019, 0.0623],
-    [0.0013, 0.0018, 0.0007, 0.0001, 0.0001, 0.0012, 0.0244],
-    [0.0015, 0.0054, 0.0012, 0.0001, 0.0001, 0.0000, 0.2083],
-    [0.0015, 0.0094, 0.0010, 0.0002, 0.0000, 0.0004, 0.3246],
-    [0.0009, 0.0066, 0.0004, 0.0003, 0.0001, 0.0007, 0.1571],
-    [0.0001, 0.0011, 0.0000, 0.0003, 0.0007, 0.0005, 0.0440],
-    [0.0004, 0.0003, 0.0000, 0.0003, 0.0012, 0.0004, 0.0953],
-    [0.0007, 0.0022, 0.0000, 0.0002, 0.0009, 0.0003, 0.1190],
-    [0.0002, 0.0045, 0.0000, 0.0001, 0.0004, 0.0009, 0.1166],
-    [0.0001, 0.0082, 0.0001, 0.0001, 0.0001, 0.0015, 0.0703],
-    [0.0004, 0.0085, 0.0001, 0.0000, 0.0001, 0.0008, 0.0079]
-])
+x1 = np.array([1,1,1,1,1,1,1,1]).reshape(-1,1)
+x2 = np.array([2,2,2,2,2,2,2,2]).reshape(-1,1)
+x3 = np.array([3,3,3,3,3,3,3,3]).reshape(-1,1)
+x4 = np.array([4,4,4,4,4,4,4,4]).reshape(-1,1)
+x5 = np.array([5,5,5,5,5,5,5,5]).reshape(-1,1)
+x6 = np.array([6,6,6,6,6,6,6,6]).reshape(-1,1)
+x7 = np.array([7,7,7,7,7,7,7,7]).reshape(-1,1)
 
-# x1 = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]).reshape(-1,1)
-# x2 = np.array([2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]).reshape(-1,1)
-# x3 = np.array([3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]).reshape(-1,1)
-# x4 = np.array([4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]).reshape(-1,1)
-# x5 = np.array([5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]).reshape(-1,1)
-# x6 = np.array([6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]).reshape(-1,1)
-# x7 = np.array([7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7]).reshape(-1,1)
-#
-# x = np.vstack([x1,x2,x3,x4,x5,x6,x7]).reshape(-1,1)
-# player_vector_sizes = [A9bU.K for _ in range(A9bU.N)]
-# print("Testing 9bU")
-# print(A9bU.h_matrix().shape)
-# print(A9bU.g0_manual(construct_vectors(x,player_vector_sizes)))
-# print(A9bU.g0(construct_vectors(x,player_vector_sizes)))
-# print(A9bU.obj_func_der(x).shape)
+x = np.vstack([x1,x2,x3,x4,x5,x6,x7]).reshape(-1,1)
+player_vector_sizes = [A9b.K for _ in range(A9b.N)]
+print(A9b.g0_manual(construct_vectors(x,player_vector_sizes)))
+print(A9b.obj_func_der(x).shape)

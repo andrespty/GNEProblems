@@ -1,15 +1,6 @@
-# from GNESolver5 import *
-# from GNESolver5copy import *
-from library.GNESolverUnbounded import *
-from library.GNESolverBounded import *
-# from Problems_Bounded.ProblemA9b import A9b
-from Problems_Unbounded.ProblemA9aU import A9aU
-from Problems_Unbounded.ProblemA9bU import A9bU
-from Problems_Unbounded.ProblemA10aU import A10aU
-from Problems_Unbounded.ProblemA10bU import A10bU
-from Problems_Unbounded.ProblemA10cU import A10cU
-from Problems_Unbounded.ProblemA10dU import A10dU
-from Problems_Unbounded.ProblemA10eU import A10eU
+from library import *
+from library.misc import *
+from problems import *
 
 
 def get_problem(problem_n):
@@ -66,8 +57,6 @@ if __name__ == '__main__':
         print('\n\n')
 
         # solver1.nash_check()
-
-
     else:
         problem_funcs = get_problem(problem)
         constraints, player = problem_funcs[3:]
@@ -86,11 +75,19 @@ if __name__ == '__main__':
         print(flatten_variables(primal, dual))
         # # Solve Problem
         sol = solver1.solve_game(flatten_variables(primal, dual))
-        print('\n\n')
+        # print('\n\n')
         solver1.summary(problem.paper_solution()[0])
         # solver1.summary()
         print('\n\n')
-        solver1.nash_check()
+        print('Check NE')
+        check_NE(
+            sol[0].x[:sum(player_vector_sizes)],
+            player_vector_sizes,
+            player_objective_functions,
+            problem_funcs[0],
+            problem_funcs[2],
+            player_constraints
+        )
 
 
 

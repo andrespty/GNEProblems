@@ -1,17 +1,6 @@
-from GNESolver5 import *
-from Problems_Bounded.ProblemA1 import A1
-from Problems_Bounded.ProblemA2 import A2
-from Problems_Bounded.ProblemA3 import A3
-from Problems_Bounded.ProblemA8 import A8
-from Problems_Bounded.ProblemA7 import A7
-from Problems_Bounded.ProblemA5 import A5
-from Problems_Bounded.ProblemA11 import A11
-from Problems_Bounded.ProblemA10a import A10a
-from library.misc import *
+from problems.Problems_Bounded.ProblemA10a import A10a
 from library.GNESolverUnbounded import *
 
-from Problems_Unbounded.ProblemA1U import A1U
-from Problems_Unbounded.ProblemA2U import A2U
 
 def get_problem(problem_n):
     # Define the problem

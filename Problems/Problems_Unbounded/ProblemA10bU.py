@@ -1,14 +1,4 @@
 import numpy as np
-from scipy.optimize import Bounds
-from scipy.optimize import minimize
-from scipy.optimize import LinearConstraint
-from scipy.optimize import basinhopping
-import timeit
-from typing import List, Tuple, Dict, Optional, Callable
-import numpy.typing as npt
-
-from Problems_Bounded.ProblemA10a import A10a
-from library.misc import construct_vectors
 
 
 class A10bU:

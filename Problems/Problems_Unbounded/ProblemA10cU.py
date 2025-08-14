@@ -6,7 +6,6 @@ from scipy.optimize import basinhopping
 import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
-from library.misc import construct_vectors
 
 
 class A10cU:
@@ -213,8 +212,3 @@ class A10cU:
             b_i = np.array([50 + 2 * (i + A10cU.F), 60 + 2 * (i + A10cU.F), 50 + 2 * (i + A10cU.F), 70 + 2 * (i + A10cU.F), 70 + 2 * (i + A10cU.F), 60 + 2 * (i + A10cU.F)]).reshape(-1, 1)
 
             return [np.array(B), b_i]
-#
-# vector_sizes = A10cU.define_players()[0]
-# x = [0 for _ in range(A10cU.N * A10cU.P)]
-# actions = construct_vectors(x, vector_sizes)
-# print(A10cU.obj_der(actions).shape)
