@@ -40,11 +40,11 @@ class A5U:
 
     @staticmethod
     def constraints():
-        return [A5U.g0, A5U.g1,A5U.g2, A5U.g3, A5U.g4, A5U.g6]
+        return [A5U.g0, A5U.g1,A5U.g2, A5U.g3, A5U.g4, A5U.g5]
 
     @staticmethod
     def constraint_derivatives():
-        return [A5U.g0_der, A5U.g1_der,A5U.g2_der, A5U.g3_der, A5U.g4_der, A5U.g6_der]
+        return [A5U.g0_der, A5U.g1_der,A5U.g2_der, A5U.g3_der, A5U.g4_der, A5U.g5_der]
 
     # Define Functions below
 

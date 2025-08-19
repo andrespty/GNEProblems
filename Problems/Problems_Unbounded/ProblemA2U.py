@@ -50,8 +50,9 @@ class A2U:
     @staticmethod
     def obj_func_1(x):
         # x: numpy array (N, 1)
+        x = np.concatenate(x).reshape(-1, 1)
         B = 1
-        S = sum(x)
+        S = np.sum(x)
         obj = (-x / S) * (1 - S / B)
         return obj
 
@@ -59,8 +60,9 @@ class A2U:
     def obj_func_2(x):
         # x: numpy array (N,1)
         # B: constant
+        x = np.concatenate(x).reshape(-1, 1)
         B = 1
-        S = sum(x)
+        S = np.sum(x)
         obj = (-x / S) * (1 - S / B) ** 2
         return obj
 

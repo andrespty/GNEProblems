@@ -26,8 +26,9 @@ __all__ = [
     'A3U',
     'A4U',
     'A5U',
+    # 'A6U', Not working yet
     'A7U',
-    'A8U',
+    # 'A8U', Not working yet
     'A9aU',
     'A9bU',
     'A10aU',

@@ -30,9 +30,9 @@ class A9aU:
 
     @staticmethod
     def obj_func(x):
-        # x: numpy array (N, 1)
-        # B: constant
-        return sum(x)
+        # x: list of vectors
+        sum_x = [np.sum(x_i) for x_i in x]
+        return sum_x
 
     @staticmethod
     def obj_func_der(x):

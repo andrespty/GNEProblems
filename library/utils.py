@@ -99,6 +99,57 @@ def create_wrapped_function(
 
     return wrap_func
 
+def create_wrapped_function_single(
+    original_func: Callable[[List[npt.NDArray[np.float64]]], npt.NDArray[np.float64]],
+    vars: List[npt.NDArray[np.float64]],
+    player_idx: int
+) -> Callable[[npt.NDArray[np.float64]], npt.NDArray[np.float64]]:
+    """
+    Create a function wrapper with all but one player's variables fixed.
+
+    This function returns a new function where all players' variables are fixed
+    except for the player at the given index. The returned function takes only
+    that player's variable vector as input, reconstructs the full variable list
+    (including the fixed ones), and calls the original function.
+
+    Parameters
+    ----------
+    original_func : Callable[[list of numpy.ndarray], numpy.ndarray]
+        The original function that operates on a list of player variables.
+        Each element of the list is a 2D NumPy array representing a player's
+        action or decision variables.
+    vars : list of numpy.ndarray
+        The full list of player variables to be passed to ``original_func``.
+        Each array should be shaped as (n, 1).
+    player_idx : int
+        The index of the player whose variable will remain free (not fixed).
+        Must be between 0 and ``len(vars) - 1``.
+
+    Returns
+    -------
+    Callable[[numpy.ndarray], numpy.ndarray]
+        A wrapper function that accepts a single NumPy array for the chosen player's
+        variables (shape (n, 1) or flattenable to that) and returns the output of
+        ``original_func`` with all variables assembled.
+
+    Examples
+    --------
+    >> def sum_all(players):
+    ...     return sum(p.sum() for p in players)
+    >> vars = [np.array([[1.0]]), np.array([[2.0]])]
+    >> wrapped = create_wrapped_function(sum_all, vars, player_idx=0)
+    >> wrapped([[3.0]])
+    5.0
+    """
+    fixed_vars = vars[:player_idx] + vars[player_idx + 1:]  # list of np vectors
+
+    def wrap_func(player_var_opt):
+        player_var_opt = np.array(player_var_opt).reshape(-1, 1)
+        new_vars = fixed_vars[:player_idx] + [player_var_opt] + fixed_vars[player_idx:]
+        return original_func(new_vars)[player_idx]
+
+    return wrap_func
+
 def objective_check(
     objective_functions: List[Callable[[List[npt.NDArray[np.float64]]], npt.NDArray[np.float64]]],
     actions: List[npt.NDArray[np.float64]]
@@ -183,16 +234,16 @@ def constraint_check(
     """
     constraint_values = []
     constraint_satisfaction = []
-    for constraint in constraints:
+    for c_idx, constraint in enumerate(constraints):
         c = constraint(actions)
         if not np.all(np.ravel(c) <= epsilon):
-            print(f"CONSTRAINT VIOLATION: {c}")
+            print(f"CONSTRAINT VIOLATION: {c_idx}, {c}")
             constraint_values.append(c)
             constraint_satisfaction.append(False)
         else:
             constraint_values.append(c)
             constraint_satisfaction.append(True)
-    print("All constraints satisfied")
+            print("All constraints satisfied")
     return constraint_values, constraint_satisfaction
 
 def compare_solutions(

@@ -165,26 +165,7 @@ class GNEP_Solver_Unbounded:
         self.time = elapsed_time
         return result, elapsed_time
 
-    def calculate_main_objective(self, actions):
-        objective_values_matrix = [
-            self.objective_functions[idx](actions) for idx in self.player_objective_function
-        ]
-        return np.array(deconstruct_vectors(objective_values_matrix))
-    def summary(self, paper_res=None):
-        if self.result:
-            print(self.result.x)
-            print('Time: ', self.time)
-            print('Iterations: ', self.result.nit)
-            if paper_res:
-                print('Paper Result: \n', paper_res)
-            print('Solution: \n', self.result.x)
-            print('Total Energy: ', self.wrapper(self.result.x))
-            if paper_res:
-                paper = np.array(paper_res).reshape(-1,1)
-                computed_actions = np.array(self.result.x[:sum(self.action_sizes)]).reshape(-1,1)
-                calculated_obj = self.calculate_main_objective(construct_vectors(computed_actions, self.action_sizes))
-                paper_obj = self.calculate_main_objective(construct_vectors(paper, self.action_sizes))
-                print('Difference: ', sum(deconstruct_vectors(calculated_obj)) - sum(deconstruct_vectors(paper_obj)))
+
     #
     # def nash_check(self, epsilon=1e-3):
     #     if not self.result:

@@ -2,38 +2,22 @@ from library import *
 from library.misc import *
 from problems import *
 
-
-def get_problem(problem_n):
-    # Define the problem
-    obj = problem_n.objective_functions()
-    obj_der = problem_n.objective_function_derivatives()
-    c = problem_n.constraints()
-    c_der = problem_n.constraint_derivatives()
-
-    # Describe Players responsibilities
-    p = problem_n.define_players()
-    return [obj,obj_der,c,c_der,p]
-
-def get_initial_point(action_sizes, player_constraints, primal_initial_point=0.01, dual_initial_point=10):
-    length = len(player_constraints)
-    primal = [np.reshape(np.ones(size, dtype=np.float64), [-1,1])*primal_initial_point for size in action_sizes]
-    dual = [dual_initial_point for _ in range(length)]
-    return primal, dual
-
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem = A10eU
+    problem_n = A10aU
     bounded = False
 
     if bounded:
-        problem_funcs = get_problem(problem)
-        constraints, player = problem_funcs[3:]
+        problem = get_problem(problem_n)
         (player_vector_sizes,
          player_objective_functions,
-         player_constraints, bounds, bounds_training) = player
+         player_constraints, bounds, bounds_training) = problem['player']
         print('Here')
         solver1 = GNEP_Solver_Bounded(
-            *get_problem(problem)[:4],
+            problem['obj_funcs'],
+            problem['obj_ders'],
+            problem['constraints'],
+            problem['constraints_ders'],
             player_objective_functions,
             player_constraints,
             bounds_training,
@@ -43,7 +27,7 @@ if __name__ == '__main__':
         # Set Initial Point
         primal, dual = get_initial_point(
             player_vector_sizes,
-            constraints,
+            problem["constraints"],
             primal_initial_point=0.01,
             dual_initial_point=1
         )
@@ -58,37 +42,46 @@ if __name__ == '__main__':
 
         # solver1.nash_check()
     else:
-        problem_funcs = get_problem(problem)
-        constraints, player = problem_funcs[3:]
+        problem = get_problem(problem_n)
         (player_vector_sizes,
          player_objective_functions,
-         player_constraints) = player
+         player_constraints) = problem['players']
 
         solver1 = GNEP_Solver_Unbounded(
-            *get_problem(problem)[:4],
+            problem['obj_funcs'],
+            problem['obj_ders'],
+            problem['constraints'],
+            problem['constraint_ders'],
             player_objective_functions,
             player_constraints,
             player_vector_sizes,
         )
         # Set Initial Point
-        primal, dual = get_initial_point(player_vector_sizes, constraints, primal_initial_point=0.01, dual_initial_point=1)
+        primal, dual = get_initial_point(player_vector_sizes, problem['constraints'], primal_ip=0.01, dual_ip=1)
         print(flatten_variables(primal, dual))
         # # Solve Problem
-        sol = solver1.solve_game(flatten_variables(primal, dual))
+        ip1 = flatten_variables(primal, dual)
+        res, elapsed_time = solver1.solve_game(ip1)
         # print('\n\n')
-        solver1.summary(problem.paper_solution()[0])
+        summary(
+            res,
+            elapsed_time,
+            solver1.wrapper,
+            player_vector_sizes
+        )
         # solver1.summary()
         print('\n\n')
         print('Check NE')
-        check_NE(
-            sol[0].x[:sum(player_vector_sizes)],
+        isNE = check_NE(
+            res.x[:sum(player_vector_sizes)],
             player_vector_sizes,
             player_objective_functions,
-            problem_funcs[0],
-            problem_funcs[2],
-            player_constraints
+            problem['obj_funcs'],
+            problem['constraints'],
+            player_constraints,
+            single_obj_vector=True
         )
-
+        print(isNE)
 
 
 

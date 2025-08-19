@@ -11,7 +11,7 @@ import numpy.typing as npt
 def flatten_variables(
     vectors: List[npt.NDArray[np.float64]],
     scalars: Union[List[float], npt.NDArray[np.float64]]
-) -> npt.NDArray[np.float64]:
+) -> List[float]:
     """
     Flatten a list of vectors and optional scalars into a single 1D array.
 
@@ -37,7 +37,7 @@ def flatten_variables(
     >> flatten_variables(vectors, scalars)
     array([1., 2., 3., 4., 5.])
     """
-    return np.hstack([v.flatten() for v in vectors] + [scalars])
+    return np.hstack([v.flatten() for v in vectors] + [scalars]).tolist()
 
 
 def deconstruct_vectors(

@@ -50,7 +50,8 @@ class A1U:
     def obj_func(x):
         # x: numpy array (N, 1)
         # B: constant
-        S = sum(x)
+        x = np.concatenate(x)
+        S = np.sum(x)
         B=1
         obj = (-x / S) * (1 - S / B)
         return obj

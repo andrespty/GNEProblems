@@ -1,1 +1,1 @@
-# GNEProblems
+# GNE Problems Solver
