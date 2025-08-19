@@ -4,6 +4,8 @@ Generalized Nash Equilibrium Problems Solver
 
 
 """
+from .Problems_Bounded.ProblemA6 import A6
+
 from .Problems_Unbounded.ProblemA1U import A1U
 from .Problems_Unbounded.ProblemA2U import A2U
 from .Problems_Unbounded.ProblemA3U import A3U
@@ -21,12 +23,14 @@ from .Problems_Unbounded.ProblemA10eU import A10eU
 from .Problems_Bounded import *
 
 __all__ = [
+    "A6",
+
     "A1U",
     'A2U',
     'A3U',
     'A4U',
     'A5U',
-    # 'A6U', Not working yet
+    #'A6U', #Not working yet
     'A7U',
     # 'A8U', Not working yet
     'A9aU',

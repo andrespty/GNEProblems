@@ -22,7 +22,7 @@ class A16C:
     def define_players():
         player_vector_sizes = [1, 1, 1, 1, 1]
         player_objective_functions = [0, 1, 2, 3, 4]
-        player_constraints = [[0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3]]
+        player_constraints = [[0] for _ in range(len(player_vector_sizes))]
         bounds = [(0, 100), (0, 100), (0, 100), (0, 100), (0, 100), (0, 75), (0, 100), (0, 150), (0, 200)] 
         bounds_training = [(0, 100), (0, 100), (0, 100), (0, 100), (0, 100), (0, 75), (0, 100), (0, 150), (0, 200)]
         return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]

@@ -44,7 +44,6 @@ class A15:
   @staticmethod
 
   def objective_functions():
-
     return [A15.obj_func_1, A15.obj_func_2, A15.obj_func_3]
 
 
@@ -93,7 +92,6 @@ class A15:
 
 
   @staticmethod
-
   def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
       x1 = x[0]
       x2 = x[1]
@@ -110,7 +108,6 @@ class A15:
 
 
   @staticmethod
-
   def obj_func_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
 
       x1 = x[0]
@@ -169,9 +166,9 @@ class A15:
       x5 = x[4]
       x6 = x[5]
       S = x1 + x2 + x3 + x4 + x5 + x6
-      i = np.array([1, 2])
-      c1 = np.array([0.035, 0.125])
-      c2 = np.array([1.75, 1])
+      i = np.array([1, 2]).reshape(-1,1)
+      c1 = np.array([0.035, 0.125]).reshape(-1,1)
+      c2 = np.array([1.75, 1]).reshape(-1,1)
       return A15.obj_func_der(x, i, c1, c2, S)
 
 

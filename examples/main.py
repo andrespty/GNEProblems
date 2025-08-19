@@ -4,20 +4,20 @@ from problems import *
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem_n = A2U
-    bounded = False
+    problem_n = A6
+    bounded = True
 
     if bounded:
         problem = get_problem(problem_n)
         (player_vector_sizes,
          player_objective_functions,
-         player_constraints, bounds, bounds_training) = problem['player']
+         player_constraints, bounds, bounds_training) = problem['players']
         print('Here')
         solver1 = GNEP_Solver_Bounded(
             problem['obj_funcs'],
             problem['obj_ders'],
             problem['constraints'],
-            problem['constraints_ders'],
+            problem['constraint_ders'],
             player_objective_functions,
             player_constraints,
             bounds_training,
@@ -28,8 +28,8 @@ if __name__ == '__main__':
         primal, dual = get_initial_point(
             player_vector_sizes,
             problem["constraints"],
-            primal_initial_point=0.01,
-            dual_initial_point=1
+            primal_ip=0.01,
+            dual_ip=10
         )
         print(flatten_variables(primal, dual))
         # # Solve Problem
