@@ -167,7 +167,7 @@ class A6:
     @staticmethod
     def g0(x):
         x1, x2, x3 = x
-        return (sum(x1) + sum(x2) + sum(x3) - 20)[0]
+        return (np.sum(x1) - 20)[0]
 
     @staticmethod
     def g1(x):
@@ -182,7 +182,7 @@ class A6:
     @staticmethod
     def g3(x):
         x1, x2, x3 = x
-        return (x2[0] - x2[1] - x1[1] - x1[2] - x3[0] - 7)[0]
+        return (x2[0] - x2[1] - x1[1] - x1[2] + x3[0] - 7)[0]
 
     @staticmethod
     def g4(x):
@@ -196,33 +196,34 @@ class A6:
     
     @staticmethod
     def g6(x):
-        x1, x2, x3 = x
-        return ((2 * x3[0]) ** 2 - (x3[1] - 2) ** 2 - x2[0] * x3[0] - 1.5)[0]
+        x1, x2, x3 = x # [np.array(), np.array(), ...]
+        return ( 2*(x3[0] ** 2) - (x3[1] - 2) ** 2 - x2[0] * x3[0] - 1.5)[0]
     
     @staticmethod
-    def g0_der(x1):
-        return np.array([[1, 1, 1, 1, 1, 1, 1]]).reshape(-1, 1)
+    def g0_der(x):
+        # x = np.array().reshape(-1,1)
+        return np.array([[1, 1, 1, 0, 0, 0, 0]]).reshape(-1, 1)
 
     @staticmethod
     def g1_der(x1):
-        return np.array([[1, 1, -1, 1, 0, 0, 1]]).reshape(-1, 1)
+        return np.array([[1, 1, -1, -1, 0, 0, 1]]).reshape(-1, 1)
     
     @staticmethod
-    def g2_der(x1):
-        return np.array([[4, 1, -1, 1, 0, 0, 1]]).reshape(-1, 1)
+    def g2_der(x):
+        return np.array([[4*x[0]**3, x[5], 0, -1, 0, x[1], 0]]).reshape(-1, 1)
     
     @staticmethod
     def g3_der(x1):
-        return np.array([[0, -1, -1, 1, -1, -1, 0]]).reshape(-1, 1)
+        return np.array([[0, -1, -1, 1, -1, 1, 0]]).reshape(-1, 1)
     
     @staticmethod
-    def g4_der(x1):
-        return np.array([[-2, 0, 0, 2, 2, 0, 0]]).reshape(-1, 1)
+    def g4_der(x):
+        return np.array([[-2*x[0], 0, 0, 2*(x[3]-2) , 2*x[4], 0, 0]]).reshape(-1, 1)
     
     @staticmethod
     def g5_der(x1):
-        return np.array([[-1, 0, -1, 1, 1, 0, 1]]).reshape(-1, 1)
+        return np.array([[-1, 0, -1, 1, 0, 0, 1]]).reshape(-1, 1)
     
     @staticmethod
-    def g6_der(x1):
-        return np.array([[0, 0, 0, 0, 0, 0, 0]]).reshape(-1, 1)
+    def g6_der(x):
+        return np.array([[0, 0, 0, x[5], 0, 4*x[5] - x[3] , 2*(x[6]-2)]]).reshape(-1, 1)
