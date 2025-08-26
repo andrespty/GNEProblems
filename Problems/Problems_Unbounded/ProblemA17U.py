@@ -19,17 +19,17 @@ class A17U:
     @staticmethod
     def define_players():
         player_vector_sizes = [1, 1, 1]
-        player_objective_functions = [0, 0, 1]
+        player_objective_functions = [0, 1, 2]
         player_constraints = [[0, 1, 2], [0, 1, 2], [0, 1, 2]]
         return [player_vector_sizes, player_objective_functions, player_constraints]
 
     @staticmethod
     def objective_functions():
-        return [A17U.obj_func_1, A17U.obj_func_2]
+        return [A17U.obj_func_1,A17U.obj_func_1, A17U.obj_func_2]
 
     @staticmethod
     def objective_function_derivatives():
-        return [A17U.obj_func_der_1, A17U.obj_func_der_2]
+        return [A17U.obj_func_der_1, A17U.obj_func_der_2, A17U.obj_func_der_3]
 
     @staticmethod
     def constraints():
@@ -90,10 +90,8 @@ class A17U:
     
     @staticmethod
     def g2(x: npt.NDArray[np.float64]):
-        x1 = x[0]
-        x2 = x[1]
-        x3 = x[2]
-        return 
+        x = np.concatenate(x).reshape(-1, 1)
+        return 0 - x
 
     @staticmethod
     def g0_der(x: npt.NDArray[np.float64]):
@@ -105,4 +103,4 @@ class A17U:
 
     @staticmethod
     def g2_der(x: npt.NDArray[np.float64]):
-        return 
+        return -1

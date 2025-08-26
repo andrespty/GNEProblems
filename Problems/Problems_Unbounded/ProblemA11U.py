@@ -18,7 +18,7 @@ class A11U:
     def define_players():
         player_vector_sizes = [1, 1]
         player_objective_functions = [0, 1]
-        player_constraints = [[0, 1], [0, 1]]
+        player_constraints = [[0], [0]]
         return [player_vector_sizes, player_objective_functions, player_constraints]
 
     @staticmethod
@@ -31,11 +31,11 @@ class A11U:
 
     @staticmethod
     def constraints():
-        return [A11U.g0, A11U.g1]
+        return [A11U.g0]
 
     @staticmethod
     def constraint_derivatives():
-        return [A11U.g0_der, A11U.g1_der]
+        return [A11U.g0_der]
 
     @staticmethod
     def obj_func_1(x: npt.NDArray[np.float64]) -> float:
@@ -49,12 +49,12 @@ class A11U:
 
     @staticmethod
     def obj_func_der_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        grad = 2 * (x[0] - 1)  # d/dx1 of (x1 - 1)^2
+        grad = 2 * (x[0] - 1)
         return grad
 
     @staticmethod
     def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        grad = 2 * (x[1] - 0.5)  # d/dx2 of (x2 - 0.5)^2
+        grad = 2 * (x[1] - 0.5)
         return grad
 
     @staticmethod
@@ -62,13 +62,5 @@ class A11U:
         return x[0] + x[1] - 1
 
     @staticmethod
-    def g1(x: npt.NDArray[np.float64]) -> float:
-        return x[0] + x[1] - 1
-    
-    @staticmethod
     def g0_der(x: npt.NDArray[np.float64]) -> float:
-        return np.array([[1, 1]]).reshape(-1, 1)
-    
-    @staticmethod
-    def g1_der(x: npt.NDArray[np.float64]) -> float:
         return np.array([[1, 1]]).reshape(-1, 1)

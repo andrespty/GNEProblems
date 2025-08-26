@@ -5,12 +5,16 @@ Generalized Nash Equilibrium Problems Solver
 
 """
 from .Problems_Bounded.ProblemA6 import A6
+from .Problems_Unbounded.ProblemA12U import A12U
+from .Problems_Unbounded.ProblemA13U import A13U
+
 
 from .Problems_Unbounded.ProblemA1U import A1U
 from .Problems_Unbounded.ProblemA2U import A2U
 from .Problems_Unbounded.ProblemA3U import A3U
 from .Problems_Unbounded.ProblemA4U import A4U
 from .Problems_Unbounded.ProblemA5U import A5U
+from .Problems_Unbounded.ProblemA6U import A6U
 from .Problems_Unbounded.ProblemA7U import A7U
 from .Problems_Unbounded.ProblemA8U import A8U
 from .Problems_Unbounded.ProblemA9aU import A9aU
@@ -20,18 +24,23 @@ from .Problems_Unbounded.ProblemA10bU import A10bU
 from .Problems_Unbounded.ProblemA10cU import A10cU
 from .Problems_Unbounded.ProblemA10dU import A10dU
 from .Problems_Unbounded.ProblemA10eU import A10eU
+from .Problems_Unbounded.ProblemA11U import A11U
+from .Problems_Unbounded.ProblemA12U import A12U
+from .Problems_Unbounded.ProblemA13U import A13U
+from .Problems_Unbounded.ProblemA14U import A14U
+from .Problems_Unbounded.ProblemA17U import A17U
+from .Problems_Unbounded.ProblemA18U import A18U
 from .Problems_Bounded import *
 
 __all__ = [
-    "A6",
     "A1U",
     'A2U',
     'A3U',
     'A4U',
     'A5U',
-    #'A6U', #Not working yet
+    'A6U',
     'A7U',
-    # 'A8U', Not working yet
+    'A8U',
     'A9aU',
     'A9bU',
     'A10aU',
@@ -39,6 +48,12 @@ __all__ = [
     'A10cU',
     'A10dU',
     'A10eU',
+    'A11U',
+    'A12U',
+    'A13U',
+    'A14U',
+    'A17U',
+    'A18U',
 ]
 
 

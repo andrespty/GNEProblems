@@ -18,10 +18,10 @@ class A14U:
 
     @staticmethod
     def define_players():
-        B = 1
-        player_vector_sizes = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        player_objective_functions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        player_constraints = [[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1]]
+        n = 10
+        player_vector_sizes = [1 for _ in range(n)]
+        player_objective_functions = [0 for _ in range(n)]
+        player_constraints = [[0,1] for _ in range(n)]
         return [player_vector_sizes, player_objective_functions, player_constraints]
 
     @staticmethod
@@ -41,21 +41,40 @@ class A14U:
         return [A14U.g0_der, A14U.g1_der]
 
     @staticmethod
-    def obj_func(x: npt.NDArray) -> float:
-        W = sum(x)
-        B = 1
-        if W <= 0:
-            return 0.0
-        return float((x[0] / W) * (1 - W/B))
+    def obj_func(x):
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray shape (any, 1)
+            A list of NumPy arrays to be concatenated along their first axis.
+
+        Returns
+        -------
+        numpy.ndarray shape (any, 1)
+        """
+        x = np.concatenate(x).reshape(-1, 1)
+        s = np.sum(x)
+        b = 1
+        obj = (-x / s) * (1 - s / b)
+        return obj
 
     @staticmethod
-    def obj_func_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        W = sum(x)
-        if W <= 0:
-            return np.zeros_like(x)
-        w_i = x[0]
-        grad = (W - w_i) / W**2 - 1
-        return grad
+    def obj_func_der(x):
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray shape (any, 1)
+            A list of NumPy arrays to be concatenated along their first axis.
+
+        Returns
+        -------
+        numpy.ndarray shape (any, 1)
+        """
+        x = np.concatenate(x).reshape(-1, 1)
+        b = 1
+        s = sum(x)
+        obj = ((x - s) / s ** 2) + (1 / b)
+        return obj
 
     @staticmethod
     def g0(x):
@@ -65,7 +84,8 @@ class A14U:
     @staticmethod
     def g1(x):
         # lower bound
-        return 0 - x[0]
+        x = np.concatenate(x).reshape(-1, 1)
+        return 0.01 - x
     
     @staticmethod
     def g0_der(x):

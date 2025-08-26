@@ -17,8 +17,6 @@ class A18U:
         player_vector_sizes = [6, 6]
         player_objective_functions = [0, 1]
         player_constraints = [[0,1,4,5,6,7],[2,3,4,5,6,7]]
-        #bounds = [(0, 100), (0, 100), (0, 100), (0, 50), (0, 50), (0, 50), (0, 100), (0, 100), (0, 100), (0, 50), (0, 50), (0, 50), (0, 1) , (0, 1), (0, 1), (0, 1), (0,1), (0, 1), (0, 1)]
-        #bounds_training = [(0, 100), (0, 100), (0, 100), (0, 50), (0, 50), (0, 50), (0, 100), (0, 100), (0, 100), (0, 50), (0, 50), (0, 50), (0, 1) , (0, 1), (0, 1), (0, 1), (0,1), (0, 1), (0, 1)]
         return [player_vector_sizes, player_objective_functions, player_constraints]
      
     @staticmethod
@@ -42,26 +40,23 @@ class A18U:
     def abbreviations(x: npt.NDArray[np.float64]) -> float:
         x1 = x[0]
         x2 = x[1]
-        S1 = 40 - (40/500)* (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - (35/400)* (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - (32/600)* (x1[3] + x1[5] + x2[2] + x2[5])
+        S1 = 40 - (40/500) * (x1[0] + x1[3] + x2[0] + x2[3])
+        S2 = 35 - (35/400) * (x1[1] + x1[4] + x2[1] + x2[4])
+        S3 = 32 - (32/600) * (x1[2] + x1[5] + x2[2] + x2[5])
+        return S1, S2, S3
 
     @staticmethod
     def obj_func_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
-        S1 = 40 - 40/500 * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - 35/400 * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - 32/600 * (x1[2] + x1[5] + x2[2] + x2[5])
+        S1, S2, S3 = A18U.abbreviations(x)
         return (15 - S1)(x1[0] + x1[3]) + (15 - S2)(x1[1] + x1[4]) + (15 - S3)(x1[2] + x1[5])
 
     @staticmethod
     def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
-        S1 = 40 - 40/500 * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - 35/400 * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - 32/600 * (x1[2] + x1[5] + x2[2] + x2[5])
+        S1, S2, S3 = A18U.abbreviations(x)
         return (15 - S1)(x2[0] + x2[3]) + (15 - S2)(x2[1] + x2[4]) + (15 - S3)(x2[2] + x2[3])
    
     @staticmethod
@@ -117,27 +112,21 @@ class A18U:
     def g4(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
-        S1 = 40 - 40/500 * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - 35/400 * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - 32/600 * (x1[2] + x1[5] + x2[2] + x2[5])
+        S1, S2, S3 = A18U.abbreviations(x)
         return abs(S1 - S2) - 1
    
     @staticmethod
     def g5(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
-        S1 = 40 - 40/500 * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - 35/400 * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - 32/600 * (x1[2] + x1[5] + x2[2] + x2[5])
+        S1, S2, S3 = A18U.abbreviations(x)
         return abs(S1 - S3) - 1
 
     @staticmethod
     def g6(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
-        S1 = 40 - 40/500 * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - 35/400 * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - 32/600 * (x1[2] + x1[5] + x2[2] + x2[5])
+        S1, S2, S3 = A18U.abbreviations(x)
         return abs(S2 - S3) - 1
     
     @staticmethod

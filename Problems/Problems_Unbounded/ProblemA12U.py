@@ -31,11 +31,11 @@ class A12U:
 
     @staticmethod
     def constraints():
-        return [A12U.g0]
+        return [A12U.g0, A12U.g1]
 
     @staticmethod
     def constraint_derivatives():
-        return [A12U.g0_der]
+        return [A12U.g0_der, A12U.g1_der]
 
     @staticmethod
     def obj_func_1(x: npt.NDArray[np.float64]) -> float:
@@ -56,19 +56,17 @@ class A12U:
         return grad
     
     @staticmethod
-    def g0():
-        return -10 - np.vstack 
+    def g0(x):
+        return -10 - np.concatenate(x).reshape(-1, 1)
     
     @staticmethod
     def g1(x):
-        x1, x2, x3 = x
-        return np.vstack - 10
+        return np.concatenate(x).reshape(-1,1) - 10
     
     @staticmethod
-    def g0_der():
+    def g0_der(x):
         return -1
     
     @staticmethod
     def g1_der(x):
-        x1, x2, x3 = x
         return 1

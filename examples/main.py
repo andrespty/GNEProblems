@@ -4,7 +4,7 @@ from problems import *
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem_n = A5U
+    problem_n = A18U
     bounded = False
 
     if bounded:

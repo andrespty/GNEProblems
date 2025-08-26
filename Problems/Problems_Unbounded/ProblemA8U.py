@@ -27,7 +27,7 @@ class A8U:
     def define_players():
         player_vector_sizes = [1, 1, 1]
         player_objective_functions = [0, 1, 2]
-        player_constraints = [[0, 1], [0, 1], [None]]
+        player_constraints = [[0, 1, 2], [0, 1, 2], [2, 3]]
         return [player_vector_sizes, player_objective_functions, player_constraints]
 
     @staticmethod
@@ -40,53 +40,50 @@ class A8U:
 
     @staticmethod
     def constraints():
-        return [A8U.g0, A8U.g1]
+        return [A8U.g0, A8U.g1, A8U.g2, A8U.g3]
 
     @staticmethod
     def constraint_derivatives():
-        return [A8U.g0_der, A8U.g1_der]
+        return [A8U.g0_der, A8U.g1_der, A8U.g2_der, A8U.g3_der]
 
     @staticmethod
-    def obj_func_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_1(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
       x1 = x[0]
       x2 = x[1]
       x3 = x[2]
       return -x1
 
     @staticmethod
-    def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_2(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
       x1 = x[0]
       x2 = x[1]
       x3 = x[2]
       return (x2-0.5)**2
 
     @staticmethod
-    def obj_func_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_3(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
       x1 = x[0]
       x2 = x[1]
       x3 = x[2]
       return (x3 - 1.5*x1)**2
 
     @staticmethod
-    def obj_func_der_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        x3 = x[2]
-        return -1
+    def obj_func_der_1(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
+        return np.array(-1).reshape(-1,1)
 
     @staticmethod
-    def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_der_2(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
-        return (2 * x2 - 1)
+        return 2 * x2 - 1
 
     @staticmethod
-    def obj_func_der_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_der_3(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
-        return (2 * x3 - 3 * x1)
+        return 2 * x3 - 3 * x1
 
     @staticmethod
     def g0(x):
@@ -99,9 +96,27 @@ class A8U:
         return (x3 - x1 - x2)[0]
 
     @staticmethod
+    def g2(x):
+        x = np.concatenate(x, axis=0)
+        return 0 - x
+
+    @staticmethod
+    def g3(x):
+        x1, x2, x3 = x
+        return x3 - 2
+
+    @staticmethod
     def g0_der(x1):
         return np.array([[1, 1, 0]]).reshape(-1, 1)
 
     @staticmethod
     def g1_der(x1):
         return np.array([[-1, -1, 0]]).reshape(-1, 1)
+
+    @staticmethod
+    def g2_der(x1):
+        return -1
+
+    @staticmethod
+    def g3_der(x1):
+        return np.array([[0, 0, 1]]).reshape(-1, 1)

@@ -97,7 +97,8 @@ class A7U:
         obj = 0.5 * x.T @ A @ x + x.T @ (B @ x_ni)
         return obj
 
-    def obj_func_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    @staticmethod
+    def obj_func_1(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
@@ -108,7 +109,7 @@ class A7U:
         return A7U.obj_func(x1, x_n1, A1, B1)
 
     @staticmethod
-    def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_2(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
@@ -120,7 +121,7 @@ class A7U:
         return A7U.obj_func(x2, x_n2, A2, B2)
 
     @staticmethod
-    def obj_func_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_3(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
@@ -130,7 +131,8 @@ class A7U:
         x_n3 = np.vstack((x1, x2, x4))
         return A7U.obj_func(x3, x_n3, A3, B3)
 
-    def obj_func_4(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    @staticmethod
+    def obj_func_4(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
@@ -153,7 +155,7 @@ class A7U:
         return obj
 
     @staticmethod
-    def obj_func_der_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_der_1(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
@@ -165,7 +167,7 @@ class A7U:
         return A7U.obj_func_der(x1, x_n1, A1, B1)
 
     @staticmethod
-    def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_der_2(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
@@ -176,7 +178,7 @@ class A7U:
         return A7U.obj_func_der(x2, x_n2, A2, B2)
 
     @staticmethod
-    def obj_func_der_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_der_3(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
@@ -188,14 +190,13 @@ class A7U:
         return A7U.obj_func_der(x3, x_n3, A3, B3)
 
     @staticmethod
-    def obj_func_der_4(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_der_4(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x2 = x[1]
         x3 = x[2]
         x4 = x[3]
         A4 = A7U.matrix()[15:20, 15:20]
         B4 = A7U.matrix()[15:20, 0:15]
-
         x_n4 = np.vstack((x1, x2, x3))
         return A7U.obj_func_der(x4, x_n4, A4, B4)
 
@@ -207,7 +208,7 @@ class A7U:
     @staticmethod
     def g1(x):
         x1, x2, x3, x4 = x
-        return (-x2[1] + 3 * x2[1] - 2 * x2[2] + x2[3] + 3 * x2[4] - 4 + x3[0] - 3 * x3[4] + 2 * x4[2])[0]
+        return (-x2[0] + 3 * x2[1] - 2 * x2[2] + x2[3] + 3 * x2[4] - 4 + x3[0] - 3 * x3[4] + 2 * x4[2])[0]
 
     @staticmethod
     def g2(x):
@@ -231,7 +232,7 @@ class A7U:
     # partial g0 / partial x1
     def g0_der(x1):
         return np.array([[1, 2, -1, 3, -4,
-                          0, -3, 0, 0, 0,
+                          0, 1, -3, 0, 0,
                           0, 0, 0, 0, 0,
                           0, 0, 0, 0, 0]]).reshape(-1, 1)
 
@@ -255,7 +256,7 @@ class A7U:
     # partial g3 / partial x3
     def g3_der(x1):
         return np.array([[1, 1, 0, 0, 0,
-                          0, 0, 0, 0, 0, 
+                          -1, -1, 0, 0, 0,
                           0, 0, 0, 0, 0, 
                           4, -2, -3, -6, 5]]).reshape(-1, 1)
 

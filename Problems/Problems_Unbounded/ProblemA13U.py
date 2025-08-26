@@ -135,7 +135,7 @@ class A13U:
 
     @staticmethod
     def g1(x: npt.NDArray[np.float64]) -> float:
-        return 2.2915 * x[0] + 1.5625 * x[1] + 2.814 * x[2] - 100
+        return 2.2915 * x[0] + 1.5625 * x[1] + 2.8125 * x[2] - 100
 
     @staticmethod
     def g0_der(x: npt.NDArray[np.float64]) -> float:
@@ -143,4 +143,4 @@ class A13U:
 
     @staticmethod
     def g1_der(x: npt.NDArray[np.float64]) -> float:
-        return np.array([[2.2915, 1.5625, 2.814]]).reshape(-1,1)
+        return np.array([[2.2915, 1.5625, 2.8125]]).reshape(-1,1)
