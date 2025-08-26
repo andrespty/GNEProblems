@@ -4,8 +4,8 @@ from problems import *
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem_n = A6
-    bounded = True
+    problem_n = A5U
+    bounded = False
 
     if bounded:
         problem = get_problem(problem_n)

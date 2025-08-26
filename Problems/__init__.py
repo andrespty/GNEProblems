@@ -24,7 +24,6 @@ from .Problems_Bounded import *
 
 __all__ = [
     "A6",
-
     "A1U",
     'A2U',
     'A3U',
