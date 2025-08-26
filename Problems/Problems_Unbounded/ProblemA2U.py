@@ -25,8 +25,8 @@ class A2U:
 
     @staticmethod
     def define_players():
-        B = 1
-        player_vector_sizes = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        n = 10
+        player_vector_sizes = [1 for _ in range(n)]
         player_objective_functions = [0, 1, 1, 1, 1, 0, 0, 0, 0, 0]
         player_constraints = [[2, 3], [0, 4], [0, 4], [0, 4], [0, 1, 4], [0, 1, 4], [0, 4], [0, 4], [0, 4, 5], [0, 4, 6]]
         return [player_vector_sizes, player_objective_functions, player_constraints]
@@ -49,51 +49,92 @@ class A2U:
 
     @staticmethod
     def obj_func_1(x):
-        # x: numpy array (N, 1)
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray shape (any, 1)
+            A list of NumPy arrays to be concatenated along their first axis.
+
+        Returns
+        -------
+        numpy.ndarray shape (any, 1)
+        """
         x = np.concatenate(x).reshape(-1, 1)
-        B = 1
-        S = np.sum(x)
-        obj = (-x / S) * (1 - S / B)
+        b = 1
+        s = np.sum(x)
+        obj = (-x / s) * (1 - s / b)
         return obj
 
     @staticmethod
     def obj_func_2(x):
-        # x: numpy array (N,1)
-        # B: constant
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray shape (any, 1)
+            A list of NumPy arrays to be concatenated along their first axis.
+
+        Returns
+        -------
+        numpy.ndarray shape (any, 1)
+        """
         x = np.concatenate(x).reshape(-1, 1)
-        B = 1
-        S = np.sum(x)
-        obj = (-x / S) * (1 - S / B) ** 2
+        b = 1
+        s = np.sum(x)
+        obj = (-x / s) * (1 - s / b) ** 2
         return obj
 
     @staticmethod
     def obj_func_der_1(x):
-        # x: numpy array (N,1)
-        B = 1
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray shape (any, 1)
+            A list of NumPy arrays to be concatenated along their first axis.
+
+        Returns
+        -------
+        numpy.ndarray shape (any, 1)
+        """
+        b = 1
         x = np.concatenate(x).reshape(-1, 1)
-        S = sum(x)
-        obj = (x - S) / S ** 2 + 1 / B
+        s = sum(x)
+        obj = (x - s) / s ** 2 + 1 / b
         return obj
 
     @staticmethod
     def obj_func_der_2(x):
-        # x: numpy array (N,1)
-        B = 1
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray shape (any, 1)
+            A list of NumPy arrays to be concatenated along their first axis.
+
+        Returns
+        -------
+        numpy.ndarray shape (any, 1)
+        """
+        b = 1
         x = np.concatenate(x).reshape(-1, 1)
-        S = sum(x) + 1e-3
-        obj = (2 * B * (S ** 2) - (B ** 2) * S - S ** 3 - x * (S ** 2) + x * (B ** 2)) / (S ** 2)
+        s = sum(x)
+        obj = (2 * b * (s ** 2) - (b ** 2) * s - s ** 3 - x * (s ** 2) + x * (b ** 2)) / (s ** 2)
         return obj
 
     @staticmethod
     def g0(x):
-        # x: numpy array (N,1)
-        B = 1
-        return sum(x) - B
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray
+
+        Returns
+        -------
+        float
+        """
+        b = 1
+        return sum(x) - b
 
     @staticmethod
     def g1(x):
-        # x: numpy array (N,1)
-        B = 1
         return 0.99 - sum(x)
 
     @staticmethod

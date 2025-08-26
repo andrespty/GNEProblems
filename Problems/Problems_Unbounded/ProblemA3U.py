@@ -47,13 +47,13 @@ class A3U:
 
     A1 = np.array([[20, 5, 3], [5, 5, -5], [3, -5, 15]])
     A2 = np.array([[11, -1], [-1, 9]])
-    A3U = np.array([[48, 39], [39, 53]])
+    A3 = np.array([[48, 39], [39, 53]])
     B1 = np.array([[-6, 10, 11, 20], [10, -4, -17, 9], [15, 8, -22, 21]])
     B2 = np.array([[20, 1, -3, 12, 1], [10, -4, 8, 16, 21]])
     B3 = np.array([[10, -2, 22, 12, 16], [9, 19, 21, -4, 20]])
-    b1 = np.array([[1], [-1], [1]])
-    b2 = np.array([[1], [0]])
-    b3 = np.array([[-1], [2]])
+    b1 = np.array([[1], [-1], [1]]).reshape(-1, 1)
+    b2 = np.array([[1], [0]]).reshape(-1, 1)
+    b3 = np.array([[-1], [2]]).reshape(-1, 1)
 
     # Define Functions below
 
@@ -72,31 +72,58 @@ class A3U:
         return obj
 
     @staticmethod
-    def obj_func_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        A1 = np.array([[20, 5, 3], [5, 5, -5], [3, -5, 15]])
-        B1 = np.array([[-6, 10, 11, 20], [10, -4, -17, 9], [15, 8, -22, 21]])
-        b1 = np.array([[1], [-1], [1]])
+    def obj_func_1(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray
+            List of NumPy arrays (dtype float64).
+            - x[0], x[1], and x[2] are required.
+            - Each element should be compatible with reshaping into column vectors.
+
+        Returns
+        -------
+        float
+        """
         x1 = x[0].reshape(-1,1)
         x_n1 = np.vstack((x[1], x[2])).reshape(-1,1)
-        return A3U.obj_func(x1, x_n1, A1, B1, b1)
+        return A3U.obj_func(x1, x_n1, A3U.A1, A3U.B1, A3U.b1)
 
     @staticmethod
-    def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        A2 = np.array([[11, -1], [-1, 9]])
-        B2 = np.array([[20, 1, -3, 12, 1], [10, -4, 8, 16, 21]])
-        b2 = np.array([[1], [0]])
-        x2 = x[1].reshape(-1,1)
-        x_n2 = np.vstack((x[0], x[2])).reshape(-1,1)
-        return A3U.obj_func(x2, x_n2, A2, B2, b2)
+    def obj_func_2(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray
+            List of NumPy arrays (dtype float64).
+            - x[0], x[1], and x[2] are required.
+            - Each element should be compatible with reshaping into column vectors.
+
+        Returns
+        -------
+        float
+        """
+        x2 = x[1].reshape(-1, 1)
+        x_n2 = np.vstack((x[0], x[2])).reshape(-1, 1)
+        return A3U.obj_func(x2, x_n2, A3U.A2, A3U.B2, A3U.b2)
 
     @staticmethod
     def obj_func_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        A_3 = np.array([[48, 39], [39, 53]])
-        B3 = np.array([[10, -2, 22, 12, 16], [9, 19, 21, -4, 20]])
-        b3 = np.array([[-1], [2]])
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray
+            List of NumPy arrays (dtype float64).
+            - x[0], x[1], and x[2] are required.
+            - Each element should be compatible with reshaping into column vectors.
+
+        Returns
+        -------
+        float
+        """
         x3 = x[2].reshape(-1,1)
         x_n3 = np.vstack((x[0], x[1])).reshape(-1,1)
-        return A3U.obj_func(x3, x_n3, A_3, B3, b3)
+        return A3U.obj_func(x3, x_n3, A3U.A3, A3U.B3, A3U.b3)
 
     @staticmethod
     def obj_func_der(
@@ -114,35 +141,26 @@ class A3U:
 
     @staticmethod
     def obj_func_der_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        A1 = np.array([[20, 5, 3], [5, 5, -5], [3, -5, 15]])
-        B1 = np.array([[-6, 10, 11, 20], [10, -4, -17, 9], [15, 8, -22, 21]])
-        b1 = np.array([[1], [-1], [1]])
         x1 = x[0]
-        x_n1 = np.vstack((x[1], x[2]))
-        return A3U.obj_func_der(x1, x_n1, A1, B1, b1)
+        x_n1 = np.vstack((x[1], x[2])).reshape(-1,1)
+        return A3U.obj_func_der(x1, x_n1, A3U.A1, A3U.B1, A3U.b1)
 
     @staticmethod
     def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        A2 = np.array([[11, -1], [-1, 9]])
-        B2 = np.array([[20, 1, -3, 12, 1], [10, -4, 8, 16, 21]])
-        b2 = np.array([[1], [0]])
         x2 = x[1]
-        x_n2 = np.vstack((x[0], x[2]))
-        return A3U.obj_func_der(x2, x_n2, A2, B2, b2)
+        x_n2 = np.vstack((x[0], x[2])).reshape(-1,1)
+        return A3U.obj_func_der(x2, x_n2, A3U.A2, A3U.B2, A3U.b2)
 
     @staticmethod
     def obj_func_der_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        A_3 = np.array([[48, 39], [39, 53]])
-        B3 = np.array([[10, -2, 22, 12, 16], [9, 19, 21, -4, 20]])
-        b3 = np.array([[-1], [2]])
         x3 = x[2]
-        x_n3 = np.vstack((x[0], x[1]))
-        return A3U.obj_func_der(x3, x_n3, A_3, B3, b3)
+        x_n3 = np.vstack((x[0], x[1])).reshape(-1,1)
+        return A3U.obj_func_der(x3, x_n3, A3U.A3, A3U.B3, A3U.b3)
 
     @staticmethod
     def g0(x):
         x1, x2, x3 = x
-        return (sum(x1) + sum(x2) + sum(x3) - 20)[0]
+        return np.sum(x1) - 20
 
     @staticmethod
     def g1(x):
@@ -152,7 +170,7 @@ class A3U:
     @staticmethod
     def g2(x):
         x1, x2, x3 = x
-        return (x2[0] + x2[1] - x1[1] - x1[2] + x3[0] - 7)[0]
+        return (x2[0] - x2[1] - x1[1] - x1[2] + x3[0] - 7)[0]
 
     @staticmethod
     def g3(x):
@@ -175,19 +193,19 @@ class A3U:
     # partial g0 / partial x2
     # partial g0 / partial x3
     def g0_der(x1):
-        return np.array([[1, 1, 1, 1, 1, 1, 1]]).reshape(-1, 1)
+        return np.array([[1, 1, 1, 0, 0, 0, 0]]).reshape(-1, 1)
 
     @staticmethod
     # partial g1 / partial x1 [1,1,-1]
     # partial g1 / partial x2 [1,0]
     # partial g1 / partial x3 [0,1]
     def g1_der(x1):
-        return np.array([[1, 1, -1, 1, 0, 0, 1]]).reshape(-1, 1)
+        return np.array([[1, 1, -1, -1, 0, 0, 1]]).reshape(-1, 1)
 
     @staticmethod
     # partial g2 / partial x2
     def g2_der(x1):
-        return np.array([[0, -1, -1, 1, 1, 1, 0]]).reshape(-1, 1)
+        return np.array([[0, -1, -1, 1, -1, 1, 0]]).reshape(-1, 1)
 
     @staticmethod
     # partial g3 / partial x3

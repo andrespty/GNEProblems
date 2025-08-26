@@ -47,6 +47,26 @@ class A5U:
         return [A5U.g0_der, A5U.g1_der,A5U.g2_der, A5U.g3_der, A5U.g4_der, A5U.g5_der]
 
     # Define Functions below
+    A1 = np.array([
+        [20, 6, 0],
+        [6, 6, -1],
+        [0, -1, 8]
+    ])
+    B1 = np.array([[-1, -2, -4, -3], [0, -3, 0, -4], [0, 1, 9, 6]])
+    b1 = np.array([[1], [-1], [1]])
+    A2 = np.array([
+        [11, 1],
+        [1, 7]
+    ])
+    B2 = np.array([[-1, 0, 0, -7, 4], [-2, -3, 1, 4, 11]])
+    b2 = np.array([[1], [0]])
+    A3 = np.array([
+        [28, 14],
+        [14, 29]
+    ])
+    B3 = np.array([[-4, 0, 9, -7, 4], [-3, -4, 6, 4, 11]])
+    b3 = np.array([[-1], [2]])
+
 
     @staticmethod
     def obj_func(
@@ -63,48 +83,58 @@ class A5U:
         return obj
 
     @staticmethod
-    def obj_func_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        x3 = x[2]
-        A1 = np.array([
-            [20, 6, 0],
-            [6, 6, -1],
-            [0, -1, 8]
-        ])
-        B1 = np.array([[-1, -2, -4, -3], [0, -3, 0, -4], [0, 1, 9, 6]])
-        b1 = np.array([[1], [-1], [1]])
+    def obj_func_1(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray
+            List of NumPy arrays (dtype float64).
+            - x[0], x[1], and x[2] are required.
+            - Each element should be compatible with reshaping into column vectors.
+
+        Returns
+        -------
+        float
+        """
         x1 = x[0]
         x_n1 = np.vstack((x[1], x[2]))
-        return A5U.obj_func(x1, x_n1, A1, B1, b1)
+        return A5U.obj_func(x1, x_n1, A5U.A1, A5U.B1, A5U.b1)
 
     @staticmethod
-    def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
+    def obj_func_2(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray
+            List of NumPy arrays (dtype float64).
+            - x[0], x[1], and x[2] are required.
+            - Each element should be compatible with reshaping into column vectors.
+
+        Returns
+        -------
+        float
+        """
         x2 = x[1]
-        x3 = x[2]
-        A2 = np.array([
-            [11, 1],
-            [1, 7]
-        ])
-        B2 = np.array([[-1, 0, 0, -7, 4], [-2, -3, 1, 4, 11]])
-        b2 = np.array([[1], [0]])
-        x_n2 = np.vstack((x1, x3))
-        return A5U.obj_func(x2, x_n2, A2, B2, b2)
+        x_n2 = np.vstack((x[0], x[2]))
+        return A5U.obj_func(x2, x_n2, A5U.A2, A5U.B2, A5U.b2)
 
     @staticmethod
-    def obj_func_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
+    def obj_func_3(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray
+            List of NumPy arrays (dtype float64).
+            - x[0], x[1], and x[2] are required.
+            - Each element should be compatible with reshaping into column vectors.
+
+        Returns
+        -------
+        float
+        """
         x3 = x[2]
-        A3 = np.array([
-            [28, 14],
-            [14, 29]
-        ])
-        B3 = np.array([[-4, 0, 9, -7, 4], [-3, -4, 6, 4, 11]])
-        b3 = np.array([[-1], [2]])
-        x_n3 = np.vstack((x1, x2))
-        return A5U.obj_func(x3, x_n3, A3, B3, b3)
+        x_n3 = np.vstack((x[0], x[1]))
+        return A5U.obj_func(x3, x_n3, A5U.A3, A5U.B3, A5U.b3)
 
 
     @staticmethod
@@ -122,53 +152,27 @@ class A5U:
         return obj
 
     @staticmethod
-    def obj_func_der_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        x3 = x[2]
-        A1 = np.array([
-            [20, 6, 0],
-            [6, 6, -1],
-            [0, -1, 8]
-        ])
-        B1 = np.array([[-1, -2, -4, -3], [0, -3, 0, -4], [0, 1, 9, 6]])
-        b1 = np.array([[1], [-1], [1]])
+    def obj_func_der_1(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x1 = x[0]
         x_n1 = np.vstack((x[1], x[2]))
-        return A5U.obj_func_der(x1, x_n1, A1, B1, b1)
+        return A5U.obj_func_der(x1, x_n1, A5U.A1, A5U.B1, A5U.b1)
 
     @staticmethod
-    def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
+    def obj_func_der_2(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x2 = x[1]
-        x3 = x[2]
-        A2 = np.array([
-            [11, 1],
-            [1, 7]
-        ])
-        B2 = np.array([[-1, 0, 0, -7, 4], [-2, -3, 1, 4, 11]])
-        b2 = np.array([[1], [0]])
-        x_n2 = np.vstack((x1, x3))
-        return A5U.obj_func_der(x2, x_n2, A2, B2, b2)
+        x_n2 = np.vstack((x[0], x[2]))
+        return A5U.obj_func_der(x2, x_n2, A5U.A2, A5U.B2, A5U.b2)
 
     @staticmethod
-    def obj_func_der_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
+    def obj_func_der_3(x: list[npt.NDArray[np.float64]]) -> npt.NDArray[np.float64]:
         x3 = x[2]
-        A3 = np.array([
-            [28, 14],
-            [14, 29]
-        ])
-        B3 = np.array([[-4, 0, 9, -7, 4], [-3, -4, 6, 4, 11]])
-        b3 = np.array([[-1], [2]])
-        x_n3 = np.vstack((x1, x2))
-        return A5U.obj_func_der(x3, x_n3, A3, B3, b3)
+        x_n3 = np.vstack((x[0], x[1]))
+        return A5U.obj_func_der(x3, x_n3, A5U.A3, A5U.B3, A5U.b3)
 
     @staticmethod
     def g0(x):
         x1, x2, x3 = x
-        return (sum(x1) + sum(x2) + sum(x3) - 20)[0]
+        return np.sum(x1) - 20
 
     @staticmethod
     def g1(x):
@@ -178,7 +182,7 @@ class A5U:
     @staticmethod
     def g2(x):
         x1, x2, x3 = x
-        return (x2[0] + x2[1] - x1[1] - x1[2] + x3[0] - 7)[0]
+        return (x2[0] - x2[1] - x1[1] - x1[2] + x3[0] - 7)[0]
 
     @staticmethod
     def g3(x):
@@ -198,7 +202,7 @@ class A5U:
     # partial g0 / partial x1
     @staticmethod
     def g0_der(x1):
-        return np.array([[1, 1, 1, 1, 1, 1, 1]]).reshape(-1, 1)
+        return np.array([[1, 1, 1, 0, 0, 0, 0]]).reshape(-1, 1)
 
     # partial g1 / partial x1
     @staticmethod
@@ -208,7 +212,7 @@ class A5U:
     # partial g2 / partial x2
     @staticmethod
     def g2_der(x1):
-        return np.array([[-1, 0, -1, 1, 1, 1, 0]]).reshape(-1, 1)
+        return np.array([[0, -1, -1, 1, -1, 1, 0]]).reshape(-1, 1)
 
     # partial g3 / partial x3
     @staticmethod

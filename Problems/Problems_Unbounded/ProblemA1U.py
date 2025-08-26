@@ -24,9 +24,9 @@ class A1U:
 
     @staticmethod
     def define_players():
-        B = 1
-        player_vector_sizes = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        player_objective_functions = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # change to all 0s
+        n = 10
+        player_vector_sizes = [1 for _ in range(n)]
+        player_objective_functions = [0 for _ in range(n)]  # change to all 0s
         player_constraints = [[1,2], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3], [0,3]]
         return [player_vector_sizes, player_objective_functions, player_constraints]
 
@@ -48,32 +48,54 @@ class A1U:
 
     @staticmethod
     def obj_func(x):
-        # x: numpy array (N, 1)
-        # B: constant
-        x = np.concatenate(x)
-        S = np.sum(x)
-        B=1
-        obj = (-x / S) * (1 - S / B)
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray shape (any, 1)
+            A list of NumPy arrays to be concatenated along their first axis.
+
+        Returns
+        -------
+        numpy.ndarray shape (any, 1)
+        """
+        x = np.concatenate(x).reshape(-1,1)
+        s = np.sum(x)
+        b = 1
+        obj = (-x / s) * (1 - s / b)
         return obj
 
     @staticmethod
     def obj_func_der(x):
-        # x: numpy array (N,1)
-        # B: constant
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray shape (any, 1)
+            A list of NumPy arrays to be concatenated along their first axis.
+
+        Returns
+        -------
+        numpy.ndarray shape (any, 1)
+        """
         x = np.concatenate(x).reshape(-1, 1)
-        B=1
-        S = sum(x)
-        # print(S)
-        obj = ((x - S) / S ** 2) + (1 / B)
+        b = 1
+        s = sum(x)
+        obj = ((x - s) / s ** 2) + (1 / b)
         return obj
 
     # === Constraint Functions ===
     @staticmethod
     def g0(x):
-        # x: numpy array (N,1)
-        # B: constant
-        B=1
-        return sum(x) - B
+        """
+        Parameters
+        ----------
+        x : list of numpy.ndarray
+
+        Returns
+        -------
+        float
+        """
+        b = 1
+        return sum(x) - b
 
     @staticmethod
     def g1(x):
