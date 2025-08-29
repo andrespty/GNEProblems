@@ -28,6 +28,8 @@ from .Problems_Unbounded.ProblemA11U import A11U
 from .Problems_Unbounded.ProblemA12U import A12U
 from .Problems_Unbounded.ProblemA13U import A13U
 from .Problems_Unbounded.ProblemA14U import A14U
+from .Problems_Unbounded.ProblemA15U import A15U
+from .Problems_Unbounded.ProblemA16U import A16U
 from .Problems_Unbounded.ProblemA17U import A17U
 from .Problems_Unbounded.ProblemA18U import A18U
 from .Problems_Bounded import *
@@ -52,6 +54,8 @@ __all__ = [
     'A12U',
     'A13U',
     'A14U',
+    'A15U',
+    'A16U',
     'A17U',
     'A18U',
 ]

@@ -7,6 +7,7 @@ Generalized Nash Equilibrium Problems Solver
 from .GNESolverBounded import *
 from .GNESolverUnbounded import *
 from .core import check_NE, get_problem, get_initial_point, summary
+from .utils import construct_vectors
 
 __all__ = [
     "check_NE",
@@ -15,6 +16,7 @@ __all__ = [
     "get_problem",
     "get_initial_point",
     "summary",
+    "construct_vectors"
 ]
 
 

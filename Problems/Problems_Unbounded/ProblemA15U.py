@@ -28,7 +28,7 @@ class A15U:
     player_vector_sizes = [1, 2, 3]
     player_objective_functions = [0, 1, 2]
     player_constraints = [[0,1] for _ in range(3)]
-    return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
+    return [player_vector_sizes, player_objective_functions, player_constraints]
 
   @staticmethod
   def objective_functions():
@@ -49,15 +49,13 @@ class A15U:
 
   @staticmethod
   def obj_func(
-      x: npt.NDArray[np.float64],
-      c1: npt.NDArray[np.float64],
-      c2: npt.NDArray[np.float64],
-      c3: npt.NDArray[np.float64],
+      x_i: npt.NDArray[np.float64],
+      c_i: npt.NDArray[np.float64],
+      d_i: npt.NDArray[np.float64],
+      e_i: npt.NDArray[np.float64],
       S: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-    x_selected = x[i]
-    obj = (2 * S - 378.4) * np.sum(x_selected) + np.sum(0.5 * c1 * x_selected**2 + c2 * x_selected + c3)
+    obj = (2 * S - 378.4) * np.sum(x_i) + np.sum(0.5 * c_i * x_i**2 + d_i * x_i+ e_i)
     return obj
-
 
   @staticmethod
   def obj_func_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -66,96 +64,73 @@ class A15U:
       x3 = x[2]
       S = np.sum(x1) + np.sum(x2) + np.sum(x3)
       c1 = 0.04
-      c2 = 2.0
-      c3 = 0.0
-      return A15U.obj_func(x, c1, c2, c3, S)
-
+      d1 = 2.0
+      e1 = 0.0
+      return A15U.obj_func(x1, c1, d1, e1, S)
 
   @staticmethod
   def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
       x1 = x[0]
       x2 = x[1]
       x3 = x[2]
-      x4 = x[3]
-      x5 = x[4]
-      x6 = x[5]
-      S = x1 + x2 + x3 + x4 + x5 + x6
-      i = np.array([1, 2])
-      c1 = np.array([0.035, 0.125])
-      c2 = np.array([1.75, 1])
-      c3 = np.array([0.0, 0.0])
-      return A15U.obj_func(x, i, c1, c2, c3, S)
+      S = np.sum(x1) + np.sum(x2) + np.sum(x3)
+      c2 = np.array([0.035, 0.125]).reshape(-1,1)
+      d2 = np.array([1.75, 1]).reshape(-1,1)
+      e2 = np.array([0.0, 0.0]).reshape(-1,1)
+      return A15U.obj_func(x2, c2, d2, e2, S)
 
   @staticmethod
   def obj_func_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
       x1 = x[0]
       x2 = x[1]
       x3 = x[2]
-      x4 = x[3]
-      x5 = x[4]
-      x6 = x[5]
-      S = x1 + x2 + x3 + x4 + x5 + x6
-      i = np.array([3, 4, 5])
-      c1 = np.array([0.0166, 0.05, 0.05])
-      c2 = np.array([3.25, 3.0, 3.0])
-      c3 = np.array([0.0, 0.0, 0.0])
-      return A15U.obj_func(x, i, c1, c2, c3, S)
+      S = np.sum(x1) + np.sum(x2) + np.sum(x3)
+      c3 = np.array([0.0166, 0.05, 0.05]).reshape(-1,1)
+      d3 = np.array([3.25, 3.0, 3.0]).reshape(-1,1)
+      e3 = np.array([0.0, 0.0, 0.0]).reshape(-1,1)
+      return A15U.obj_func(x3, c3, d3, e3, S)
 
 
   @staticmethod
-  def obj_func_der(x: npt.NDArray[np.float64],
-      i: npt.NDArray[np.float64],
-      c1: npt.NDArray[np.float64],
-      c2: npt.NDArray[np.float64],
+  def obj_func_der(x_i: npt.NDArray[np.float64],
+      c_i: npt.NDArray[np.float64],
+      d_i: npt.NDArray[np.float64],
       S: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-    x_selected = x[i]
-    obj = 2 * x_selected + (2 * S - 378.4) + c1 * x_selected + c2
+    obj = 2 * x_i + (2 * S - 378.4) + c_i * x_i+ d_i
     return obj
 
 
   @staticmethod
   def obj_func_der_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-      x1 = x[0]
-      x2 = x[1]
-      x3 = x[2]
-      x4 = x[3]
-      x5 = x[4]
-      x6 = x[5]
-      S = x1 + x2 + x3 + x4 + x5 + x6
-      i = np.array([0])
+      x1 = x[0].reshape(-1,1)
+      x2 = x[1].reshape(-1,1)
+      x3 = x[2].reshape(-1,1)
+      S = np.sum(x1) + np.sum(x2) + np.sum(x3)
       c1 = 0.04
-      c2 = 2.0
-      return A15U.obj_func_der(x, i, c1, c2, S)
+      d1 = 2.0
+      return A15U.obj_func_der(x1, c1, d1, S)
 
 
   @staticmethod
   def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-      x1 = x[0]
-      x2 = x[1]
-      x3 = x[2]
-      x4 = x[3]
-      x5 = x[4]
-      x6 = x[5]
-      S = x1 + x2 + x3 + x4 + x5 + x6
-      i = np.array([1, 2])
-      c1 = np.array([0.035, 0.125])
-      c2 = np.array([1.75, 1])
-      return A15U.obj_func_der(x, i, c1, c2, S)
+      x1 = x[0].reshape(-1,1)
+      x2 = x[1].reshape(-1,1)
+      x3 = x[2].reshape(-1,1)
+      S = np.sum(x1) + np.sum(x2) + np.sum(x3)
+      c2 = np.array([0.035, 0.125]).reshape(-1,1)
+      d2 = np.array([1.75, 1]).reshape(-1,1)
+      return A15U.obj_func_der(x2, c2, d2, S)
 
 
   @staticmethod
   def obj_func_der_3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-      x1 = x[0]
-      x2 = x[1]
-      x3 = x[2]
-      x4 = x[3]
-      x5 = x[4]
-      x6 = x[5]
-      S = x1 + x2 + x3 + x4 + x5 + x6
-      i = np.array([3, 4, 5])
-      c1 = np.array([0.0166, 0.05, 0.05])
-      c2 = np.array([3.25, 3.0, 3.0])
-      return A15U.obj_func_der(x, i, c1, c2, S)
+      x1 = x[0].reshape(-1,1)
+      x2 = x[1].reshape(-1,1)
+      x3 = x[2].reshape(-1,1)
+      S = np.sum(x1) + np.sum(x2) + np.sum(x3)
+      c3 = np.array([0.0166, 0.05, 0.05]).reshape(-1,1)
+      d3 = np.array([3.25, 3.0, 3.0]).reshape(-1,1)
+      return A15U.obj_func_der(x3, c3, d3, S)
 
   @staticmethod
   def g0(x):
@@ -164,7 +139,7 @@ class A15U:
 
   @staticmethod
   def g1(x):
-      x = np.concatenate(x)
+      x = np.concatenate(x).reshape(-1,1)
       upper_bounds = np.array([80, 80, 50, 55, 30, 40]).reshape(-1, 1)
       return x - upper_bounds
 
