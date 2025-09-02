@@ -141,7 +141,6 @@ class GNEP_Solver_Unbounded:
         """
         Input:
           initial_guess: python list of all players' actions
-          bounds: python list of bounds for each player
         Output:
           result: scipy.optimize.optimize.OptimizeResult object
           time: float
@@ -164,24 +163,3 @@ class GNEP_Solver_Unbounded:
         self.result = result
         self.time = elapsed_time
         return result, elapsed_time
-
-
-    #
-    # def nash_check(self, epsilon=1e-3):
-    #     if not self.result:
-    #         print('No solution found')
-    #         return
-    #     print("Checking Nash Equilibrium")
-    #     computed_NE = np.array(self.result.x[:sum(self.action_sizes)]).reshape(-1,1)
-    #     check_nash_equillibrium(
-    #       computed_NE,
-    #       self.action_sizes,
-    #       self.player_objective_function,
-    #       self.objective_functions,
-    #       self.constraints,
-    #       self.player_constraints,
-    #       self.bounds,
-    #       paper_res=self.result.x[:sum(self.action_sizes)] if self.result.x is not None else None
-    #     )
-    #     print('Check finished')
-    #     return

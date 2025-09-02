@@ -9,7 +9,7 @@ import numpy.typing as npt
 from .misc import *
 
 def construct_vectors(
-    actions: npt.NDArray[np.float64],
+    actions: List[float],
     action_sizes: List[int]
 ) -> List[npt.NDArray[np.float64]]:
     """
@@ -44,7 +44,7 @@ def construct_vectors(
      array([[3.],
             [4.]])]
     """
-    value_array = np.array(actions)
+    value_array = np.array(actions).reshape(-1,1)
     indices = np.cumsum(action_sizes)
     return np.split(value_array, indices[:-1])
 
@@ -243,7 +243,6 @@ def constraint_check(
         else:
             constraint_values.append(c)
             constraint_satisfaction.append(True)
-            print("All constraints satisfied")
     return constraint_values, constraint_satisfaction
 
 def compare_solutions(

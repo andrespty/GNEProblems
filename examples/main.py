@@ -4,7 +4,7 @@ from problems import *
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem_n = A16U
+    problem_n = A18U
     bounded = False
 
     if bounded:
@@ -57,7 +57,7 @@ if __name__ == '__main__':
             player_vector_sizes,
         )
         # Set Initial Point
-        primal, dual = get_initial_point(player_vector_sizes, problem['constraints'], primal_ip=10, dual_ip=1)
+        primal, dual = get_initial_point(player_vector_sizes, problem['constraints'], primal_ip=0.01, dual_ip=1)
         print(flatten_variables(primal, dual))
         # # Solve Problem
         ip1 = flatten_variables(primal, dual)
@@ -79,7 +79,7 @@ if __name__ == '__main__':
             problem['obj_funcs'],
             problem['constraints'],
             player_constraints,
-            single_obj_vector=True
+            single_obj_vector=False
         )
         print(isNE)
 

@@ -31,7 +31,7 @@ class A9aU:
     @staticmethod
     def obj_func(x):
         # x: list of vectors
-        sum_x = [np.sum(x_i) for x_i in x]
+        sum_x = np.array([np.sum(x_i) for x_i in x]).reshape(-1,1)
         return sum_x
 
     @staticmethod

@@ -8,7 +8,6 @@ from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
 
 class A3U:
-
     @staticmethod
     def paper_solution():
         value_1 = [-0.38046562696258, -0.12266997083581, -0.99322817120517,
