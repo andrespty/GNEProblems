@@ -1,3 +1,3 @@
-from library import *
+from gne_solver import *
 
 # check_NE()

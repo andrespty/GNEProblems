@@ -6,7 +6,7 @@ from scipy.optimize import basinhopping
 import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
-from library.misc import *
+from gne_solver.misc import *
 
 class A4dev:
     @staticmethod

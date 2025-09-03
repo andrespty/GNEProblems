@@ -1,8 +1,7 @@
-from library.GNESolverUnbounded import *
-from library.misc import *
+from gne_solver.GNESolverUnbounded import *
+from gne_solver.misc import *
 # from Problems_Bounded.ProblemA8 import A8
 # from ProblemA8_BL import A8_BL
-from development.ProblemA2dev import A2_BL
 
 
 def get_problem(problem_n):

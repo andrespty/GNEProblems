@@ -13,29 +13,32 @@ def flatten_variables(
     scalars: Union[List[float], npt.NDArray[np.float64]]
 ) -> List[float]:
     """
-    Flatten a list of vectors and optional scalars into a single 1D array.
+    Flatten a collection of vectors and scalars into a single list.
 
-    This is useful for optimization routines that require all variables
-    in a flat array.
+    This utility is typically used in optimization routines that require
+    all decision variables to be represented as a flat one-dimensional array.
 
     Parameters
     ----------
     vectors : list of numpy.ndarray
-        List of 2D arrays (e.g., each shape (n_i, 1)) to flatten.
+        List of one- or two-dimensional arrays (commonly column vectors
+        with shape ``(n_i, 1)``) to be flattened.
     scalars : list of float or numpy.ndarray
-        Optional list/array of scalar values to append after flattening vectors.
+        Scalars to append after the flattened vectors. Can be provided
+        either as a Python list of floats or as a NumPy array of shape ``(m,)``.
 
     Returns
     -------
-    numpy.ndarray
-        1D array containing all flattened vectors followed by the scalars.
+    list of float
+        A flat list containing all vector entries followed by the scalars.
 
     Examples
     --------
-    >> vectors = [np.array([[1],[2]]), np.array([[3]])]
-    >> scalars = [4, 5]
-    >> flatten_variables(vectors, scalars)
-    array([1., 2., 3., 4., 5.])
+    >>> import numpy as np
+    >>> vectors = [np.array([[1.0], [2.0]]), np.array([[3.0]])]
+    >>> scalars = [4.0, 5.0]
+    >>> flatten_variables(vectors, scalars)
+    [1.0, 2.0, 3.0, 4.0, 5.0]
     """
     return np.hstack([v.flatten() for v in vectors] + [scalars]).tolist()
 
@@ -60,10 +63,12 @@ def deconstruct_vectors(
         2D column vector of shape (sum(n_i), 1) containing all elements
         concatenated vertically.
 
+    See Also: [`gne_solver.misc.flatten_variables`](gne_solver.misc.flatten_variables) LINK
+
     Examples
     --------
-    >> vectors = [np.array([[1],[2]]), np.array([[3]])]
-    >> deconstruct_vectors(vectors)
+    >>> vectors = [np.array([[1],[2]]), np.array([[3]])]
+    >>> deconstruct_vectors(vectors)
     array([[1],
            [2],
            [3]])

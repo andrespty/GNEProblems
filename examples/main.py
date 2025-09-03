@@ -1,10 +1,11 @@
-from library import *
-from library.misc import *
+from gne_solver import *
+from gne_solver.misc import *
 from problems import *
+from development.NashCheck import *
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem_n = A18U
+    problem_n = A1U
     bounded = False
 
     if bounded:
@@ -79,9 +80,10 @@ if __name__ == '__main__':
             problem['obj_funcs'],
             problem['constraints'],
             player_constraints,
-            single_obj_vector=False
+            single_obj_vector=True
         )
         print(isNE)
+        # nash_check(problem_n, res.x[:sum(player_vector_sizes)], single_obj_vector=True)
 
 
 

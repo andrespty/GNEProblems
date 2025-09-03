@@ -7,9 +7,6 @@ import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
 
-from GNESolver5 import check_nash_equillibrium
-
-
 class A2dev:
     @staticmethod
     def paper_solution():

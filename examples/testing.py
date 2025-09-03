@@ -1,5 +1,5 @@
-from library import *
-from library.misc import *
+from gne_solver import *
+from gne_solver.misc import *
 from problems import *
 
 if __name__ == '__main__':

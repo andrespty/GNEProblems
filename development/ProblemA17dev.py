@@ -7,7 +7,7 @@ import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
 
-from library.misc import construct_vectors
+from gne_solver.misc import construct_vectors
 
 
 class A17dev:
