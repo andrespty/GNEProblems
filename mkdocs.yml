@@ -2,8 +2,13 @@ site_name: "Generalized Nash Equilibrium Solver"
 
 theme:
   name: material
+  palette:
+    primary: blue grey
+  features:
+    - navigation.tabs
 
 plugins:
+  - awesome-pages
   - search
   - mkdocstrings:
       handlers:
@@ -18,4 +23,10 @@ plugins:
 # https://www.mkdocs.org/user-guide/writing-your-docs/#file-layout
 nav:
   - Home: index.md
+  - User Guide: user_guide.md
+  - Installation: installation.md
   - API Reference: reference.md
+  - Examples: examples.md
+  - Development:
+      - Overview: development/overview.md
+      - Standards: development/standards.md

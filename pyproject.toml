@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gne_solver*"]
+
+[project]
+name = "gne-solver"
+version = "0.1.0"
+description = "Solvers and utilities to compute Generalized Nash Equilibrium"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+  {name = "Andres E. Ho Lee", email = "aeh19f@fsu.edu"}
+]
+#license = {file = "LICENSE"}
+keywords = ["game-theory", "nash", "solver", "game-theory-solver", "generalized-nash-equilibrium"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent"
+]
+
+dependencies = [
+  "numpy>=1.25",
+  "scipy>=1.11"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+  "pytest-cov",
+  "black",
+  "flake8",
+  "mypy",
+  "pre-commit",
+  "build",
+  "twine"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/game-theory-solver"
+"Bug Tracker" = "https://github.com/yourusername/game-theory-solver/issues"
