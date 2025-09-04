@@ -6,8 +6,12 @@ from scipy.optimize import basinhopping
 import timeit
 from typing import List, Tuple, Dict, Optional, Callable
 import numpy.typing as npt
+from numpy.typing import NDArray
 from .misc import *
 from .utils import *
+
+Vector = NDArray[np.float64]
+Matrix = NDArray[np.float64]
 
 class GNEP_Solver_Unbounded:
     def __init__(self,
@@ -29,7 +33,7 @@ class GNEP_Solver_Unbounded:
         self.action_sizes =                     np.array(player_vector_sizes)    # size of each player's action vector
         self.N =                                len(player_obj_func)
 
-    def wrapper(self, initial_actions: List[float]) -> float:
+    def wrapper(self, initial_actions: List[float]):
         """
         Input:
           initial_actions: python list of all players' actions
@@ -37,11 +41,11 @@ class GNEP_Solver_Unbounded:
           total energy: float value
         """
         actions_count = sum(self.action_sizes)
-        actions = np.array(initial_actions[:actions_count]).reshape(-1,1)
-        dual_actions = np.array(initial_actions[actions_count:]).reshape(-1,1)
+        actions = np.array(initial_actions[:actions_count], dtype=np.float64).reshape(-1,1)
+        dual_actions = np.array(initial_actions[actions_count:], dtype=np.float64).reshape(-1,1)
         return self.energy_function(actions, dual_actions)
 
-    def energy_function(self, actions: npt.NDArray[np.float64], dual_actions: npt.NDArray[np.float64]) -> float:
+    def energy_function( self, actions: Vector, dual_actions: Vector):
         """
         Input:
           actions: 2d np.array shape (sum(number of actions),1)   i.e. [[1], [2], [3], ..., [number of actions]]
@@ -65,7 +69,7 @@ class GNEP_Solver_Unbounded:
         else:
             return np.square(gradient)
 
-    def primal_energy_function(self, actions: npt.NDArray[np.float64], dual_actions: npt.NDArray[np.float64]) -> float:
+    def primal_energy_function(self, actions: Vector, dual_actions: Vector):
         """
         Input:
           actions: 2d np.array shape (sum(number of actions),1)
@@ -76,7 +80,7 @@ class GNEP_Solver_Unbounded:
         gradient = self.calculate_gradient(actions, dual_actions)
         return self.energy_handler(gradient, actions)
 
-    def dual_energy_function(self, actions: npt.NDArray[np.float64], dual_actions: npt.NDArray[np.float64]) -> float:
+    def dual_energy_function(self, actions: Vector, dual_actions: Vector):
         """
         Input:
           actions: 2d np.array shape (sum(number of actions),1)
@@ -137,7 +141,11 @@ class GNEP_Solver_Unbounded:
         g_dual = np.concatenate(grad_dual).reshape(-1, 1)
         return g_dual
 
-    def solve_game(self, initial_guess: List[float], disp=True):
+    def solve_game(
+            self,
+            initial_guess: List[float],
+            disp: bool=True
+    ):
         """
         Input:
           initial_guess: python list of all players' actions
