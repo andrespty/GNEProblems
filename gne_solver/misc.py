@@ -8,10 +8,7 @@ from typing import List, Tuple, Dict, Optional, Callable, Union
 import numpy.typing as npt
 
 
-def flatten_variables(
-    vectors: List[npt.NDArray[np.float64]],
-    scalars: Union[List[float], npt.NDArray[np.float64]]
-) -> List[float]:
+def flatten_variables(vectors,scalars):
     """
     Flatten a collection of vectors and scalars into a single list.
 
@@ -43,9 +40,7 @@ def flatten_variables(
     return np.hstack([v.flatten() for v in vectors] + [scalars]).tolist()
 
 
-def deconstruct_vectors(
-    vectors: List[npt.NDArray[np.float64]]
-) -> npt.NDArray[np.float64]:
+def deconstruct_vectors(vectors):
     """
     Concatenate a list of 2D arrays into a single column vector.
 
@@ -143,93 +138,3 @@ def repeat_items(items: List[Union[int, float]], sizes: List[int]) -> np.ndarray
     array([1, 1, 2, 2, 2, 3, 4, 4, 4, 4, 5])
     """
     return np.array(np.repeat(items, sizes, axis=0).tolist())
-
-
-
-
-
-
-# def check_nash_equillibrium(
-#         result: List[np.float64],
-#         action_sizes: List[int],
-#         player_objective_function: List[int],
-#         objective_functions: List[Callable[[npt.NDArray[np.float64]], npt.NDArray[np.float64]]],
-#         constraints: List[Callable[[npt.NDArray[np.float64]], npt.NDArray[np.float64]]],
-#         player_constraints: List[List[int]],
-#         bounds: List[Tuple[float, float]],
-#         paper_res: List[float] = None,
-#         epsilon=1e-3
-# ):
-#     computed_NE = np.array(result).reshape(-1, 1)
-#     computed_NE_vectors = construct_vectors(computed_NE, action_sizes)
-#     print('Computed Solution: \n', computed_NE_vectors)
-#     action_splits = np.cumsum(np.insert(action_sizes, 0, 0))
-#
-#     # Get the obj function values at the current NE
-#     computed_NE_obj_func = objective_check(objective_functions, computed_NE_vectors)
-#     print('Computed Objective Function: \n', np.array(computed_NE_obj_func).reshape(-1, 1))
-#
-#     # Check that constraints are being satisfied
-#     if not constraint_check(constraints, computed_NE_vectors):
-#         return
-#
-#     if paper_res is not None:
-#         compare_solutions(
-#             computed_NE,
-#             paper_res,
-#             action_sizes,
-#             objective_functions,
-#         )
-#     print('--------------------------------------')
-#     # Optimize each player by fixing the opponents
-#     for player_idx, p_o_idx in enumerate(player_objective_function):
-#         p_var = computed_NE_vectors[player_idx]
-#         p_objective = objective_functions[p_o_idx]  # this is a function
-#         p_constraints = [constraints[c_idx] for c_idx in player_constraints[p_o_idx] if c_idx]
-#
-#         wrapped_p_objective = create_wrapped_function(p_objective, computed_NE_vectors, player_idx)
-#
-#         optimization_constraints = [
-#             {'type': 'ineq', 'fun': lambda x: create_wrapped_function(constraint, computed_NE_vectors, player_idx)(x)}
-#             for constraint in p_constraints
-#         ]
-#
-#         p_var_0 = np.zeros_like(p_var).flatten()
-#         # p_var_0 = p_var.flatten()
-#         player_bounds = bounds[action_splits[player_idx]:action_splits[player_idx + 1]]
-#         result = minimize(
-#             wrapped_p_objective,
-#             p_var_0,
-#             method='SLSQP',
-#             bounds=player_bounds,
-#             constraints=optimization_constraints,
-#             options={
-#                 'disp': False,
-#                 'maxiter': 1000,
-#                 'ftol': 1e-5
-#             }
-#         )
-#         # Report
-#         fixed_vars = computed_NE_vectors[:player_idx] + computed_NE_vectors[player_idx + 1:]
-#         opt_actions = np.array(result.x).reshape(-1, 1)
-#         new_vars = fixed_vars[:player_idx] + [opt_actions] + fixed_vars[player_idx:]
-#         opt_obj_func = objective_check(objective_functions, new_vars)
-#         print(f"Player {player_idx + 1}")
-#         print(f"Optimized Actions: {result.x}\nOptimized Function value: {result.fun}")
-#         print('Optimized Objective Functions: \n', np.array(opt_obj_func).reshape(-1, 1))
-#         constraint_check(constraints, new_vars)
-#         difference = compare_solutions(
-#             computed_NE,
-#             deconstruct_vectors(new_vars),
-#             action_sizes,
-#             objective_functions,
-#             solution_name=['Computed', 'Optimized']
-#         )
-#         print(f"Difference between Objective Functions of Player {player_idx + 1}: {difference[p_o_idx]}")
-#         if difference[p_o_idx] > epsilon:
-#             print('Not at the NE')
-#         else:
-#             print(f"Computed Solution is at the NE for Player {player_idx + 1}")
-#         print('--------------------------------------')
-#     return
-
