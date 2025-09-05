@@ -1,7 +1,5 @@
 from gne_solver import *
-from gne_solver.misc import *
-from problems import *
-from development.NashCheck import *
+from gne_solver.NashCheck import *
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
