@@ -659,8 +659,6 @@
     <div class="doc doc-contents first">
 
         <p>Flatten a collection of vectors and scalars into a single list.</p>
-<p>This utility is typically used in optimization routines that require
-all decision variables to be represented as a flat one-dimensional array.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -676,59 +674,17 @@ all decision variables to be represented as a flat one-dimensional array.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>vectors</code>
+                <code>Returns</code>
             </td>
             <td>
-                  <code>list of numpy.ndarray</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of one- or two-dimensional arrays (commonly column vectors
-with shape <code>(n_i, 1)</code>) to be flattened.</p>
+                
               </div>
             </td>
             <td>
                 <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>scalars</code>
-            </td>
-            <td>
-                  <code>list of float or numpy.ndarray</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Scalars to append after the flattened vectors. Can be provided
-either as a Python list of floats or as a NumPy array of shape <code>(m,)</code>.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code>list of float</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A flat list containing all vector entries followed by the scalars.</p>
-              </div>
             </td>
           </tr>
       </tbody>
@@ -740,7 +696,7 @@ either as a Python list of floats or as a NumPy array of shape <code>(m,)</code>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">vectors</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">]]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.0</span><span class="p">]])]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scalars</span> <span class="o">=</span> <span class="p">[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">flatten_variables</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">scalars</span><span class="p">)</span>
-<span class="go">[1.0, 2.0, 3.0, 4.0, 5.0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">]</span>
 </code></pre></div>
 
 
