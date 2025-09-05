@@ -5,7 +5,7 @@ from development.NashCheck import *
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem_n = A1U
+    problem_n = A2U
     bounded = False
 
     if bounded:
@@ -71,18 +71,18 @@ if __name__ == '__main__':
             player_vector_sizes
         )
         # solver1.summary()
-        print('\n\n')
-        print('Check NE')
-        isNE = check_NE(
-            res.x[:sum(player_vector_sizes)],
-            player_vector_sizes,
-            player_objective_functions,
-            problem['obj_funcs'],
-            problem['constraints'],
-            player_constraints,
-            single_obj_vector=True
-        )
-        print(isNE)
+        # print('\n\n')
+        # print('Check NE')
+        # isNE = check_NE(
+        #     res.x[:sum(player_vector_sizes)],
+        #     player_vector_sizes,
+        #     player_objective_functions,
+        #     problem['obj_funcs'],
+        #     problem['constraints'],
+        #     player_constraints,
+        #     single_obj_vector=True
+        # )
+        # print(isNE)
         # nash_check(problem_n, res.x[:sum(player_vector_sizes)], single_obj_vector=True)
 
 

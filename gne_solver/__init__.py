@@ -7,6 +7,8 @@ from .GNESolverUnbounded import *
 from .core import check_NE, get_problem, get_initial_point, summary
 from .utils import construct_vectors
 from .misc import flatten_variables
+from .types import *
+
 __all__ = [
     "check_NE",
     "GNEP_Solver_Unbounded",

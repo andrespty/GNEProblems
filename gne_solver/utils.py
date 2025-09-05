@@ -87,7 +87,6 @@ def constraint_check(constraints: List[ConsFunction], actions: VectorList, epsil
     for c_idx, constraint in enumerate(constraints):
         c = constraint(actions)
         if not np.all(np.ravel(c) <= epsilon):
-            print(f"CONSTRAINT VIOLATION: {c_idx}, {c}")
             constraint_values.append(c)
             constraint_satisfaction.append(False)
         else:

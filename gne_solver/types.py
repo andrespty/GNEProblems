@@ -1,4 +1,4 @@
-from typing import List, Tuple, Dict, Optional, Callable, Union, TypeAlias
+from typing import List, Tuple, Dict, Optional, Callable, Union
 from numpy.typing import NDArray
 import numpy as np
 
