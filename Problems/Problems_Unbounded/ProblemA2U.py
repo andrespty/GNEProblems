@@ -62,7 +62,7 @@ class A2U:
         x = np.concatenate(x).reshape(-1, 1)
         b = 1
         s = np.sum(x)
-        obj = (-x / s) * (1 - s / b)
+        obj = -(x / s) * (1 - s / b)
         return obj
 
     @staticmethod

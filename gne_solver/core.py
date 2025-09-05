@@ -1,13 +1,15 @@
 from .utils import *
 from .misc import *
+from .types import *
+from scipy.optimize import minimize
 
 def check_NE(
-        result: List[np.float64],
+        result: List[float],
         action_sizes: List[int],
         player_objective_function: List[int],
-        objective_functions: List[Callable[[npt.NDArray[np.float64]], npt.NDArray[np.float64]]],
-        constraints: List[Callable[[npt.NDArray[np.float64]], npt.NDArray[np.float64]]],
-        player_constraints: List[List[int]],
+        objective_functions: List[ObjFunction],
+        constraints: List[ConsFunction],
+        player_constraints: List[PlayerConstraint],
         paper_res: List[float] = None,
         epsilon=1e-3,
         single_obj_vector=False
@@ -31,7 +33,7 @@ def check_NE(
 
     if paper_res is not None:
         compare_solutions(
-            res,
+            result,
             paper_res,
             action_sizes,
             objective_functions,
@@ -89,7 +91,7 @@ def check_NE(
             continue
 
         difference = compare_solutions(
-            res,
+            result,
             deconstruct_vectors(new_vars),
             action_sizes,
             objective_functions,
@@ -122,23 +124,4 @@ def get_initial_point(action_sizes, player_constraints, primal_ip=0.01, dual_ip=
     dual = [dual_ip for _ in range(length)]
     return primal, dual
 
-def calculate_main_objective(self, actions):
-    objective_values_matrix = [
-        self.objective_functions[idx](actions) for idx in self.player_objective_function
-    ]
-    return np.array(deconstruct_vectors(objective_values_matrix))
 
-def summary(result, time, wrapper, action_sizes, paper_res=None):
-    print(result.x)
-    print('Time: ', time)
-    print('Iterations: ', result.nit)
-    if paper_res:
-        print('Paper Result: \n', paper_res)
-    print('Solution: \n', result.x)
-    print('Total Energy: ', wrapper(result.x))
-    if paper_res:
-        paper = np.array(paper_res).reshape(-1,1)
-        computed_actions = np.array(result.x[:sum(action_sizes)]).reshape(-1,1)
-        calculated_obj = calculate_main_objective(construct_vectors(computed_actions, action_sizes))
-        paper_obj = calculate_main_objective(construct_vectors(paper, action_sizes))
-        print('Difference: ', sum(deconstruct_vectors(calculated_obj)) - sum(deconstruct_vectors(paper_obj)))
