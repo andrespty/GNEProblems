@@ -1,5 +1,5 @@
 """
-Generalized Nash Equilibrium Problems Solver
+Generalized Nash Equilibrium problems Solver
 ---------------------------------------------
 """
 from .GNESolverBounded import *
