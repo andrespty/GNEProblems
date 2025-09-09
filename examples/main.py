@@ -7,7 +7,7 @@ if __name__ == '__main__':
     problem_n = A1U
     bounded = False
     single_obj_vector = True
-    # Github
+    add_variable=True
 
     if bounded:
         problem = get_problem(problem_n)
