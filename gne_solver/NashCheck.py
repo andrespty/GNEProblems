@@ -8,9 +8,10 @@ def nash_check(
         single_obj_vector,
         paper_result:List[float]=None,
         opt_method='trust-constr', #SLSQP
-        epsilon=1e-3
+        epsilon=1e-2
 ):
-    #--------------Set up of the problem----------------
+    # Set up of the problem------------------------------------------------
+    constraints_satisfied = False
     problem = get_problem(problem_n)
     players = problem['players']
     objective_funcs = problem['obj_funcs']
@@ -22,7 +23,7 @@ def nash_check(
     result = np.array(results).reshape(-1, 1)
     res_vector = construct_vectors(result, player_vector_sizes)
 
-    #--------------- Values of solution ----------------
+    # Values of solution ------------------------------------------------
     obj_func_vals = objective_check(objective_funcs, res_vector)
     print('Computed Objective Function: \n', obj_func_vals)
 
@@ -31,17 +32,19 @@ def nash_check(
     print('Constraints conclusion:')
     if all(constraint_sat):
         print('Satisfied')
+        constraints_satisfied = True
         # print(constraint_vals)
     else:
         print('Not Satisfied')
         failed = [i for i, sat in enumerate(constraint_sat) if not sat]
         print(f"Unsatisfied constraint IDs: {failed}")
+        constraints_satisfied = False
         # print("Corresponding values:", [constraint_vals[i] for i in failed])
 
     print('--------------------------------------')
 
+    # Fix other players and optimize each player -----------------------
     conclusion = []
-    # Optimize each player by fixing the opponents
     for player_idx, p_o_idx in enumerate(player_objective_functions):
         print(f"Player {player_idx + 1}")
         p_var = res_vector[player_idx]
@@ -59,7 +62,7 @@ def nash_check(
         )
 
 
-        #--------------Report----------------
+        # Report---------------------------------------------------------------
         fixed_vars = res_vector[:player_idx] + res_vector[player_idx + 1:]
         opt_actions = np.array(min_result.x).reshape(-1, 1)
         new_vars = fixed_vars[:player_idx] + [opt_actions] + fixed_vars[player_idx:]
@@ -67,6 +70,7 @@ def nash_check(
         opt_obj_func = objective_check(objective_funcs, new_vars)
         opt_constraint_vals, opt_constraint_sat = constraint_check(constraints, new_vars)
 
+        # Optimized values check and constraints--------------------------------
         print(f"Optimized Actions: {opt_actions}")
         print('Optimized Objective Functions: \n', np.array(opt_obj_func).reshape(-1, 1))
         print("Constraints conclusion:")
@@ -81,6 +85,7 @@ def nash_check(
             # print("Corresponding values:", [constraint_vals[i] for i in failed])
             continue
 
+        # Comparing optimized solution with algorithms solution--------------------------------
         difference = compare_solutions(
             results,
             np.concatenate(new_vars).reshape(-1).tolist(),
@@ -95,15 +100,25 @@ def nash_check(
         else:
             print(f"Computed Solution is at the NE for Player {player_idx + 1}")
             conclusion.append(True)
+        print("--------------------------")
 
-    print('Nash Equilibrium:')
-    print(conclusion)
+    # Conclusion of our solution------------------------------------------------
+    # 1. If optimization doesn't satisfy constraints: True
+    # 2. If optimization doesn't obtain a better obj function: True
+    # 3. If optimization obtains better obj function: False
+    print("CONCLUSION")
+    print('Our solution satisfies constraints?: ', constraints_satisfied)
+    if constraints_satisfied:
+        print('Did we compute better solution than optimization?:')
+        print(conclusion)
+        if all(conclusion):
+            print("Our algorithm computed the Nash Equilibrium!")
+            print("Optimization could not improve our solution")
+
+    else:
+        print("Our algorithm did not compute the Nash Equilibrium")
+        print("Constraints are not satisfied")
+        print('Did we compute better solution than optimization?:')
+        print(conclusion)
+
     return
-
-# ip = [1,2,3,4,4,5,5]
-# # res = [-8.03912601e-01, -3.06214541e-01, -2.35408803e+00,  9.70149229e-01,
-# #   3.12283064e+00,  7.51199635e-02, -1.28107603e-01 ]
-# res = [ 2.99985171e-01,  1.60834624e-01,  1.64467896e-01,  1.59598661e-01,
-#   1.44111185e-01,  1.15865596e-02,  1.19428749e-02,  1.19453955e-02,
-#   1.47368133e-02,  1.16354134e-02 ]
-# nash_check(A2U, res, True)
