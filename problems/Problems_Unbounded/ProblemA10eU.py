@@ -170,12 +170,14 @@ class A10eU:
 
     @staticmethod
     def g0_der(x):
+        x = np.concatenate(x).reshape(-1, 1)
         y = 2 * x[:A10eU.F*A10eU.P].reshape(-1, 1)
         pad = np.array([0 for i in range(A10eU.C * A10eU.P + A10eU.P)]).reshape(-1, 1)
         return np.vstack((y, pad))
 
     @staticmethod
     def g1_der(x):
+        x = np.concatenate(x).reshape(-1, 1)
         zeros = np.zeros_like(x).reshape(-1,1)
         p = x[-A10eU.P:].reshape(-1, 1)
         p_stack = np.vstack([p for _ in range(A10eU.C)])
