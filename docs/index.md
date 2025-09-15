@@ -7,3 +7,5 @@ A Python library to compute Generalized Nash Equilibria.
 ```bash
   pip install gne-solver
 ```
+
+HELLOO
