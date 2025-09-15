@@ -1,5 +1,5 @@
 from gne_solver.core import get_problem
-from problems import A2U
+from Problems import A2U
 from gne_solver.optimization import *
 
 def nash_check(
