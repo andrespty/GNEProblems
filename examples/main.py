@@ -4,7 +4,7 @@ from Problems import *
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
-    problem_n = A1U
+    problem_n = A10eU
     bounded = False
     single_obj_vector = True
     # Github

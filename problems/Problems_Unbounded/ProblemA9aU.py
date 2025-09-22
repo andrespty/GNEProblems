@@ -100,6 +100,7 @@ class A9aU:
     def g0_der(x):
         sigma = 0.3162
         result = []
+        x = np.concatenate(x).reshape(-1,1)
         for vu in range(A9aU.N):
             H_v = A9aU.get_h_v(vu).reshape(A9aU.N, A9aU.K)
             players = x.reshape(A9aU.N, A9aU.K)
