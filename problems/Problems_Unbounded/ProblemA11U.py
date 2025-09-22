@@ -62,5 +62,8 @@ class A11U:
         return x[0] + x[1] - 1
 
     @staticmethod
-    def g0_der(x: npt.NDArray[np.float64]) -> float:
-        return np.array([[1, 1]]).reshape(-1, 1)
+    def g0_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((2, 1))
+        grad[0] = 1
+        grad[1] = 1
+        return grad

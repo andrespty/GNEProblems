@@ -186,6 +186,8 @@ class A4U:
         x_n3 = np.vstack((x1, x[1]))
         return A4U.obj_func_der(x3, x_n3, A3, A4U.B3, A4U.b3)
 
+
+
     @staticmethod
     def g0(x):
         x1, x2, x3 = x
@@ -215,32 +217,80 @@ class A4U:
     def g5(x):
         x1, x2, x3 = x
         return np.vstack((x1.reshape(-1, 1), x2.reshape(-1, 1), x3.reshape(-1, 1))) - 10
-    
-    # partial g0 / partial x1
-    @staticmethod
-    def g0_der(x1):
-        return np.array([[1, 1, 1, 0, 0, 0, 0]]).reshape(-1, 1)
 
-    # partial g1 / partial x1
-    @staticmethod
-    def g1_der(x1):
-        return np.array([[1, 1, -1, -1, 0, 0, 1]]).reshape(-1, 1)
 
-    # partial g2 / partial x2
     @staticmethod
-    def g2_der(x1):
-        return np.array([[0, -1, -1, 1, -1, 1, 0]]).reshape(-1, 1)
+    def g0_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((7, 1))
+        grad[0] = 1
+        grad[1] = 1
+        grad[2] = 1
+        grad[3] = 0
+        grad[4] = 0
+        grad[5] = 0
+        grad[6] = 0
+        return grad
+
+
+    @staticmethod
+    def g1_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((7, 1))
+        grad[0] = 1
+        grad[1] = 1
+        grad[2] = -1
+        grad[3] = -1
+        grad[4] = 0
+        grad[5] = 0
+        grad[6] = 1
+        return grad
+
+
+    @staticmethod
+    def g2_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((7, 1))
+        grad[0] = 0
+        grad[1] = -1
+        grad[2] = -1
+        grad[3] = 1
+        grad[4] = -1
+        grad[5] = 1
+        grad[6] = 0
+        return grad
 
     # partial g3 / partial x3
     @staticmethod
-    def g3_der(x1):
-        return np.array([[-1, 0, -1, 1, 0, 0, 1]]).reshape(-1, 1)
+    def g3_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((7, 1))
+        grad[0] = -1
+        grad[1] = 0
+        grad[2] = -1
+        grad[3] = 1
+        grad[4] = 0
+        grad[5] = 0
+        grad[6] = 1
+        return grad
     
     @staticmethod
-    def g4_der(x1):
-        return np.array([[-1, -1, -1, -1, -1, -1, -1]]).reshape(-1, 1)
+    def g4_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((7, 1))
+        grad[0] = -1
+        grad[1] = -1
+        grad[2] = -1
+        grad[3] = -1
+        grad[4] = -1
+        grad[5] = -1
+        grad[6] = -1
+        return grad
     
     @staticmethod
-    def g5_der(x1):
-        return np.array([[1, 1, 1, 1, 1, 1, 1]]).reshape(-1, 1)
+    def g5_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((7, 1))
+        grad[0] = 1
+        grad[1] = 1
+        grad[2] = 1
+        grad[3] = 1
+        grad[4] = 1
+        grad[5] = 1
+        grad[6] = 1
+        return grad
     

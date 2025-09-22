@@ -106,17 +106,29 @@ class A8U:
         return x3 - 2
 
     @staticmethod
-    def g0_der(x1):
-        return np.array([[1, 1, 0]]).reshape(-1, 1)
+    def g0_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((3, 1))
+        grad[0] = 1
+        grad[1] = 1
+        grad[2] = 0
+        return grad
 
     @staticmethod
-    def g1_der(x1):
-        return np.array([[-1, -1, 0]]).reshape(-1, 1)
+    def g1_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((3, 1))
+        grad[0] = -1
+        grad[1] = -1
+        grad[2] = 0
+        return grad
 
     @staticmethod
     def g2_der(x1):
         return -1
 
     @staticmethod
-    def g3_der(x1):
-        return np.array([[0, 0, 1]]).reshape(-1, 1)
+    def g3_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((3, 1))
+        grad[0] = 0
+        grad[1] = 0
+        grad[2] = 1
+        return grad

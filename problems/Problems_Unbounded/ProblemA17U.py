@@ -94,12 +94,21 @@ class A17U:
         return 0 - x
 
     @staticmethod
-    def g0_der(x: npt.NDArray[np.float64]):
-        return np.array([[1, 2, -1]]).reshape(-1, 1)
+    def g0_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((3, 1))
+        grad[0] = 1
+        grad[1] = 2
+        grad[2] = -1
+        return grad
 
     @staticmethod
-    def g1_der(x: npt.NDArray[np.float64]):
-        return np.array([[3, 2, 1]]).reshape(-1,1)
+    def g1_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((3, 1))
+        grad[0] = 3
+        grad[1] = 2
+        grad[2] = 1
+        return grad
+
 
     @staticmethod
     def g2_der(x: npt.NDArray[np.float64]):

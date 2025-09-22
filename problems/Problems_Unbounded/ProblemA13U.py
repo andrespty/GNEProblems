@@ -138,9 +138,17 @@ class A13U:
         return 2.2915 * x[0] + 1.5625 * x[1] + 2.8125 * x[2] - 100
 
     @staticmethod
-    def g0_der(x: npt.NDArray[np.float64]) -> float:
-        return np.array([[3.25, 1.25, 4.125]]).reshape(-1, 1)
+    def g0_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((3, 1))
+        grad[0] = 3.25
+        grad[1] = 1.25
+        grad[2] = 4.125
+        return grad
 
     @staticmethod
-    def g1_der(x: npt.NDArray[np.float64]) -> float:
-        return np.array([[2.2915, 1.5625, 2.8125]]).reshape(-1,1)
+    def g1_der(x: list[np.ndarray]) -> np.ndarray:
+        grad = np.zeros((3, 1))
+        grad[0] = 2.2915
+        grad[1] = 1.5625
+        grad[2] = 2.8125
+        return grad
