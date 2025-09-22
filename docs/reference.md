@@ -6,3 +6,6 @@
 
 ## One Hot Encoding
 ::: gne_solver.utils.one_hot_encoding
+
+## Construct Vectors
+::: gne_solver.utils.construct_vectors
