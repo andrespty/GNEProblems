@@ -13,6 +13,7 @@ if __name__ == '__main__':
     two = one_hot_encoding(p_constraints, player_vector_sizes, num_funcs)
     print(one)
     print(two)
+
     # Testing: Change the next line to test a problem
     # problem_n = A16U
     # bounded = False
