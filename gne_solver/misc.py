@@ -6,10 +6,17 @@ def flatten_variables(vectors: VectorList, scalars: List[float]) -> List[float]:
 
     Parameters
     ----------
+    vectors : VectorList
+        List of 2D NumPy arrays with shape (n, 1), representing column
+        vectors of floats.
+    scalars : List[float]
+        A list of scalar values to append after the flattened vectors.
 
     Returns
     -------
-
+    list of floats
+        Single list containing all elements from the input vectors,
+        followed by the scalar values.
     Examples
     --------
     >>> import numpy as np

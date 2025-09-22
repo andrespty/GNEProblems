@@ -55,6 +55,42 @@ def one_hot_encoding(funcs_idx: List[Union[int, PlayerConstraint]], sizes: List[
     return M
 
 def create_wrapped_function(original_func: ObjFunction, actions: VectorList, player_idx: int) -> WrappedFunction:
+    """
+        Create a wrapped objective function for a single player's optimization.
+
+        Fix all players' action vectors except the one at ``player_idx``, and
+        return a new function that accepts only this player's decision variables
+        as input. The wrapped function automatically reconstructs the full list
+        of action vectors and evaluates the original objective function.
+
+        Parameters
+        ----------
+        original_func : ObjFunction
+            The original objective function that accepts a list of action vectors.
+        actions : VectorList
+            List of 2D NumPy arrays with shape (n, 1), representing all players'
+            current actions.
+        player_idx : int
+            Index of the player whose action vector should remain variable in
+            the wrapped function.
+
+        Returns
+        -------
+        WrappedFunction
+            A function that takes the chosen player's action vector (as a list of floats),
+            reshapes it into a 2D column vector with shape (n, 1), and evaluates
+            ``original_func`` with the updated set of actions.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> def original_func(var_list):
+        ...     return sum(v.sum() for v in var_list)
+        >>> actions = [np.array([[1.0], [2.0]]), np.array([[3.0]])]
+        >>> wrapped = create_wrapped_function(original_func, actions, player_idx=0)
+        >>> wrapped([10.0, 20.0])
+        33.0
+    """
     fixed_vars = actions[:player_idx] + actions[player_idx + 1:]
 
     def wrap_func(player_var_opt: List[float]) -> Vector:
@@ -65,6 +101,42 @@ def create_wrapped_function(original_func: ObjFunction, actions: VectorList, pla
     return wrap_func
 
 def create_wrapped_function_single(original_func: ObjFunction,actions: VectorList,player_idx: int) -> WrappedFunction:
+    """
+        Create a wrapped function returning only a single player's output.
+
+        Fix all players' action vectors except the one at ``player_idx``, and
+        return a new function that accepts only this player's decision variables
+        as input. The wrapped function reconstructs the full list of action
+        vectors, evaluates the original function, and returns only the output
+        corresponding to the chosen player.
+
+        Parameters
+        ----------
+        original_func : ObjFunction
+            The original objective function that accepts a list of action vectors.
+        actions : VectorList
+            List of 2D NumPy arrays with shape (n, 1), representing all players'
+            current actions.
+        player_idx : int
+            Index of the player whose output should be returned by the wrapped function.
+
+        Returns
+        -------
+        WrappedFunction
+            A function that takes the chosen player's action vector, reshapes it into a 2D column vector with shape (n, 1), evaluates
+            ``original_func`` with the updated set of actions, and returns only
+            the output for that player.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> def original_func(var_list):
+        ...     return [v.sum() for v in var_list]
+        >>> actions = [np.array([[1.0], [2.0]]), np.array([[3.0]])]
+        >>> wrapped_single = create_wrapped_function_single(original_func, actions, player_idx=0)
+        >>> wrapped_single([10.0, 20.0])
+        30.0
+        """
     fixed_vars = actions[:player_idx] + actions[player_idx + 1:]  # list of np vectors
 
     def wrap_func(player_var_opt):

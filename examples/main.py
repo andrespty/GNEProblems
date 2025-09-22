@@ -1,6 +1,6 @@
 from gne_solver import *
 from gne_solver.NashCheck import *
-from problems import *
+from Problems import *
 
 if __name__ == '__main__':
     # Testing: Change the next line to test a problem
