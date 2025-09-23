@@ -5,6 +5,11 @@ def construct_vectors(actions: Vector, action_sizes: List[int]) -> VectorList:
     """
     Split a concatenated action array into separate action vectors for each player.
 
+    This function validates the input types and shapes, ensuring that the total
+    number of rows in "actions" matches the sum of "action_sizes". It then splits
+    the stacked column vector into per-player subarrays in the same order as specified
+    in "action_sizes".
+
     Parameters
     ----------
     actions : numpy.ndarray of shape (sum(action_sizes), 1)
@@ -13,6 +18,15 @@ def construct_vectors(actions: Vector, action_sizes: List[int]) -> VectorList:
     action_sizes : list of int
         A list specifying the length of each player's action vector.
         The sum of these sizes must match the number of rows in ``actions``.
+
+    Raises
+    -------
+    Type Error
+        if "actions" is not a NumPy array or if "action_sizes" is not a list
+        of integers
+    Value Error
+        If the number of rows in "actions" does not equal the sum of all
+        entries in ``action_sizes``.
 
     Returns
     -------
@@ -30,11 +44,54 @@ def construct_vectors(actions: Vector, action_sizes: List[int]) -> VectorList:
      array([[3.],
             [4.]])]
     """
+    total_size = sum(action_sizes)
+    if not isinstance(actions, np.ndarray):
+        raise TypeError("actions must be a 2D NumPy array")
+
+    if not isinstance(action_sizes, list):
+        raise TypeError("action_sizes must be a list")
+
+    if not all(isinstance(x, int) for x in action_sizes):
+        bad = [type(x).__name__ for x in action_sizes if not isinstance(x, int)]
+        raise TypeError("action_sizes must be a list with only integers")
+
+    if actions.shape[0] != total_size:
+        raise ValueError(f"Number of rows in 'actions' ({actions.shape[0]})"
+                         f"must equal the sum of 'action_sizes' ({total_size})"
+        )
     value_array = np.array(actions).reshape(-1,1)
     indices = np.cumsum(action_sizes)
     return np.split(value_array, indices[:-1])
 
 def one_hot_encoding(funcs_idx: List[Union[int, PlayerConstraint]], sizes: List[int], num_functions: int) -> Matrix:
+    """
+    This function builds a matrix mapping each player’s action variables to the functions they are assigned
+     Creates a zeros NumPy matrix and then iterates through functions mapping them to correct player's action variables
+
+
+    and assigning them to the matrix.
+    Parameters
+    ----------
+    funcs_idx : List
+        A list of either integers or PlayerConstraint (PlayerConstraint=Union[int], None, list[None])
+    sizes: List[int]
+        A list of integers thats length needs to equal the length of funcs_idx
+    num_functions: Int
+    An integer value that indicates the number of possible functions
+    Returns
+    -------
+    Matrix
+        Returns a matrix of shape (sum(sizes), num_functions), where
+        each row represents a player's variables and each column represents
+        a function.
+    Examples
+    --------
+    ''  >>> funcs_idx = [[0,2], None, [1]
+    ''  >>> sizes = [2,3,1]
+    >> num_functions = 3
+    >> M = one_hot_encoding(funcs_idx, sizes, num_functions)
+    3.14
+    """
     assert len(funcs_idx) == len(sizes), "funcs_idx and sizes must match in length"
 
     total_vars = sum(sizes)

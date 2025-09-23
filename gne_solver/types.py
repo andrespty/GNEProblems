@@ -3,7 +3,7 @@ from numpy.typing import NDArray
 import numpy as np
 
 # Inputs
-Vector= NDArray[np.float64]
+Vector= NDArray[np.float64] #(n,1) column vector
 Matrix = NDArray[np.float64]
 VectorList = List[Vector] # Player actions vectors
 

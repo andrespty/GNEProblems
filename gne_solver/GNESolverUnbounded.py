@@ -4,6 +4,7 @@ from scipy.optimize import basinhopping
 import timeit
 
 class GNEP_Solver_Unbounded:
+
     def __init__(self,
                  obj_funcs:                     List[ObjFunction],
                  derivative_obj_funcs:          List[ObjFunctionGrad],
