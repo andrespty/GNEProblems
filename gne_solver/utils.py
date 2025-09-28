@@ -77,7 +77,7 @@ def one_hot_encoding(funcs_idx: List[Union[int, PlayerConstraint]], sizes: List[
     sizes: List[int]
         A list of integers thats length needs to equal the length of funcs_idx
     num_functions: Int
-    An integer value that indicates the number of possible functions
+        An integer value that indicates the number of possible functions
     Returns
     -------
     Matrix
