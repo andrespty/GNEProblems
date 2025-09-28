@@ -5,23 +5,41 @@ from dataclasses import dataclass
 
 # Inputs
 class Types:
-    """
-       Common types.
-       Attributes
-       ----------
-        Vector : NDArray[np.float64]
-           (n,1) column vector.
-        Matrix : NDArray[np.float64]
-           General 2D matrix of floats.
-        VectorList : list of Vector
-           List of player action vectors.
-        PlayerConstraint: a list of ints or none
-            Holds the player contraints.
-       """
+
 Vector= NDArray[np.float64] #(n,1) column vector
+"""
+   Attributes
+    ----------
+    Vector : NDArray[np.float64]
+        (n,1) column vector.
+   
+"""
+
 Matrix = NDArray[np.float64]
+"""
+    Attributes
+     ----------
+    Matrix : NDArray[np.float64]
+        General 2D matrix of floats.
+
+
+"""
 VectorList = List[Vector] # Player actions vectors
+"""
+    Attributes
+     ----------
+    VectorList : list of Vector
+        List of player action vectors.
+
+"""
 PlayerConstraint = Union[List[int], None, List[None]]
+"""
+    Attributes
+    ----------
+    PlayerConstraint : list of ints or None
+    Holds the player contraints.
+    
+    """
 
 # Functions
 ObjFunction = Callable[[VectorList], Vector]

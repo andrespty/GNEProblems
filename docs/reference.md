@@ -18,6 +18,8 @@
 ::: gne_solver.utils.construct_vectors
 
 ## Data Structures
-::: gne_solver.types.Types
+::: gne_solver.types.Vector
+::: gne_solver.types.Matrix
+::: gne_solver.types.VectorList
 
 
