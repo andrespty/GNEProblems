@@ -1,3 +1,5 @@
+import numpy as np
+
 from .utils import *
 from .types import *
 from scipy.optimize import basinhopping
@@ -141,7 +143,9 @@ class GNEP_Solver_Unbounded:
             Energy contributions per element.
         """
         if isDual:
-            return (actions**2/(1+actions**2)) * (gradient**2/(1+gradient**2)) + np.exp(-actions**2) * (np.maximum(0,-gradient)**2/(1+np.maximum(0,-gradient)**2))
+            dual_eng = np.square((actions ** 2 / (1 + actions ** 2)) * (gradient ** 2 / (1 + gradient ** 2)) + np.exp(-actions ** 2) * (np.maximum(0, -gradient) ** 2 / (1 + np.maximum(0, -gradient) ** 2)))
+            # dual_eng = np.square( np.sqrt(actions**2 + gradient**2) - (actions + gradient) )
+            return dual_eng
         else:
             return np.square(gradient)
 
