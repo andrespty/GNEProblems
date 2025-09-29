@@ -5,21 +5,20 @@ from dataclasses import dataclass
 
 # Inputs
 class Types:
-    class Types:
-        """
-        Common type definitions.
+    """
+    Common type definitions.
 
-        Attributes
-        ----------
-        Vector : NDArray[np.float64]
-            (n,1) column vector.
-        Matrix : NDArray[np.float64]
-            General 2D matrix of floats.
-        VectorList : list of Vector
-            List of player action vectors.
-        PlayerConstraint : list[int] | None
-            Holds the player constraints.
-        """
+    Attributes
+    ----------
+    Vector : NDArray[np.float64]
+        (n,1) column vector.
+    Matrix : NDArray[np.float64]
+        General 2D matrix of floats.
+    VectorList : list of Vector
+        List of player action vectors.
+    PlayerConstraint : list[int] | None
+        Holds the player constraints.
+    """
 Vector: NDArray[np.float64]
 Matrix: NDArray[np.float64]
 VectorList: List[NDArray[np.float64]]
