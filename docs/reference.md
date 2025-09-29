@@ -20,5 +20,6 @@
 ## Data Structures
 ::: gne_solver.types.Types
 
-
+## GNE Solver Unbounded
+::: gne_solver.GNESolverUnbounded.GNEP_Solver_Unbounded
 
