@@ -21,10 +21,10 @@ class Types:
         PlayerConstraint : list[int] | None
             Holds the player constraints.
         """
-Vector: NDArray[np.float64]
-Matrix: NDArray[np.float64]
-VectorList: List[NDArray[np.float64]]
-PlayerConstraint: Union[List[int], None, List[None]]
+Vector = NDArray[np.float64]
+Matrix = NDArray[np.float64]
+VectorList = List[NDArray[np.float64]]
+PlayerConstraint = Union[List[int], None, List[None]]
 
 # Functions
 ObjFunction = Callable[[VectorList], Vector]
