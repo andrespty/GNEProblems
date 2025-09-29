@@ -17,3 +17,8 @@
 ## Construct Vectors
 ::: gne_solver.utils.construct_vectors
 
+## Data Structures
+::: gne_solver.types.Types
+
+
+
