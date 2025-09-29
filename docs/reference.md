@@ -17,3 +17,7 @@
 ## Construct Vectors
 ::: gne_solver.utils.construct_vectors
 
+## GNE Solver Unbounded
+::: gne_solver.GNESolverUnbounded.GNEP_Solver_Unbounded
+
+

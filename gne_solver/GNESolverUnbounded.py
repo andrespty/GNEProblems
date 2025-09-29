@@ -4,7 +4,65 @@ from scipy.optimize import basinhopping
 import timeit
 
 class GNEP_Solver_Unbounded:
+    """
+       Solve an unbounded Generalized Nash Equilibrium Problem (GNEP).
 
+       Implements an energy-based method to compute Nash equilibria
+       in multi-player optimization problems with objectives and constraints.
+       Each player has an objective function and a set of constraints, and
+       gradients are used to build energy functions for both primal and dual
+       players.
+
+       Parameters
+       ----------
+       obj_funcs : list of ObjFunction
+           List of objective functions, one for each player or shared across
+           multiple players. Each function accepts a list of player action
+           vectors and returns a scalar.
+       derivative_obj_funcs : list of ObjFunctionGrad
+           List of gradients of the objective functions. Each gradient function
+           returns either the full gradient (shape = (sum(action_sizes), 1))
+           or a partial gradient for its own variables (shape = (n_i, 1)).
+       constraints : list of ConsFunction
+           List of constraint functions. Each function takes all player
+           action vectors and returns a constraint value or vector.
+       derivative_constraints : list of ConsFunctionGrad
+           List of gradients of the constraints with respect to the actions.
+       player_obj_func : list of int
+           Indices specifying which objective function corresponds to each player.
+       player_constraints : list of PlayerConstraint
+           Indices specifying which constraints apply to each player.
+       player_vector_sizes : list of int
+           Sizes of each player's action vector. The sum determines the dimension
+           of the action space.
+
+       Attributes
+       ----------
+       objective_functions : list of ObjFunction
+           Original objective functions.
+       objective_function_derivatives : list of ObjFunctionGrad
+           Gradients of the objective functions.
+       constraints : list of ConsFunction
+           Constraint functions.
+       constraint_derivatives : list of ConsFunctionGrad
+           Gradients of the constraints.
+       player_objective_function : np.ndarray
+           Encodes which objective function is used for each player.
+       player_constraints : np.ndarray
+           Encodes which constraints are used for each player.
+       action_sizes : list of int
+           Sizes of each player's action vector.
+       N : int
+           Number of players.
+       result : scipy.optimize.OptimizeResult
+           Result object returned by the solver after calling `solve_game`.
+       time : float
+           Elapsed computation time (seconds).
+
+       Methods
+       -------
+
+       """
     def __init__(self,
                  obj_funcs:                     List[ObjFunction],
                  derivative_obj_funcs:          List[ObjFunctionGrad],
@@ -26,10 +84,17 @@ class GNEP_Solver_Unbounded:
 
     def wrapper(self, initial_actions: List[float]) -> float:
         """
-        Input:
-          initial_actions: python list of all players' actions
-        Output:
-          total energy: float value
+        Compute the total energy from a flat list of player and dual actions.
+
+        Parameters
+        ----------
+        initial_actions : list of float
+            Flattened list containing all players' actions followed by dual variables.
+
+        Returns
+        -------
+        float
+            Total energy (sum of primal and dual contributions).
         """
         actions_count = sum(self.action_sizes)
         actions = np.array(initial_actions[:actions_count], dtype=np.float64).reshape(-1,1)
@@ -38,11 +103,19 @@ class GNEP_Solver_Unbounded:
 
     def energy_function( self, actions: Vector, dual_actions: Vector) -> float:
         """
-        Input:
-          actions: 2d np.array shape (sum(number of actions),1)   i.e. [[1], [2], [3], ..., [number of actions]]
-          dual_actions: 2d np.array shape (N_d,1)                 i.e. [[1], [2], [3], ..., [N_d]]
-        Output:
-          total energy: float value
+        Compute the total energy of the system.
+
+        Parameters
+        ----------
+        actions : ndarray of shape (sum(action_sizes), 1)
+            Player action vectors stacked vertically.
+        dual_actions : ndarray of shape (N_d, 1)
+            Dual variables corresponding to constraints.
+
+        Returns
+        -------
+        float
+            Total energy of the system.
         """
         primal_players_energy = self.primal_energy_function(actions, dual_actions)
         dual_players_energy = self.dual_energy_function(actions, dual_actions)
@@ -51,10 +124,21 @@ class GNEP_Solver_Unbounded:
     @staticmethod
     def energy_handler(gradient: Vector, actions: Vector, isDual=False) -> Vector:
         """
-        Input:
-          gradient: 2d np.array shape (sum(number of actions),1)
-        Output:
-          total energy: float value
+        Convert gradients into energy contributions.
+
+        Parameters
+        ----------
+        gradient : ndarray of shape (n, 1)
+            Gradient vector to transform into energy.
+        actions : ndarray of shape (n, 1)
+            Corresponding action vector.
+        isDual : bool, optional
+            Whether the energy comes from dual players. Default is False.
+
+        Returns
+        -------
+        ndarray of shape (n, 1)
+            Energy contributions per element.
         """
         if isDual:
             return (actions**2/(1+actions**2)) * (gradient**2/(1+gradient**2)) + np.exp(-actions**2) * (np.maximum(0,-gradient)**2/(1+np.maximum(0,-gradient)**2))
@@ -63,20 +147,38 @@ class GNEP_Solver_Unbounded:
 
     def primal_energy_function(self, actions: Vector, dual_actions: Vector) -> Vector:
         """
-        Input:
-          actions: 2d np.array shape (sum(number of actions),1)
-          dual_actions: 2d np.array shape (N_d,1)
-        Output:
-          (sum(number of actions),1) vector with the energy of each players' action
+        Compute the energy contribution of primal players.
+
+        Parameters
+        ----------
+        actions : ndarray of shape (sum(action_sizes), 1)
+            Player action vectors.
+        dual_actions : ndarray of shape (N_d, 1)
+            Dual variables.
+
+        Returns
+        -------
+        ndarray of shape (sum(action_sizes), 1)
+            Energy contribution per primal player action.
         """
         gradient = self.calculate_gradient(actions, dual_actions)
         return self.energy_handler(gradient, actions)
 
     def dual_energy_function(self, actions: Vector, dual_actions: Vector) -> Vector:
         """
-        Input:
-          actions: 2d np.array shape (sum(number of actions),1)
-          dual_actions: 2d np.array shape (N_d,1
+        Compute the energy contribution of dual players.
+
+        Parameters
+        ----------
+        actions : ndarray of shape (sum(action_sizes), 1)
+            Player action vectors.
+        dual_actions : ndarray of shape (N_d, 1)
+            Dual variables.
+
+        Returns
+        -------
+        ndarray of shape (N_d, 1)
+            Energy contribution per dual variable.
         """
         eng_dual = self.calculate_gradient_dual(actions, dual_actions)
         return eng_dual
@@ -84,11 +186,19 @@ class GNEP_Solver_Unbounded:
     # Gradient of primal player
     def calculate_gradient(self, actions: Vector, dual_actions: Vector) -> Vector:
         """
-        Input:
-          actions: 2d np.array shape (sum(number of actions),1)
-          dual_actions: 2d np.array shape (N_d,1)
-        Output:
-          (sum(number of actions),1) vector
+        Compute the gradient of the primal energy.
+
+        Parameters
+        ----------
+        actions : ndarray of shape (sum(action_sizes), 1)
+            Player action vectors.
+        dual_actions : ndarray of shape (N_d, 1)
+            Dual variables.
+
+        Returns
+        -------
+        ndarray of shape (sum(action_sizes), 1)
+            Gradient of primal energy with respect to actions.
         """
         result = np.zeros_like(actions) # shape (-1,1)
         # Track action indices per player
@@ -122,11 +232,19 @@ class GNEP_Solver_Unbounded:
     # Gradient of dual player
     def calculate_gradient_dual(self, actions: Vector, dual_actions: Vector) -> Vector:
         """
-        Input:
-          actions: 2d np.array shape (sum(number of actions),1)
-          dual_actions: 2d np.array shape (N_d,1)
-        Output:
-          (N_d,1) vector
+        Compute the gradient of the dual energy.
+
+        Parameters
+        ----------
+        actions : ndarray of shape (sum(action_sizes), 1)
+            Player action vectors.
+        dual_actions : ndarray of shape (N_d, 1)
+            Dual variables.
+
+        Returns
+        -------
+        ndarray of shape (N_d, 1)
+            Gradient of dual energy with respect to constraints.
         """
         grad_dual = []
         actions_vectors = construct_vectors(actions, self.action_sizes)
@@ -139,11 +257,21 @@ class GNEP_Solver_Unbounded:
 
     def solve_game(self, initial_guess: List[float], disp: bool=True):
         """
-        Input:
-          initial_guess: python list of all players' actions
-        Output:
-          result: scipy.optimize.optimize.OptimizeResult object
-          time: float
+        Solve the GNEP optimization problem.
+
+        Parameters
+        ----------
+        initial_guess : list of float
+            Initial guess for all player actions and dual variables.
+        disp : bool, optional
+            Whether to display solver progress. Default is True.
+
+        Returns
+        -------
+        result : OptimizeResult
+            Result object from the optimization routine.
+        time : float
+            Time taken to compute the solution.
         """
         minimizer_kwargs = dict(method="L-BFGS-B")
         start = timeit.default_timer()
