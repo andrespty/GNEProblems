@@ -5,7 +5,6 @@ from dataclasses import dataclass
 
 # Inputs
 class Types:
-    @dataclass
     class Types:
         """
         Common type definitions.
