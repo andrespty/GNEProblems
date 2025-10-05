@@ -3,10 +3,8 @@ from numpy.typing import NDArray
 import numpy as np
 from dataclasses import dataclass
 
-# Inputs
 class Types:
-    """
-    Common type definitions.
+    """Common type definitions.
 
     Attributes
     ----------
@@ -18,17 +16,19 @@ class Types:
         List of player action vectors.
     PlayerConstraint : list[int] | None
         Holds the player constraints.
-    ObjFunction : Callable Function
-        Takes in a list of vectors as the argument and returns a single vector.
-    ObjFunctionGrad : Callable Function
-        Takes in a list of vectors as the argument and returns a single vector or a float.
-    ConsFunction : Callable Function
+    ObjFunction : Callable
+        Takes in a list of vectors and returns a single vector.
+    ObjFunctionGrad : Callable
+        Takes in a list of vectors and returns a single vector or a float.
+    ConsFunction : Callable
         A constraint function that takes in a vector list and returns a single vector.
-    ConsFunctionGrad : Callable Function
+    ConsFunctionGrad : Callable
         A constraint function that takes in a vector list and returns a single vector or a float.
-    WrappedFunction : Callable Function
+    WrappedFunction : Callable
         A wrapper function that takes in a vector list and returns a single vector.
     """
+
+
 Vector: NDArray[np.float64]
 Matrix: NDArray[np.float64]
 VectorList: List[NDArray[np.float64]]
@@ -43,3 +43,16 @@ ConsFunction = Callable[[VectorList], Vector]
 #Does Cons stand for constraint
 ConsFunctionGrad = Callable[[VectorList], Vector] # Should always return either a scalar or a vector of same size as the number of actions
 WrappedFunction = Callable[[List[float]], Vector]
+
+
+__all__ = [
+    "Vector",
+    "Matrix",
+    "VectorList",
+    "PlayerConstraint",
+    "ObjFunction",
+    "ObjFunctionGrad",
+    "ConsFunction",
+    "ConsFunctionGrad",
+    "WrappedFunction",
+]
