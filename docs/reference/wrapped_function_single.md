@@ -1,0 +1,1 @@
+::: gne_solver.utils.create_wrapped_function_single

@@ -1,0 +1,1 @@
+::: gne_solver.utils.one_hot_encoding

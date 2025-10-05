@@ -1,6 +1,7 @@
 # API Reference
 
-## Flatten Variables
+<a id="flatten-variables"></a>
+## Flatten Variables 
 ::: gne_solver.misc.flatten_variables
 
 
