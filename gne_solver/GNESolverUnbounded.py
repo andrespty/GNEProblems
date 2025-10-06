@@ -69,7 +69,7 @@ class GNEP_Solver_Unbounded:
        >>> def f2(actions): return actions[1]**2
        >>> def df1(actions): return np.array([2*actions[0]]).reshape(-1,1)
        >>> def df2(actions): return np.array([2*actions[1]]).reshape(-1,1)
-       >>> # Initialize solver (no constraints for simplicity)
+       >>> # Initialize solver
        >>> solver = GNEP_Solver_Unbounded(
        ...     obj_funcs=[f1, f2],
        ...     derivative_obj_funcs=[df1, df2],
@@ -82,8 +82,8 @@ class GNEP_Solver_Unbounded:
        >>> # Solve game starting from initial guess
        >>> initial_guess = [5.0, -3.0]
        >>> result, elapsed_time = solver.solve_game(initial_guess, disp=False)
-       >>> print(result.x)       # Optimized actions
-       >>> print(elapsed_time)   # Time to solve
+       >>> print(result.x)
+       >>> print(elapsed_time)
     """
     def __init__(self,
                  obj_funcs:                     List[ObjFunction],
@@ -296,6 +296,24 @@ class GNEP_Solver_Unbounded:
             Result object from the optimization routine.
         time : float
             Time taken to compute the solution.
+
+        Examples
+        --------
+        >>> solver = GNEP_Solver_Unbounded(
+        ...     obj_funcs,
+        ...     grad_obj_funcs,
+        ...     constraints,
+        ...     grad_constraints,
+        ...     player_obj_func,
+        ...     player_constraints,
+        ...     player_vector_sizes
+        ... )
+        >>> # Initial guess for [x1, x2, λ]
+        >>> initial_guess = [0.5, 0.5, 0.1]
+        >>>
+        >>> result, elapsed_time = solver.solve_game(initial_guess)
+        >>> print("Optimal actions and duals:", result.x)
+        >>> print("Computation time:", elapsed_time)
        """
         minimizer_kwargs = dict(method="L-BFGS-B")
         start = timeit.default_timer()
