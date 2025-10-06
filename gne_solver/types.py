@@ -28,11 +28,10 @@ class Types:
         A wrapper function that takes in a vector list and returns a single vector.
     """
 
-
-Vector: NDArray[np.float64]
-Matrix: NDArray[np.float64]
-VectorList: List[NDArray[np.float64]]
-PlayerConstraint: Union[List[int], None, List[None]]
+Vector = NDArray[np.float64]
+Matrix = NDArray[np.float64]
+VectorList = List[NDArray[np.float64]]
+PlayerConstraint = Union[List[int], None, List[None]]
 
 # Functions
 #Does grad mean gradient or does it just mean it can return a float too?

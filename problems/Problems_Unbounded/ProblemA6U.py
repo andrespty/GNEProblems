@@ -207,8 +207,8 @@ class A6U:
     
     @staticmethod
     def g2_der(x):
-        x = x.reshape(-1,1)
-        return np.array([4*x[0,0]**3, x[5,0], 0, -1, 0, x[1,0], 0]).reshape(-1, 1)
+        x1, x2, x3 = x
+        return np.array([4*x1[0][0]**3, x3[1][0], 0, -1, 0, x1[1][0], 0]).reshape(-1, 1)
     
     @staticmethod
     def g3_der(x1):
@@ -216,8 +216,8 @@ class A6U:
     
     @staticmethod
     def g4_der(x):
-        x = x.reshape(-1, 1)
-        return np.array([[-2*x[0,0], 0, 0, 2*(x[3,0]-2), 2*x[4,0], 0, 0]]).reshape(-1, 1)
+        x1, x2, x3 = x
+        return np.array([[-2*x1[0][0], 0, 0, 2*(x1[2][0]-2), 2*x2[1][0], 0, 0]]).reshape(-1, 1)
     
     @staticmethod
     def g5_der(x1):
@@ -225,8 +225,8 @@ class A6U:
     
     @staticmethod
     def g6_der(x):
-        x = x.reshape(-1, 1)
-        return np.array([[0, 0, 0, -x[5,0], 0, 4*x[5,0] - x[3,0] , -2*(x[6,0]-2)]]).reshape(-1, 1)
+        x1, x2, x3 = x
+        return np.array([[0, 0, 0, -x3[1][0], 0, 4*x3[1][0] - x2[1][0] , -2*(x3[1][0]-2)]]).reshape(-1, 1)
 
     @staticmethod
     def g7_der(x1):
