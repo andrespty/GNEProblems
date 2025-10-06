@@ -16,15 +16,15 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.20">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
     
     
       
-        <title>API Reference - Generalized Nash Equilibrium Solver</title>
+        <title>Reference - Generalized Nash Equilibrium Solver</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.e53b48f4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.2a3383ac.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              API Reference
+              Reference
             
           </span>
         </div>
@@ -244,7 +244,7 @@
   
     
   
-  API Reference
+  Reference
 
       </a>
     </li>
@@ -410,7 +410,7 @@
   
   
   <span class="md-ellipsis">
-    API Reference
+    Reference
     
   </span>
   
@@ -423,7 +423,7 @@
   
   
   <span class="md-ellipsis">
-    API Reference
+    Reference
     
   </span>
   
@@ -546,15 +546,6 @@
       
         <li class="md-nav__item">
   <a href="#gne_solver.types.Types" class="md-nav__link">
-    <span class="md-ellipsis">
-      Types
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#gne_solver.types.Types.Types" class="md-nav__link">
     <span class="md-ellipsis">
       Types
     </span>
@@ -911,15 +902,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gne_solver.types.Types.Types" class="md-nav__link">
-    <span class="md-ellipsis">
-      Types
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#gne-solver-unbounded" class="md-nav__link">
     <span class="md-ellipsis">
       GNE Solver Unbounded
@@ -1072,7 +1054,7 @@ vectors of floats.</p>
                 <code>scalars</code>
             </td>
             <td>
-                  <code><span title="gne_solver.types.List">List</span>[<span title="float">float</span>]</code>
+                  <code><span title="gne_solver.GNESolverBounded.List">List</span>[<span title="float">float</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1393,7 +1375,7 @@ the output for that player.</p>
                 <code>funcs_idx</code>
             </td>
             <td>
-                  <code><span title="gne_solver.types.List">List</span></code>
+                  <code><span title="gne_solver.GNESolverBounded.List">List</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1409,7 +1391,7 @@ the output for that player.</p>
                 <code>sizes</code>
             </td>
             <td>
-                  <code><span title="gne_solver.types.List">List</span>[<span title="int">int</span>]</code>
+                  <code><span title="gne_solver.GNESolverBounded.List">List</span>[<span title="int">int</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1631,44 +1613,6 @@ construct_vectors(actions, action_sizes)
     <div class="doc doc-contents first">
 
 
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="gne_solver.types.Types.Types" class="doc doc-heading">
-            <code>Types</code>
-
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
-  </span>
-
-</h2>
-
-
-    <div class="doc doc-contents ">
-
-
         <p>Common type definitions.</p>
 
 
@@ -1683,7 +1627,7 @@ construct_vectors(actions, action_sizes)
       </thead>
       <tbody>
           <tr class="doc-section-item">
-            <td><code><span title="gne_solver.types.Types.Types.Vector">Vector</span></code></td>
+            <td><code><span title="gne_solver.types.Types.Vector">Vector</span></code></td>
             <td>
                   <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>]</code>
             </td>
@@ -1694,7 +1638,7 @@ construct_vectors(actions, action_sizes)
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code><span title="gne_solver.types.Types.Types.Matrix">Matrix</span></code></td>
+            <td><code><span title="gne_solver.types.Types.Matrix">Matrix</span></code></td>
             <td>
                   <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>]</code>
             </td>
@@ -1705,7 +1649,7 @@ construct_vectors(actions, action_sizes)
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code><span title="gne_solver.types.Types.Types.VectorList">VectorList</span></code></td>
+            <td><code><span title="gne_solver.types.Types.VectorList">VectorList</span></code></td>
             <td>
                   <code>list of Vector</code>
             </td>
@@ -1716,13 +1660,68 @@ construct_vectors(actions, action_sizes)
             </td>
           </tr>
           <tr class="doc-section-item">
-            <td><code><span title="gne_solver.types.Types.Types.PlayerConstraint">PlayerConstraint</span></code></td>
+            <td><code><span title="gne_solver.types.Types.PlayerConstraint">PlayerConstraint</span></code></td>
             <td>
                   <code><span title="list">list</span>[<span title="int">int</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
                 <p>Holds the player constraints.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="gne_solver.types.Types.ObjFunction">ObjFunction</span></code></td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Takes in a list of vectors and returns a single vector.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="gne_solver.types.Types.ObjFunctionGrad">ObjFunctionGrad</span></code></td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Takes in a list of vectors and returns a single vector or a float.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="gne_solver.types.Types.ConsFunction">ConsFunction</span></code></td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A constraint function that takes in a vector list and returns a single vector.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="gne_solver.types.Types.ConsFunctionGrad">ConsFunctionGrad</span></code></td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A constraint function that takes in a vector list and returns a single vector or a float.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="gne_solver.types.Types.WrappedFunction">WrappedFunction</span></code></td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A wrapper function that takes in a vector list and returns a single vector.</p>
               </div>
             </td>
           </tr>
@@ -1736,32 +1735,6 @@ construct_vectors(actions, action_sizes)
 
 
 
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-
-
-
-  </div>
 
     </div>
 
@@ -1974,7 +1947,7 @@ of the action space.</p>
           <tr class="doc-section-item">
             <td><code><span title="gne_solver.GNESolverUnbounded.GNEP_Solver_Unbounded.player_objective_function">player_objective_function</span></code></td>
             <td>
-                  <code><span title="gne_solver.types.np.ndarray">ndarray</span></code>
+                  <code><span title="numpy.ndarray">ndarray</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1985,7 +1958,7 @@ of the action space.</p>
           <tr class="doc-section-item">
             <td><code><span title="gne_solver.GNESolverUnbounded.GNEP_Solver_Unbounded.player_constraints">player_constraints</span></code></td>
             <td>
-                  <code><span title="gne_solver.types.np.ndarray">ndarray</span></code>
+                  <code><span title="numpy.ndarray">ndarray</span></code>
             </td>
             <td>
               <div class="doc-md-description">
