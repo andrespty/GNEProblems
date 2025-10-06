@@ -17,9 +17,7 @@
 ## Construct Vectors
 ::: gne_solver.utils.construct_vectors
 
-## Data Structures
-::: gne_solver.types.Types
-
 ## GNE Solver Unbounded
 ::: gne_solver.GNESolverUnbounded.GNEP_Solver_Unbounded
+
 

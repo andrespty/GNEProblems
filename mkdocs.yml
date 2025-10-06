@@ -15,9 +15,15 @@ plugins:
         python:
           options:
             docstring_style: numpy
-            show_root_toc_entry: true
+            show_root_toc_entry: false
             show_signature_annotations: true
+            separate_signature: true
+            show_category_heading: false   # adds "Classes", "Functions", "Methods"
+            show_submodules: false
+            show_bases: false
             show_source: false
+            show_source_order: true
+            members_order: source
 
 # Global site menu
 # https://www.mkdocs.org/user-guide/writing-your-docs/#file-layout
