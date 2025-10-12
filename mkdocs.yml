@@ -37,12 +37,12 @@ nav:
   - Home: index.md
   - Installation: installation.md
   - Reference:
-      - Flatten Variables: reference/flatten_variables.md
-      - Construct Vectors: reference/construct_vectors.md
-      - One Hot Encoding: reference/one_hot_encoding.md
-      - Create Wrapped Function: reference/create_wrapped_function.md
-      - Create Single Wrapped Function: reference/wrapped_function_single.md
-      - Data Structures: reference/data_structures.md
+      - Functions :
+          - Construct Vectors: development/reference/functions/construct_vectors.md
+          - Created Wrapped Function: development/reference/functions/create_wrapped_function.md
+          - Flatten Variables: development/reference/functions/flatten_variables.md
+          - One Hot Encoding: development/reference/functions/one_hot_encoding.md
+          - Create Single Wrapped Function: development/reference/functions/wrapped_function_single.md
 
 
 
