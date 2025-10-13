@@ -28,8 +28,20 @@ plugins:
             members_order: source
 
 markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
   - toc
   - attr_list
+  
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+
+
+  
 
 # Global site menu
 # https://www.mkdocs.org/user-guide/writing-your-docs/#file-layout
