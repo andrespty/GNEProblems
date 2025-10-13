@@ -16,6 +16,11 @@ class Types:
         List of player action vectors.
     PlayerConstraint : list[int] | None
         Holds the player constraints.
+    """
+class FunctionTypes:
+    """Common type definitions.
+    Attributes
+    ----------
     ObjFunction : Callable
         Takes in a list of vectors and returns a single vector.
     ObjFunctionGrad : Callable
@@ -27,7 +32,6 @@ class Types:
     WrappedFunction : Callable
         A wrapper function that takes in a vector list and returns a single vector.
     """
-
 Vector = NDArray[np.float64]
 Matrix = NDArray[np.float64]
 VectorList = List[NDArray[np.float64]]
