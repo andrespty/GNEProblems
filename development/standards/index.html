@@ -1248,77 +1248,75 @@ We follow the <strong>NumPy style</strong> conventions, as supported by <a href=
 <hr />
 <h2 id="2-function-method-docstrings">2. Function &amp; Method Docstrings</h2>
 <h3 id="template">Template</h3>
-<pre><code class="language-python">def function_name(param1: int, param2: str = &quot;default&quot;) -&gt; float:
-    &quot;&quot;&quot;
-    One-line summary of the function.
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">function_name</span><span class="p">(</span><span class="n">param1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">param2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    One-line summary of the function.</span>
 
-    Extended description if necessary. Can span multiple sentences to
-    explain the context, usage, or algorithm.
+<span class="sd">    Extended description if necessary. Can span multiple sentences to</span>
+<span class="sd">    explain the context, usage, or algorithm.</span>
 
-    Parameters
-    ----------
-    param1 : int
-        Description of the parameter. Include units if applicable.
-    param2 : str, optional
-        Description of the parameter. State the default if not obvious
-        from the signature.
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    param1 : int</span>
+<span class="sd">        Description of the parameter. Include units if applicable.</span>
+<span class="sd">    param2 : str, optional</span>
+<span class="sd">        Description of the parameter. State the default if not obvious</span>
+<span class="sd">        from the signature.</span>
 
-    Returns
-    -------
-    float
-        Description of the return value.
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Description of the return value.</span>
 
-    Raises
-    ------
-    ValueError
-        Explanation of the condition that causes this exception.
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        Explanation of the condition that causes this exception.</span>
 
-    Examples
-    --------
-    &gt;&gt;&gt; result = function_name(5, &quot;option&quot;)
-    &gt;&gt;&gt; print(result)
-    3.14
-    &quot;&quot;&quot;
-</code></pre>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; result = function_name(5, &quot;option&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    3.14</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</code></pre></div>
 <h2 id="3-function-method-docstrings">3. Function &amp; Method Docstrings</h2>
 <h3 id="template_1">Template</h3>
-<pre><code class="language-python">class Solver:
-    &quot;&quot;&quot;
-    Generalized Nash Equilibrium solver.
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Solver</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generalized Nash Equilibrium solver.</span>
 
-    Provides algorithms to compute equilibria in generalized Nash games.
+<span class="sd">    Provides algorithms to compute equilibria in generalized Nash games.</span>
 
-    Parameters
-    ----------
-    tol : float, optional
-        Convergence tolerance. Default is ``1e-6``.
-    max_iter : int, optional
-        Maximum number of iterations. Default is ``1000``.
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tol : float, optional</span>
+<span class="sd">        Convergence tolerance. Default is ``1e-6``.</span>
+<span class="sd">    max_iter : int, optional</span>
+<span class="sd">        Maximum number of iterations. Default is ``1000``.</span>
 
-    Attributes
-    ----------
-    tol : float
-        Convergence tolerance.
-    max_iter : int
-        Maximum number of iterations.
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tol : float</span>
+<span class="sd">        Convergence tolerance.</span>
+<span class="sd">    max_iter : int</span>
+<span class="sd">        Maximum number of iterations.</span>
 
-    See Also
-    --------
-    create_game : Utility to create game instances.
-    flatten_variables : Function used internally to reshape variables.
-    &quot;&quot;&quot;
-
-</code></pre>
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    create_game : Utility to create game instances.</span>
+<span class="sd">    flatten_variables : Function used internally to reshape variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</code></pre></div>
 <h2 id="module-docstrings">Module Docstrings</h2>
 <p>At the top of every Python file:</p>
-<pre><code>&quot;&quot;&quot;
+<div class="highlight"><pre><span></span><code>&quot;&quot;&quot;
 Utilities for game creation.
 
 This module provides helper functions to build and initialize
 generalized Nash equilibrium problems.
 &quot;&quot;&quot;
-
-</code></pre>
+</code></pre></div>
 <h2 id="sections-to-use">Sections to Use</h2>
 <table>
 <thead>
@@ -1369,15 +1367,14 @@ generalized Nash equilibrium problems.
 <li>Example blocks must be valid Python so they can be tested via pytest --doctest-modules.</li>
 </ul>
 <h3 id="good-example">Good Example:</h3>
-<pre><code class="language-commandline">Examples
+<div class="highlight"><pre><span></span><code>Examples
 --------
 &gt;&gt;&gt; import numpy as np
 &gt;&gt;&gt; vectors = [np.array([[1.0], [2.0]]), np.array([[3.0]])]
 &gt;&gt;&gt; scalars = [4.0, 5.0]
 &gt;&gt;&gt; flatten_variables(vectors, scalars)
 [1.0, 2.0, 3.0, 4.0, 5.0]
-
-</code></pre>
+</code></pre></div>
 <h2 id="dos-and-donts">Do's and Don'ts</h2>
 <p>✅ Do:</p>
 <ul>
@@ -1443,6 +1440,10 @@ generalized Nash equilibrium problems.
     
     
       <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       
     
   </body>
