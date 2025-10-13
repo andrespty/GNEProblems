@@ -1,5 +1,7 @@
 from .misc import *
 from .types import *
+from typing import List, Union, Tuple
+import numpy as np
 
 def construct_vectors(actions: Vector, action_sizes: List[int]) -> VectorList:
     """
