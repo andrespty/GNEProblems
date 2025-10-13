@@ -44,7 +44,7 @@ nav:
   - Home: index.md
   - User Guide: user_guide.md
   - Installation: installation.md
-  - API Reference: reference.md
+  - Reference: reference.md
   - Examples: examples.md
   - Development:
       - Overview: development/overview.md
