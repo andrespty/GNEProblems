@@ -1,4 +1,5 @@
 import numpy as np
+from griffe import Parameters
 from scipy.optimize import Bounds
 from scipy.optimize import minimize
 from scipy.optimize import LinearConstraint
@@ -10,6 +11,27 @@ from .misc import *
 from .utils import *
 
 class GNEP_Solver_Bounded:
+    """
+        <span style="background-color:#7B68EE; color:white; padding:2px 6px; border-radius:4px;">Class</span>
+
+        Solve a bounded Generalized Nash Equilibrium Problem (GNEP).
+
+        Description
+        ----------
+        enter desc.
+
+        Parameters
+        ----------
+        enter paremeters.
+
+        Attributes
+        ----------
+        enter attributes.
+
+        Examples
+        ----------
+        usages here
+    """
     def __init__(self,
                  obj_funcs:                     List[Callable[[npt.NDArray[np.float64]], npt.NDArray[np.float64]]],
                  derivative_obj_funcs:          List[Callable[[npt.NDArray[np.float64]], npt.NDArray[np.float64]]],
@@ -30,6 +52,7 @@ class GNEP_Solver_Bounded:
         self.action_sizes =                     np.array(player_vector_sizes)    # size of each player's action vector
         self.N =                                len(player_obj_func)
         self.bounds =                           np.array(bounds)
+
 
     def wrapper(self, initial_actions: List[float]) -> float:
         """
@@ -92,6 +115,7 @@ class GNEP_Solver_Bounded:
         gradient = self.calculate_gradient(actions, dual_actions)
         return self.energy_handler(gradient, actions)
 
+
     # Gradient of primal player
     def calculate_gradient(self, actions: npt.NDArray[np.float64], dual_actions: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         """
@@ -126,6 +150,7 @@ class GNEP_Solver_Bounded:
             result += p_vector.reshape(-1,1) * dual_actions[c_idx] * self.constraint_derivatives[c_idx](actions)
         return result
 
+
     # Gradient of dual player
     def calculate_energy_dual(self, actions: npt.NDArray[np.float64], dual_actions: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         """
@@ -145,7 +170,7 @@ class GNEP_Solver_Bounded:
             grad_dual.append(g.flatten())
         g_dual = np.concatenate(grad_dual).reshape(-1, 1)
         return g_dual
-
+    @classmethod
     def solve_game(self, initial_guess: List[float],bounds: List[Tuple[float, float]], disp=True):
         """
         Input:

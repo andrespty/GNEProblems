@@ -6,6 +6,8 @@ theme:
     primary: blue grey
   features:
     - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
 
 plugins:
   - awesome-pages
@@ -31,20 +33,35 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: true
-
+  - toc
+  - attr_list
+  
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
 
 
+  
 
 # Global site menu
 # https://www.mkdocs.org/user-guide/writing-your-docs/#file-layout
 nav:
   - Home: index.md
-  - User Guide: user_guide.md
   - Installation: installation.md
-  - Reference: reference.md
+  - Reference:
+      - Functions:
+          - Construct Vectors: development/functions/construct_vectors.md
+          - Created Wrapped Function: development/functions/create_wrapped_function.md
+          - Flatten Variables: development/functions/flatten_variables.md
+          - One Hot Encoding: development/functions/one_hot_encoding.md
+          - Create Single Wrapped Function: development/functions/wrapped_function_single.md
+      - Solvers:
+          - Bounded Solver: development/solvers/bounded.md
+          - Unbounded Solver: development/solvers/unbounded.md
+      - Types:
+          - Object Types: development/types/object_types.md
+          - Function Types: development/types/type_functions.md
+
   - Examples: examples.md
   - Development:
       - Overview: development/overview.md
