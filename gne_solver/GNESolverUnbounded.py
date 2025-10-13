@@ -257,7 +257,7 @@ class GNEP_Solver_Unbounded:
         return result
 
     # Gradient of dual player
-    @classmethod
+
     def calculate_gradient_dual(self, actions: Vector, dual_actions: Vector) -> Vector:
         """
         Compute the gradient of the dual energy.
@@ -282,7 +282,7 @@ class GNEP_Solver_Unbounded:
             grad_dual.append(g.flatten())
         g_dual = np.concatenate(grad_dual).reshape(-1, 1)
         return g_dual
-    @classmethod
+
     def solve_game(self, initial_guess: List[float], disp: bool=True):
         """
         Solve the GNEP optimization problem.
