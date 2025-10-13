@@ -1,5 +1,6 @@
 import numpy as np
-
+from numpy.typing import NDArray
+from typing import List
 from .utils import *
 from .types import *
 from scipy.optimize import basinhopping
@@ -87,6 +88,7 @@ class GNEP_Solver_Unbounded:
        >>> print(result.x)
        >>> print(elapsed_time)
     """
+
     def __init__(self,
                  obj_funcs:                     List[ObjFunction],
                  derivative_obj_funcs:          List[ObjFunctionGrad],
@@ -105,7 +107,7 @@ class GNEP_Solver_Unbounded:
         self.player_constraints =               one_hot_encoding(player_constraints, player_vector_sizes, len(derivative_constraints))     # which constraints are used for each player
         self.action_sizes =                     player_vector_sizes    # size of each player's action vector
         self.N =                                len(player_obj_func)
-    @classmethod
+
     def wrapper(self, initial_actions: List[float]) -> float:
         """
         Compute the total energy from a flat list of player and dual actions.
@@ -124,8 +126,8 @@ class GNEP_Solver_Unbounded:
         actions = np.array(initial_actions[:actions_count], dtype=np.float64).reshape(-1,1)
         dual_actions = np.array(initial_actions[actions_count:], dtype=np.float64).reshape(-1,1)
         return self.energy_function(actions, dual_actions)
-    @classmethod
-    def energy_function( self, actions: Vector, dual_actions: Vector) -> float:
+
+    def energy_function(self, actions: Vector, dual_actions: Vector) -> float:
         """
         Compute the total energy of the system.
 
@@ -145,7 +147,7 @@ class GNEP_Solver_Unbounded:
         dual_players_energy = self.dual_energy_function(actions, dual_actions)
         return float(np.sum(primal_players_energy, axis=0) + np.sum(dual_players_energy, axis=0))
 
-    @classmethod
+    @staticmethod
     def energy_handler(gradient: Vector, actions: Vector, isDual=False) -> Vector:
         """
         Convert gradients into energy contributions.
@@ -165,12 +167,12 @@ class GNEP_Solver_Unbounded:
             Energy contributions per element.
         """
         if isDual:
-            dual_eng = np.square((actions ** 2 / (1 + actions ** 2)) * (gradient ** 2 / (1 + gradient ** 2)) + np.exp(-actions ** 2) * (np.maximum(0, -gradient) ** 2 / (1 + np.maximum(0, -gradient) ** 2)))
-            # dual_eng = np.square( np.sqrt(actions**2 + gradient**2) - (actions + gradient) )
+            # dual_eng = np.square((actions ** 2 / (1 + actions ** 2)) * (gradient ** 2 / (1 + gradient ** 2)) + np.exp(-actions ** 2) * (np.maximum(0, -gradient) ** 2 / (1 + np.maximum(0, -gradient) ** 2)))
+            dual_eng = np.square( np.sqrt(actions**2 + gradient**2) - (actions + gradient) )
             return dual_eng
         else:
             return np.square(gradient)
-    @classmethod
+
     def primal_energy_function(self, actions: Vector, dual_actions: Vector) -> Vector:
         """
         Compute the energy contribution of primal players.
@@ -189,7 +191,7 @@ class GNEP_Solver_Unbounded:
         """
         gradient = self.calculate_gradient(actions, dual_actions)
         return self.energy_handler(gradient, actions)
-    @classmethod
+
     def dual_energy_function(self, actions: Vector, dual_actions: Vector) -> Vector:
         """
         Compute the energy contribution of dual players.
@@ -210,7 +212,6 @@ class GNEP_Solver_Unbounded:
         return eng_dual
 
     # Gradient of primal player
-    @classmethod
     def calculate_gradient(self, actions: Vector, dual_actions: Vector) -> Vector:
         """
         Compute the gradient of the primal energy.
@@ -257,7 +258,6 @@ class GNEP_Solver_Unbounded:
         return result
 
     # Gradient of dual player
-    @classmethod
     def calculate_gradient_dual(self, actions: Vector, dual_actions: Vector) -> Vector:
         """
         Compute the gradient of the dual energy.
@@ -282,7 +282,7 @@ class GNEP_Solver_Unbounded:
             grad_dual.append(g.flatten())
         g_dual = np.concatenate(grad_dual).reshape(-1, 1)
         return g_dual
-    @classmethod
+
     def solve_game(self, initial_guess: List[float], disp: bool=True):
         """
         Solve the GNEP optimization problem.
@@ -319,7 +319,7 @@ class GNEP_Solver_Unbounded:
         >>> print("Optimal actions and duals:", result.x)
         >>> print("Computation time:", elapsed_time)
        """
-        minimizer_kwargs = dict(method="L-BFGS-B")
+        minimizer_kwargs = dict(method="trust-constr")
         start = timeit.default_timer()
         result = basinhopping(
             self.wrapper,

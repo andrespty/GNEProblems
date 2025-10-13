@@ -111,7 +111,7 @@ class A8U:
 
     @staticmethod
     def g1_der(x1):
-        return np.array([[-1, -1, 0]]).reshape(-1, 1)
+        return np.array([[-1, -1, 1]]).reshape(-1, 1)
 
     @staticmethod
     def g2_der(x1):
