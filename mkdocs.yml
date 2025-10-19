@@ -50,17 +50,17 @@ nav:
   - Installation: installation.md
   - Reference:
       - Functions:
-          - Construct Vectors: development/functions/construct_vectors.md
-          - Created Wrapped Function: development/functions/create_wrapped_function.md
-          - Flatten Variables: development/functions/flatten_variables.md
-          - One Hot Encoding: development/functions/one_hot_encoding.md
-          - Create Single Wrapped Function: development/functions/wrapped_function_single.md
+          - Construct Vectors: documentation/functions/construct_vectors.md
+          - Created Wrapped Function: documentation/functions/create_wrapped_function.md
+          - Flatten Variables: documentation/functions/flatten_variables.md
+          - One Hot Encoding: documentation/functions/one_hot_encoding.md
+          - Create Single Wrapped Function: documentation/functions/wrapped_function_single.md
       - Solvers:
-          - Bounded Solver: development/solvers/bounded.md
-          - Unbounded Solver: development/solvers/unbounded.md
+          - Bounded Solver: documentation/solvers/bounded.md
+          - Unbounded Solver: documentation/solvers/unbounded.md
       - Types:
-          - Object Types: development/types/object_types.md
-          - Function Types: development/types/type_functions.md
+          - Object Types: documentation/types/object_types.md
+          - Function Types: documentation/types/type_functions.md
 
   - Examples: examples.md
   - Development:
