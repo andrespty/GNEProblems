@@ -27,10 +27,12 @@ plugins:
             show_source_order: true
             members_order: source
 
+
 markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.highlight
   - pymdownx.arithmatex:
       generic: true
   - toc

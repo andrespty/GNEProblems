@@ -67,32 +67,35 @@ def construct_vectors(actions: Vector, action_sizes: List[int]) -> VectorList:
 
 def one_hot_encoding(funcs_idx: List[Union[int, PlayerConstraint]], sizes: List[int], num_functions: int) -> Matrix:
     """
-    This function builds a matrix mapping each player’s action variables to the functions they are assigned
-     Creates a zeros NumPy matrix and then iterates through functions mapping them to correct player's action variables
+        This function builds a matrix mapping each player’s action variables to the functions they are assigned
+         Creates a zeros NumPy matrix and then iterates through functions mapping them to correct player's action variables
 
 
-    and assigning them to the matrix.
-    Parameters
-    ----------
-    funcs_idx : List
-        A list of either integers or PlayerConstraint (PlayerConstraint=Union[int], None, list[None])
-    sizes: List[int]
-        A list of integers thats length needs to equal the length of funcs_idx
-    num_functions: Int
-        An integer value that indicates the number of possible functions
-    Returns
-    -------
-    Matrix
-        Returns a matrix of shape (sum(sizes), num_functions), where
-        each row represents a player's variables and each column represents
-        a function.
-    Examples
-    --------
-    ''  >>> funcs_idx = [[0,2], None, [1]
-    ''  >>> sizes = [2,3,1]
-    >> num_functions = 3
-    >> M = one_hot_encoding(funcs_idx, sizes, num_functions)
-    3.14
+        and assigning them to the matrix.
+        Parameters
+        ----------
+        funcs_idx : List
+            A list of either integers or PlayerConstraint (PlayerConstraint=Union[int], None, list[None])
+        sizes: List[int]
+            A list of integers thats length needs to equal the length of funcs_idx
+        num_functions: Int
+            An integer value that indicates the number of possible functions
+        Returns
+        -------
+        Matrix
+            Returns a matrix of shape (sum(sizes), num_functions), where
+            each row represents a player's variables and each column represents
+            a function.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> funcs_idx = [[0, 2], None, [1]]
+        >>> sizes = [2, 3, 1]
+        >>> num_functions = 3
+        >>> M = one_hot_encoding(funcs_idx, sizes, num_functions)
+        >>> M
+        3.14
     """
     assert len(funcs_idx) == len(sizes), "funcs_idx and sizes must match in length"
 
