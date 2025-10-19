@@ -14,15 +14,13 @@ class GNEP_Solver_Bounded:
     """
         <span style="background-color:#7B68EE; color:white; padding:2px 6px; border-radius:4px;">Class</span>
 
-        Solve a bounded Generalized Nash Equilibrium Problem (GNEP).
-
         Description
         ----------
-        enter desc.
+        Solve a bounded Generalized Nash Equilibrium Problem (GNEP).
 
         Parameters
         ----------
-        enter paremeters.
+        enter parameters.
 
         Attributes
         ----------
