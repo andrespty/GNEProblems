@@ -9,23 +9,25 @@
       
       
       
+        <link rel="prev" href="../objective_check/">
       
-        <link rel="next" href="installation/">
+      
+        <link rel="next" href="../../solvers/bounded/">
       
       
-      <link rel="icon" href="assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
     
     
       
-        <title>Generalized Nash Equilibrium Solver</title>
+        <title>Constraint Check - Generalized Nash Equilibrium Solver</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.84d31ad4.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -44,9 +46,9 @@
       
     
     
-      <link rel="stylesheet" href="assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -69,11 +71,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#gne-solver" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -84,7 +81,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="Generalized Nash Equilibrium Solver" class="md-header__button md-logo" aria-label="Generalized Nash Equilibrium Solver" data-md-component="logo">
+    <a href="../../.." title="Generalized Nash Equilibrium Solver" class="md-header__button md-logo" aria-label="Generalized Nash Equilibrium Solver" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -104,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Home
+              Constraint Check
             
           </span>
         </div>
@@ -175,11 +172,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="." class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
         
   
   
@@ -198,7 +193,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="installation/" class="md-tabs__link">
+      <a href="../../../installation/" class="md-tabs__link">
         
   
   
@@ -215,6 +210,8 @@
   
   
   
+    
+  
   
     
     
@@ -222,11 +219,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="documentation/functions/construct_vectors/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../construct_vectors/" class="md-tabs__link">
           
   
   
@@ -249,7 +248,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="examples/" class="md-tabs__link">
+      <a href="../../../examples/" class="md-tabs__link">
         
   
   
@@ -270,7 +269,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="development/overview/" class="md-tabs__link">
+        <a href="../../../development/overview/" class="md-tabs__link">
           
   
   
@@ -306,7 +305,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="Generalized Nash Equilibrium Solver" class="md-nav__button md-logo" aria-label="Generalized Nash Equilibrium Solver" data-md-component="logo">
+    <a href="../../.." title="Generalized Nash Equilibrium Solver" class="md-nav__button md-logo" aria-label="Generalized Nash Equilibrium Solver" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -321,32 +320,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Home
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -357,44 +334,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#custom-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom Types
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -406,7 +345,7 @@
   
   
     <li class="md-nav__item">
-      <a href="installation/" class="md-nav__link">
+      <a href="../../../installation/" class="md-nav__link">
         
   
   
@@ -425,8 +364,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -440,19 +381,22 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -465,7 +409,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -476,8 +420,10 @@
                 
   
   
+    
   
   
+  
     
     
       
@@ -500,18 +446,21 @@
     
       
       
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
         
           
-          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="">
             
   
   
@@ -524,7 +473,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3_1">
             <span class="md-nav__icon md-icon"></span>
             Functions
@@ -538,7 +487,7 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/functions/construct_vectors/" class="md-nav__link">
+      <a href="../construct_vectors/" class="md-nav__link">
         
   
   
@@ -561,7 +510,7 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/functions/create_wrapped_function/" class="md-nav__link">
+      <a href="../create_wrapped_function/" class="md-nav__link">
         
   
   
@@ -584,7 +533,7 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/functions/flatten_variables/" class="md-nav__link">
+      <a href="../flatten_variables/" class="md-nav__link">
         
   
   
@@ -607,7 +556,7 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/functions/one_hot_encoding/" class="md-nav__link">
+      <a href="../one_hot_encoding/" class="md-nav__link">
         
   
   
@@ -630,7 +579,7 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/functions/wrapped_function_single/" class="md-nav__link">
+      <a href="../wrapped_function_single/" class="md-nav__link">
         
   
   
@@ -653,7 +602,7 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/functions/objective_check/" class="md-nav__link">
+      <a href="../objective_check/" class="md-nav__link">
         
   
   
@@ -673,10 +622,17 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="documentation/functions/constraint_check/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -687,6 +643,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -719,17 +676,20 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
         
           
-          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
             
   
   
@@ -756,7 +716,7 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/solvers/bounded/" class="md-nav__link">
+      <a href="../../solvers/bounded/" class="md-nav__link">
         
   
   
@@ -779,7 +739,7 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/solvers/unbounded/" class="md-nav__link">
+      <a href="../../solvers/unbounded/" class="md-nav__link">
         
   
   
@@ -822,17 +782,20 @@
       
       
         
+          
+          
+        
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
         
           
-          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
             
   
   
@@ -859,7 +822,7 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/types/object_types/" class="md-nav__link">
+      <a href="../../types/object_types/" class="md-nav__link">
         
   
   
@@ -882,7 +845,7 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/types/type_functions/" class="md-nav__link">
+      <a href="../../types/type_functions/" class="md-nav__link">
         
   
   
@@ -920,7 +883,7 @@
   
   
     <li class="md-nav__item">
-      <a href="examples/" class="md-nav__link">
+      <a href="../../../examples/" class="md-nav__link">
         
   
   
@@ -991,7 +954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development/overview/" class="md-nav__link">
+      <a href="../../../development/overview/" class="md-nav__link">
         
   
   
@@ -1014,7 +977,7 @@
   
   
     <li class="md-nav__item">
-      <a href="development/standards/" class="md-nav__link">
+      <a href="../../../development/standards/" class="md-nav__link">
         
   
   
@@ -1054,34 +1017,6 @@
   
   
   
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installation
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#custom-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      Custom Types
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -1097,12 +1032,131 @@
 
 
 
-<h1 id="gne-solver">GNE Solver</h1>
-<p>A Python library to compute Generalized Nash Equilibria.</p>
-<h2 id="installation">Installation</h2>
-<div class="highlight"><pre><span></span><code><span class="w">  </span>pip<span class="w"> </span>install<span class="w"> </span>gne-solver
+  <h1>Constraint Check</h1>
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+        <p>Evaluate constraint satisfaction for each player or system constraint in a GNE problem.
+Checks whether each constraint function is satisfied within a specified numerical tolerance.
+It returns both the evaluated constraint values and a Boolean list indicating whether each constraint is satisfied.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>constraints</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span>[<span title="gne_solver.types.ConsFunction">ConsFunction</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of callable constraint functions. Each function should accept a list of player action vectors
+and return a NumPy array representing constraint residuals (e.g., values ≤ 0 indicate satisfaction).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>actions</code>
+            </td>
+            <td>
+                  <code><span title="gne_solver.types.VectorList">VectorList</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list or array of player action vectors representing the current decisions for all players.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>epsilon</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Numerical tolerance used to determine constraint satisfaction.
+Defaults to <code>1e-3</code>. A constraint is considered satisfied if all its values are ≤ <code>epsilon</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0.001</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="tuple">tuple</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A tuple containing:</p>
+<ul>
+<li><strong>constraint_values</strong> (<code>VectorList</code>): A list of NumPy arrays representing the evaluated constraint values for each function.</li>
+<li><strong>constraint_satisfaction</strong> (<code>list[bool]</code>): A list of Boolean values where <code>True</code> indicates that the corresponding constraint is satisfied.</li>
+</ul>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">cons1</span><span class="p">(</span><span class="nb">vars</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">vars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="nb">vars</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">3</span><span class="p">])</span>   <span class="c1"># x + y &lt;= 3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">cons2</span><span class="p">(</span><span class="nb">vars</span><span class="p">):</span> <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">vars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">])</span>             <span class="c1"># x &lt;= 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="n">cons1</span><span class="p">,</span> <span class="n">cons2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.5</span><span class="p">])]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">constraint_check</span><span class="p">(</span><span class="n">constraints</span><span class="p">,</span> <span class="n">actions</span><span class="p">)</span>
+<span class="go">([array([-0.5]), array([-1.])], [True, True])</span>
 </code></pre></div>
-<h2 id="custom-types">Custom Types</h2>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Example with a violated constraint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.5</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">])]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">constraint_check</span><span class="p">(</span><span class="n">constraints</span><span class="p">,</span> <span class="n">actions</span><span class="p">)</span>
+<span class="go">([array([0.5]), array([0.5])], [False, False])</span>
+</code></pre></div>
+
+
+    </div>
+
+</div>
 
 
 
@@ -1151,10 +1205,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.indexes"], "search": "assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.indexes"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       

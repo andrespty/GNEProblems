@@ -9,22 +9,22 @@
       
       
       
-        <link rel="prev" href="../construct_vectors/">
+        <link rel="prev" href="../../../installation/">
       
       
-        <link rel="next" href="../flatten_variables/">
+        <link rel="next" href="../create_wrapped_function/">
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.21">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
     
     
       
-        <title>Created Wrapped Function - Generalized Nash Equilibrium Solver</title>
+        <title>Construct Vectors - Generalized Nash Equilibrium Solver</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.2a3383ac.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
@@ -101,7 +101,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Created Wrapped Function
+              Construct Vectors
             
           </span>
         </div>
@@ -225,7 +225,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../construct_vectors/" class="md-tabs__link">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -269,7 +269,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../overview/" class="md-tabs__link">
+        <a href="../../../development/overview/" class="md-tabs__link">
           
   
   
@@ -437,6 +437,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -480,29 +484,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../construct_vectors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Construct Vectors
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -518,13 +499,36 @@
   
   
   <span class="md-ellipsis">
-    Created Wrapped Function
+    Construct Vectors
     
   </span>
   
 
       </a>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../create_wrapped_function/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Created Wrapped Function
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -589,6 +593,52 @@
   
   <span class="md-ellipsis">
     Create Single Wrapped Function
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../objective_check/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Objective Check
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../constraint_check/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Constraint Check
     
   </span>
   
@@ -904,7 +954,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../overview/" class="md-nav__link">
+      <a href="../../../development/overview/" class="md-nav__link">
         
   
   
@@ -927,7 +977,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../standards/" class="md-nav__link">
+      <a href="../../../development/standards/" class="md-nav__link">
         
   
   
@@ -982,7 +1032,7 @@
 
 
 
-  <h1>Created Wrapped Function</h1>
+  <h1>Construct Vectors</h1>
 
 <div class="doc doc-object doc-function">
 
@@ -991,11 +1041,11 @@
 
     <div class="doc doc-contents first">
 
-        <p>Create a wrapped objective function for a single player's optimization.</p>
-<p>Fix all players' action vectors except the one at <code>player_idx</code>, and
-return a new function that accepts only this player's decision variables
-as input. The wrapped function automatically reconstructs the full list
-of action vectors and evaluates the original objective function.</p>
+        <p>Split a concatenated action array into separate action vectors for each player.</p>
+<p>This function validates the input types and shapes, ensuring that the total
+number of rows in "actions" matches the sum of "action_sizes". It then splits
+the stacked column vector into per-player subarrays in the same order as specified
+in "action_sizes".</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1011,31 +1061,15 @@ of action vectors and evaluates the original objective function.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>original_func</code>
-            </td>
-            <td>
-                  <code><span title="gne_solver.types.ObjFunction">ObjFunction</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The original objective function that accepts a list of action vectors.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
                 <code>actions</code>
             </td>
             <td>
-                  <code><span title="gne_solver.types.VectorList">VectorList</span></code>
+                  <code>numpy.ndarray of shape (sum(action_sizes), 1)</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of 2D NumPy arrays with shape (n, 1), representing all players'
-current actions.</p>
+                <p>A 2D NumPy array containing all players' actions stacked vertically.
+The number of rows must equal the sum of all entries in <code>action_sizes</code>.</p>
               </div>
             </td>
             <td>
@@ -1044,19 +1078,54 @@ current actions.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>player_idx</code>
+                <code>action_sizes</code>
             </td>
             <td>
-                  <code><span title="int">int</span></code>
+                  <code>list of int</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Index of the player whose action vector should remain variable in
-the wrapped function.</p>
+                <p>A list specifying the length of each player's action vector.
+The sum of these sizes must match the number of rows in <code>actions</code>.</p>
               </div>
             </td>
             <td>
                 <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>Type Error</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>if "actions" is not a NumPy array or if "action_sizes" is not a list
+of integers</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code>Value Error</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the number of rows in "actions" does not equal the sum of all
+entries in <code>action_sizes</code>.</p>
+              </div>
             </td>
           </tr>
       </tbody>
@@ -1074,13 +1143,12 @@ the wrapped function.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="gne_solver.types.WrappedFunction">WrappedFunction</span></code>
+                  <code>list of numpy.ndarray</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A function that takes the chosen player's action vector (as a list of floats),
-reshapes it into a 2D column vector with shape (n, 1), and evaluates
-<code>original_func</code> with the updated set of actions.</p>
+                <p>A list of 2D NumPy arrays, each corresponding to one player's action vector.
+The arrays are in the same order as the players in <code>action_sizes</code>.</p>
               </div>
             </td>
           </tr>
@@ -1089,13 +1157,13 @@ reshapes it into a 2D column vector with shape (n, 1), and evaluates
 
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">original_func</span><span class="p">(</span><span class="n">var_list</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">var_list</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">]]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.0</span><span class="p">]])]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">wrapped</span> <span class="o">=</span> <span class="n">create_wrapped_function</span><span class="p">(</span><span class="n">original_func</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">player_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">wrapped</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">])</span>
-<span class="go">33.0</span>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">actions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">4.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">action_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">construct_vectors</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="n">action_sizes</span><span class="p">)</span>
+<span class="go">[array([[1.],</span>
+<span class="go">        [2.]]),</span>
+<span class="go"> array([[3.],</span>
+<span class="go">        [4.]])]</span>
 </code></pre></div>
 
 
