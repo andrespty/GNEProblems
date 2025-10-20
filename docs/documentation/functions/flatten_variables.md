@@ -1,0 +1,1 @@
+::: gne_solver.misc.flatten_variables
