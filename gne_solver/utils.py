@@ -205,7 +205,8 @@ def create_wrapped_function_single(original_func: ObjFunction,actions: VectorLis
         player_var_opt = np.array(player_var_opt).reshape(-1, 1)
         new_vars = fixed_vars[:player_idx] + [player_var_opt] + fixed_vars[player_idx:]
         return original_func(new_vars)[player_idx]
-        return wrap_func
+    
+    return wrap_func
 
 def objective_check(objective_functions: List[ObjFunction], actions: VectorList) -> Vector:
     """
