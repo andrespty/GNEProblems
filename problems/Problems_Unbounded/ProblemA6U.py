@@ -55,11 +55,11 @@ class A6U:
         obj = 0.5 * x.T @ A @ x + x.T @ (B @ x_ni + b)
         return obj
 
-    B1 = np.array([[-2, 0, 1, 2], [1, -4, -7, 9], [3, 8, 22, 21]])
+    B1 = np.array([[-2, 0, 1, 2], [1, -4, -7, 9], [-3, 8, 22, 21]])
     b1 = np.array([[1], [-2], [-3]])
-    B2 = np.array([[-2, 1, -3, 12, -1], [0, -4, 8, 16, 21]])
+    B2 = np.array([[-2, 1, -3, -12, -1], [0, -4, 8, 16, 21]])
     b2 = np.array([[1], [2]])
-    B3 = np.array([[1, -7, 22, -12, 16], [2, -9, 21, 1, 21]])
+    B3 = np.array([[1, -7, 22, -12, 16], [2, -9, 21, -1, 21]])
     b3 = np.array([[1], [-2]])
 
     @staticmethod
@@ -208,7 +208,7 @@ class A6U:
     @staticmethod
     def g2_der(x):
         x1, x2, x3 = x
-        return np.array([4*x1[0][0]**3, x3[1][0], 0, -1, 0, x1[1][0], 0]).reshape(-1, 1)
+        return np.array([4*x1[0][0]**3, x3[0][0], 0, -1, 0, x1[1][0], 0]).reshape(-1, 1)
     
     @staticmethod
     def g3_der(x1):
@@ -217,7 +217,7 @@ class A6U:
     @staticmethod
     def g4_der(x):
         x1, x2, x3 = x
-        return np.array([[-2*x1[0][0], 0, 0, 2*(x1[2][0]-2), 2*x2[1][0], 0, 0]]).reshape(-1, 1)
+        return np.array([[-2*x1[0][0], 0, 0, 2*(x2[0][0]-2), 2*x2[1][0], 0, 0]]).reshape(-1, 1)
     
     @staticmethod
     def g5_der(x1):
@@ -226,7 +226,7 @@ class A6U:
     @staticmethod
     def g6_der(x):
         x1, x2, x3 = x
-        return np.array([[0, 0, 0, -x3[1][0], 0, 4*x3[1][0] - x2[1][0] , -2*(x3[1][0]-2)]]).reshape(-1, 1)
+        return np.array([[0, 0, 0, -x3[0][0], 0, 4*x3[0][0] - x2[0][0] , -2*(x3[1][0]-2)]]).reshape(-1, 1)
 
     @staticmethod
     def g7_der(x1):

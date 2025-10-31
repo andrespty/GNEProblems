@@ -16,13 +16,9 @@ class GNEP_Solver_Bounded:
 
         Solve a bounded Generalized Nash Equilibrium Problem (GNEP).
 
-        Description
-        ----------
-        enter desc.
-
         Parameters
         ----------
-        enter paremeters.
+        enter parameters.
 
         Attributes
         ----------

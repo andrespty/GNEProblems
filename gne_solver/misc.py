@@ -1,4 +1,6 @@
 from .types import *
+from typing import List, Union
+import numpy as np
 
 def flatten_variables(vectors: VectorList, scalars: List[float]) -> List[float]:
     """
