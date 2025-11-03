@@ -1,177 +1,83 @@
+
 import numpy as np
-from scipy.optimize import Bounds
-from scipy.optimize import minimize
-from scipy.optimize import LinearConstraint
-from scipy.optimize import basinhopping
-import timeit
-from typing import List, Tuple, Dict, Optional, Callable
-import numpy.typing as npt
+from typing import List
 
+Vector = np.ndarray
+VectorList = List[np.ndarray]
 
-class B1:
+class B1U:
     @staticmethod
     def paper_solution():
-        return []
+        # From the paper: SOL^GNEP = {(5, 9)} U {(t, 15 - t) | 9 <= t <= 10}
+        # Representing just the main equilibrium point (5, 9)
+        value_1 = [5, 9]
+        return [value_1]
 
     @staticmethod
     def define_players():
-        player_vector_sizes = [5,5]
-        player_objective_functions = [0, 1]
-        player_constraints = [[0, 1, 4, 5, 6], [2, 3, 4, 5, 6]]
-        bounds = [(0, 100), (0, 100), (0, 100), (0, 50), (0, 50), (0, 50), (0, 100), (0, 100), (0, 100), (0, 50),
-                  (0, 50), (0, 50), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
-        bounds_training = [(0, 100), (0, 100), (0, 100), (0, 50), (0, 50), (0, 50), (0, 100), (0, 100), (0, 100),
-                           (0, 50), (0, 50), (0, 50), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 1)]
-        return [player_vector_sizes, player_objective_functions, player_constraints, bounds, bounds_training]
+        # There are 2 players, each controlling 1 variable
+        player_vector_sizes = [1, 1]
+        player_objective_functions = [0, 0]  # Player 1 -> f1(x1,x2), Player 2 -> f2(x1,x2)
+        # Shared constraint: x1 + x2 ≤ 15
+        player_constraints = [[0], [0]]  # Both share the same constraint
+        return [player_vector_sizes, player_objective_functions, player_constraints]
 
+    # === Objective Functions ===
     @staticmethod
     def objective_functions():
-        return [B1.obj_func_1, B1.obj_func_2]
+        return [B1U.obj_func]
 
     @staticmethod
     def objective_function_derivatives():
-        return [B1.obj_func_der_1, B1.obj_func_der_2]
+        return [B1U.obj_func_der]
 
+    # === Constraints ===
     @staticmethod
     def constraints():
-        return [B1.g0, B1.g1, B1.g2, B1.g3, B1.g4, B1.g5, B1.g6]
+        return [B1U.g_shared]
 
     @staticmethod
     def constraint_derivatives():
-        return [B1.g0_der, B1.g1_der, B1.g2_der, B1.g3_der, B1.g4_der, B1.g5_der, B1.g6_der]
+        return [B1U.g_shared_der]
 
-    # @staticmethod
-    def abbreviations(x: npt.NDArray[np.float64]) -> float:
+    # === Player 1 and Player 2 objective functions ===
+    @staticmethod
+    def obj_func(x: VectorList) -> Vector:
+        """
+        f1(x1, x2) = x1^2 + (8/3)x1x2 - 34x1
+        f2(x1, x2) = x2^2 + (5/4)x1x2 - 24.25x2
+        """
         x1 = x[0]
         x2 = x[1]
-        S1 = 40 - (40 / 500) * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - (35 / 400) * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - (32 / 600) * (x1[3] + x1[5] + x2[2] + x2[5])
+
+        f1 = x1**2 + (8/3) * x1 * x2 - 34 * x1
+        f2 = x2**2 + (5/4) * x1 * x2 - 24.25 * x2
+        return np.array([f1, f2]).reshape(-1, 1)
 
     @staticmethod
-    def obj_func_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def obj_func_der(x: VectorList) -> Vector:
+        """
+        Gradient of each player's objective with respect to their own variable:
+        ∂f1/∂x1 = 2x1 + (8/3)x2 - 34
+        ∂f2/∂x2 = 2x2 + (5/4)x1 - 24.25
+        """
         x1 = x[0]
         x2 = x[1]
-        S1 = 40 - 40 / 500 * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - 35 / 400 * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - 32 / 600 * (x1[2] + x1[5] + x2[2] + x2[5])
-        return (15 - S1)(x1[0] + x1[3]) + (15 - S2)(x1[1] + x1[4]) + (15 - S3)(x1[2] + x1[5])
 
+        df1_dx1 = 2 * x1 + (8 / 3) * x2 - 34
+        df2_dx2 = 2 * x2 + (5 / 4) * x1 - 24.25
+        return np.array([df1_dx1, df2_dx2]).reshape(-1, 1)
+
+    # === Shared constraint x1 + x2 ≤ 15 ===
     @staticmethod
-    def obj_func_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    def g_shared(x: VectorList) -> Vector:
         x1 = x[0]
         x2 = x[1]
-        S1 = 40 - 40 / 500 * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - 35 / 400 * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - 32 / 600 * (x1[2] + x1[5] + x2[2] + x2[5])
-        return (15 - S1)(x2[0] + x2[3]) + (15 - S2)(x2[1] + x2[4]) + (15 - S3)(x2[2] + x2[3])
+        return np.array([x1 + x2 - 15]).reshape(-1, 1)
 
     @staticmethod
-    def obj_func_der_1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        return np.array([15 - 40 - 80 / 500 * x1[0] - 80 / 500 * x1[3] - 40 / 500 * x2[0] - 40 / 500 * x2[3],
-                         15 - 35 - 70 / 400 * x1[1] - 70 / 400 * x1[4] - 35 / 400 * x2[1] - 35 / 400 * x2[4],
-                         15 - 32 - 64 / 600 * x1[2] - 64 / 600 * x1[5] - 32 / 600 * x2[2] - 32 / 600 * x2[5],
-
-                         15 - 40 - 80 / 500 * x1[3] - 80 / 500 * x1[0] - 40 / 500 * x2[0] - 40 / 500 * x2[3],
-                         15 - 35 - 70 / 400 * x1[4] - 70 / 400 * x1[1] - 35 / 400 * x2[1] - 35 / 400 * x2[4],
-                         15 - 32 - 64 / 600 * x1[5] - 64 / 600 * x1[2] - 32 / 600 * x2[2] - 32 / 600 * x2[5]]).reshape(
-            -1, 1)
-
-    @staticmethod
-    def obj_func_der_2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        return np.array([15 - 40 - 80 / 500 * x2[0] - 80 / 500 * x2[3] - 40 / 500 * x1[0] - 40 / 500 * x1[3],
-                         15 - 35 - 70 / 400 * x2[1] - 70 / 400 * x2[4] - 35 / 400 * x1[1] - 35 / 400 * x1[4],
-                         15 - 32 - 64 / 600 * x2[2] - 64 / 600 * x2[5] - 32 / 600 * x1[2] - 32 / 600 * x1[5],
-
-                         15 - 40 - 80 / 500 * x2[3] - 80 / 500 * x2[0] - 40 / 500 * x1[0] - 40 / 500 * x1[3],
-                         15 - 35 - 70 / 400 * x2[4] - 70 / 400 * x2[1] - 35 / 400 * x1[1] - 35 / 400 * x1[4],
-                         15 - 32 - 64 / 600 * x2[5] - 64 / 600 * x2[2] - 32 / 600 * x1[2] - 32 / 600 * x1[5]]).reshape(
-            -1, 1)
-
-    @staticmethod
-    def g0(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        return x1[0] + x1[1] + x1[2] - 100
-
-    @staticmethod
-    def g1(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        return x1[3] + x1[4] + x1[5] - 50
-
-    @staticmethod
-    def g2(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        return x2[0] + x2[1] + x2[2] - 100
-
-    @staticmethod
-    def g3(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        return x2[3] + x2[4] + x2[5] - 50
-
-    @staticmethod
-    def g4(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        S1 = 40 - 40 / 500 * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - 35 / 400 * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - 32 / 600 * (x1[2] + x1[5] + x2[2] + x2[5])
-        return abs(S1 - S2) - 1
-
-    @staticmethod
-    def g5(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        S1 = 40 - 40 / 500 * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - 35 / 400 * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - 32 / 600 * (x1[2] + x1[5] + x2[2] + x2[5])
-        return abs(S1 - S3) - 1
-
-    @staticmethod
-    def g6(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        x1 = x[0]
-        x2 = x[1]
-        S1 = 40 - 40 / 500 * (x1[0] + x1[3] + x2[0] + x2[3])
-        S2 = 35 - 35 / 400 * (x1[1] + x1[4] + x2[1] + x2[4])
-        S3 = 32 - 32 / 600 * (x1[2] + x1[5] + x2[2] + x2[5])
-        return abs(S2 - S3) - 1
-
-    @staticmethod
-    def g0_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array([[1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]]).reshape(-1, 1)
-
-    @staticmethod
-    def g1_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array([[0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0]]).reshape(-1, 1)
-
-    @staticmethod
-    def g2_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array([[0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0]]).reshape(-1, 1)
-
-    @staticmethod
-    def g3_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array([[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1]]).reshape(-1, 1)
-
-    @staticmethod
-    def g4_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array([[40 / 500, 35 / 400, 0, 40 / 500, 35 / 400, 0,
-                          40 / 500, 35 / 400, 0, 40 / 500, 35 / 400, 0]]).reshape(-1, 1)
-
-    @staticmethod
-    def g5_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array([[40 / 500, 0, 32 / 600, 40 / 500, 0, 32 / 600,
-                          40 / 500, 0, 32 / 600, 40 / 500, 0, 32 / 600]]).reshape(-1, 1)
-
-    @staticmethod
-    def g6_der(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        return np.array([[0, 35 / 400, 32 / 600, 0, 35 / 400, 32 / 600,
-                          0, 35 / 400, 32 / 600, 0, 35 / 400, 32 / 600]]).reshape(-1, 1)
+    def g_shared_der(x: VectorList) -> Vector:
+        # derivative of (x1 + x2 - 15) wrt [x1, x2] = [1, 1]
+        return np.array([[1, 1]]).reshape(-1, 1)
 
 
