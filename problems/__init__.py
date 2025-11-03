@@ -33,6 +33,7 @@ from .Problems_Unbounded.ProblemA16U import A16U
 from .Problems_Unbounded.ProblemA17U import A17U
 from .Problems_Unbounded.ProblemA18U import A18U
 from .Problems_Bounded import *
+from .Problems_Unbounded.ProblemB1_Harker import B1U
 
 __all__ = [
     "A1U",
@@ -58,6 +59,7 @@ __all__ = [
     'A16U',
     'A17U',
     'A18U',
+    'B1U'
 ]
 
 
