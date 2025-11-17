@@ -24,7 +24,7 @@ class B2aU:
 
         # Shared constraint: x1 + x2 ≤ 1
         # (nonnegativity x1 ≥ 0, x2 ≥ 0 is not encoded here, mirroring the B1U style)
-        player_constraints = [[0], [0]]       # Both share the same constraint
+        player_constraints = [[0,1], [0,1]]       # Both share the same constraint
         return [player_vector_sizes, player_objective_functions, player_constraints]
 
     # === Objective Functions ===
@@ -39,11 +39,11 @@ class B2aU:
     # === Constraints ===
     @staticmethod
     def constraints():
-        return [B2aU.g_shared]
+        return [B2aU.g_shared, B2aU.g0]
 
     @staticmethod
     def constraint_derivatives():
-        return [B2aU.g_shared_der]
+        return [B2aU.g_shared_der,  B2aU.g0_der]
 
     # === Player 1 and Player 2 objective functions ===
     @staticmethod
@@ -87,9 +87,19 @@ class B2aU:
         return np.array([x1 + x2 - 1.0]).reshape(-1, 1)
 
     @staticmethod
+    def g0(x: VectorList) -> Vector:
+        x1 = x[0]
+        x2 = x[1]
+        return -np.concatenate([x1, x2]).reshape(-1, 1)
+
+    @staticmethod
     def g_shared_der(x: VectorList) -> Vector:
         # derivative of (x1 + x2 - 1) wrt [x1, x2] = [1, 1]
         return np.array([[1.0, 1.0]]).reshape(-1, 1)
+
+    @staticmethod
+    def g0_der(x: VectorList) -> Vector:
+        return np.array([[-1.0, -1.0]]).reshape(-1, 1)
 
 
 

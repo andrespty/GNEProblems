@@ -25,7 +25,7 @@ class B2bU:
         player_objective_functions = [0, 0]  # Player 1 -> f1, Player 2 -> f2
 
         # Shared quadratic constraint: x1^2 + x2^2 ≤ 1
-        player_constraints = [[0], [0]]  # Both share the same constraint
+        player_constraints = [[0,1], [0,1]]  # Both share the same constraint
         return [player_vector_sizes, player_objective_functions, player_constraints]
 
     # === Objective Functions ===
@@ -40,11 +40,11 @@ class B2bU:
     # === Constraints ===
     @staticmethod
     def constraints():
-        return [B2bU.g_shared]
+        return [B2bU.g_shared, B2bU.g0]
 
     @staticmethod
     def constraint_derivatives():
-        return [B2bU.g_shared_der]
+        return [B2bU.g_shared_der, B2bU.g0_der]
 
     # === Player 1 and Player 2 objective functions (same as Example 1) ===
     @staticmethod
@@ -83,9 +83,19 @@ class B2bU:
         return np.array([x1**2 + x2**2 - 1.0]).reshape(-1, 1)
 
     @staticmethod
+    def g0(x: VectorList) -> Vector:
+        x1 = x[0]
+        x2 = x[1]
+        return -np.concatenate([x1, x2]).reshape(-1, 1)
+
+    @staticmethod
     def g_shared_der(x: VectorList) -> Vector:
         # derivative of (x1^2 + x2^2 - 1) wrt [x1, x2] = [2x1, 2x2]
         x1 = x[0]
         x2 = x[1]
         return np.array([[2.0 * x1, 2.0 * x2]]).reshape(-1, 1)
+
+    @staticmethod
+    def g0_der(x: VectorList) -> Vector:
+        return np.array([[-1.0, -1.0]]).reshape(-1, 1)
 
