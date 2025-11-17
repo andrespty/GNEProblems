@@ -6,126 +6,140 @@ Vector = np.ndarray
 VectorList = List[np.ndarray]
 
 
+import numpy as np
+from typing import List
+
+Vector = np.ndarray
+VectorList = List[np.ndarray]
+
+
 class B2aU:
     @staticmethod
     def paper_solution():
-        # One GNE / VI solution reported in the paper:
-        # x* = (4/11, 7/11)^T
+        """
+        From the paper's VI solution:
+        x* = (4/11, 7/11)^T
+        """
         value_1 = [4.0 / 11.0, 7.0 / 11.0]
         return [value_1]
 
     @staticmethod
     def define_players():
-        # Two players, each with a scalar decision variable
-        n = 2
-        player_vector_sizes = [1 for _ in range(n)]
-        # single objective mapping F(x) used for both players (index 0)
-        player_objective_functions = [0 for _ in range(n)]
-        # constraints indices for each player:
-        # g0: x1 + x2 - 1 <= 0  (shared)
-        # g1: -x1 <= 0          (x1 >= 0, player 1)
-        # g2: -x2 <= 0          (x2 >= 0, player 2)
-        # g3: dummy always-satisfied constraint
+        """
+        Two players, each controlling one variable:
+        Player 1: x1
+        Player 2: x2
+
+        Constraints:
+        g0: x1 + x2 ≤ 1      (shared)
+        g1: x1 ≥ 0 → -x1 ≤ 0
+        g2: x2 ≥ 0 → -x2 ≤ 0
+        """
+        player_vector_sizes = [1, 1]
+        player_objective_functions = [0, 0]  # both use obj_func()
         player_constraints = [
-            [0, 1],  # player 1 has g0, g1
-            [0, 2]   # player 2 has g0, g2
+            [0, 1],  # Player 1: g0, g1
+            [0, 2]   # Player 2: g0, g2
         ]
         return [player_vector_sizes, player_objective_functions, player_constraints]
 
+    # === Objective Functions (Shared block) ===
     @staticmethod
     def objective_functions():
-        # Mapping F(x) = (2x1 - x2 - 1,  -1/2 x1 + 2x2 - 2)^T
         return [B2aU.obj_func]
 
     @staticmethod
     def objective_function_derivatives():
-        # Diagonal of Jacobian of F with respect to each player's own variable
         return [B2aU.obj_func_der]
 
+    # === Constraints ===
     @staticmethod
     def constraints():
-        # g0: x1 + x2 - 1 <= 0  (shared)
-        # g1: -x1 <= 0          (x1 >= 0)
-        # g2: -x2 <= 0          (x2 >= 0)
-        # g3: dummy constraint (always inactive)
-        return [B2aU.g0,
-                B2aU.g1,
-                B2aU.g2,
-                B2aU.g3]
+        return [B2aU.g0, B2aU.g1, B2aU.g2]
 
     @staticmethod
     def constraint_derivatives():
-        return [B2aU.g0_der,
-                B2aU.g1_der,
-                B2aU.g2_der,
-                B2aU.g3_der]
+        return [B2aU.g0_der, B2aU.g1_der, B2aU.g2_der]
 
-    # === Objective Mapping F(x) ===
+    # === Objective Functions ===
     @staticmethod
     def obj_func(x: VectorList) -> Vector:
-        # x is a list of player vectors; concatenate to [x1, x2]^T
-        x_full = np.concatenate(x).reshape(-1, 1)
-        x1 = x_full[0, 0]
-        x2 = x_full[1, 0]
+        r"""
+        Example 1 from the problem:
 
-        F1 = 2.0 * x1 - x2 - 1.0
-        F2 = -0.5 * x1 + 2.0 * x2 - 2.0
+        Player 1:
+            f1(x1,x2) = x1^2 - x1 x2 - x1
 
-        return np.array([[F1], [F2]]).reshape(-1, 1)
+        Player 2:
+            f2(x1,x2) = x2^2 - (1/2)x1 x2 - 2x2
+        """
+        x1 = x[0]
+        x2 = x[1]
+
+        f1 = x1**2 - x1 * x2 - x1
+        f2 = x2**2 - 0.5 * x1 * x2 - 2.0 * x2
+        return np.array([f1, f2]).reshape(-1, 1)
 
     @staticmethod
     def obj_func_der(x: VectorList) -> Vector:
-        # For many algorithms only dF_i/dx_i is used:
-        # ∂F1/∂x1 = 2, ∂F2/∂x2 = 2
-        return np.array([[2.0], [2.0]]).reshape(-1, 1)
+        r"""
+        Gradients:
 
-    # === Constraint Functions ===
+        ∂f1/∂x1 = 2x1 - x2 - 1
+        ∂f2/∂x2 = 2x2 - (1/2)x1 - 2
+        """
+        x1 = x[0]
+        x2 = x[1]
+
+        df1_dx1 = 2.0 * x1 - x2 - 1.0
+        df2_dx2 = 2.0 * x2 - 0.5 * x1 - 2.0
+
+        return np.array([df1_dx1, df2_dx2]).reshape(-1, 1)
+
+    # === Constraints ===
     @staticmethod
     def g0(x: VectorList) -> Vector:
-        # Shared coupling constraint: x1 + x2 <= 1  → x1 + x2 - 1 <= 0
-        x_full = np.concatenate(x).reshape(-1, 1)
-        x1 = x_full[0, 0]
-        x2 = x_full[1, 0]
-        return np.array([[x1 + x2 - 1.0]]).reshape(-1, 1)
+        """
+        Shared constraint:
+            x1 + x2 ≤ 1  → x1 + x2 - 1 ≤ 0
+        """
+        x1 = x[0]
+        x2 = x[1]
+        return np.array([x1 + x2 - 1.0]).reshape(-1, 1)
 
     @staticmethod
     def g1(x: VectorList) -> Vector:
-        # Nonnegativity of x1: -x1 <= 0
-        x_full = np.concatenate(x).reshape(-1, 1)
-        x1 = x_full[0, 0]
-        return np.array([[-x1]]).reshape(-1, 1)
+        """
+        Player 1 nonnegativity:
+            x1 ≥ 0 → -x1 ≤ 0
+        """
+        x1 = x[0]
+        return np.array([-x1]).reshape(-1, 1)
 
     @staticmethod
     def g2(x: VectorList) -> Vector:
-        # Nonnegativity of x2: -x2 <= 0
-        x_full = np.concatenate(x).reshape(-1, 1)
-        x2 = x_full[1, 0]
-        return np.array([[-x2]]).reshape(-1, 1)
+        """
+        Player 2 nonnegativity:
+            x2 ≥ 0 → -x2 ≤ 0
+        """
+        x2 = x[1]
+        return np.array([-x2]).reshape(-1, 1)
 
-    @staticmethod
-    def g3(x: VectorList) -> Vector:
-        # Dummy constraint, always strictly satisfied: -1 <= 0
-        return np.array([[-1.0]]).reshape(-1, 1)
-
-    # === Constraint Derivatives (w.r.t. each player's own variable) ===
+    # === Constraint Derivatives ===
     @staticmethod
     def g0_der(x: VectorList) -> Vector:
-        # d(x1 + x2 - 1)/dx_i = 1 for each player
-        return np.array([[1.0]]).reshape(-1, 1)
+        # ∂(x1 + x2 - 1)/∂[x1, x2] = [1, 1]^T
+        return np.array([[1.0], [1.0]])
 
     @staticmethod
     def g1_der(x: VectorList) -> Vector:
-        # d(-x1)/dx1 = -1
-        return np.array([[-1.0]]).reshape(-1, 1)
+        # ∂(-x1)/∂[x1, x2] = [-1, 0]^T
+        return np.array([[-1.0], [0.0]])
 
     @staticmethod
     def g2_der(x: VectorList) -> Vector:
-        # d(-x2)/dx2 = -1
-        return np.array([[-1.0]]).reshape(-1, 1)
+        # ∂(-x2)/∂[x1, x2] = [0, -1]^T
+        return np.array([[0.0], [-1.0]])
 
-    @staticmethod
-    def g3_der(x: VectorList) -> Vector:
-        # derivative of dummy constraint is zero
-        return np.array([[0.0]]).reshape(-1, 1)
 
 
