@@ -6,20 +6,6 @@ Vector = np.ndarray
 VectorList = List[np.ndarray]
 
 
-import numpy as np
-from typing import List
-
-Vector = np.ndarray
-VectorList = List[np.ndarray]
-
-
-import numpy as np
-from typing import List
-
-Vector = np.ndarray
-VectorList = List[np.ndarray]
-
-
 class B2aU:
     @staticmethod
     def paper_solution():
