@@ -8,13 +8,14 @@ class B2bU:
     @staticmethod
     def paper_solution():
         """
-        Entire GNE set:
-            (x1, x2) = (t, sqrt(1 - t^2)),   0 ≤ t ≤ 4/5
+        Full GNE set for Example 2:
+            (x1, x2) = (t, sqrt(1 - t^2)),   0 <= t <= 4/5
 
         We discretize t on this interval to represent the continuum.
         """
-        t_vals = np.linspace(0.0, 4.0/5.0, 41)  # 41 points
-        sol_list = [[float(t), float(np.sqrt(1 - t**2))] for t in t_vals]
+        # Sample t in [0, 4/5]
+        t_vals = np.linspace(0.0, 4.0 / 5.0, 41)  # 41 points
+        sol_list = [[float(t), float(np.sqrt(1.0 - t**2))] for t in t_vals]
         return sol_list
 
     @staticmethod
