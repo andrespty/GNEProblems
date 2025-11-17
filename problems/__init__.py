@@ -35,6 +35,7 @@ from .Problems_Unbounded.ProblemA18U import A18U
 from .Problems_Bounded import *
 from .Problems_Unbounded.ProblemB1_Harker import B1U
 from .Problems_Unbounded.ProblemB2a_NTF1 import B2aU
+from .Problems_Unbounded.ProblemB2b_NTF2 import B2bU
 
 __all__ = [
     "A1U",
@@ -61,9 +62,13 @@ __all__ = [
     'A17U',
     'A18U',
     'B1U',
-    'B2aU'
+    'B2aU',
+    'B2bU'
+
 ]
 
 
 __version__ = "0.1.0"
 __author__ = "Andres Ho"
+
+from .Problems_Unbounded.ProblemB2b_NTF2 import B2bU
