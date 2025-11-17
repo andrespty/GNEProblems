@@ -34,6 +34,7 @@ from .Problems_Unbounded.ProblemA17U import A17U
 from .Problems_Unbounded.ProblemA18U import A18U
 from .Problems_Bounded import *
 from .Problems_Unbounded.ProblemB1_Harker import B1U
+from .Problems_Unbounded.ProblemB2a_NTF1 import B2aU
 
 __all__ = [
     "A1U",

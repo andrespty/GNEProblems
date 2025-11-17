@@ -5,16 +5,20 @@ from typing import List
 Vector = np.ndarray
 VectorList = List[np.ndarray]
 
-
 class B2aU:
     @staticmethod
     def paper_solution():
         """
-        From the paper's VI solution:
-        x* = (4/11, 7/11)^T
+        GNE set from the paper:
+            SOL^GNE = { (t, 1 - t) | 0 ≤ t ≤ 2/3 }.
+
+        Here we return a discretization of this interval:
+            t_k = 0, 0.02, 0.04, ..., 2/3
+        so paper_solution() is a list of [x1, x2] pairs with x1 = t_k, x2 = 1 - t_k.
         """
-        value_1 = [4.0 / 11.0, 7.0 / 11.0]
-        return [value_1]
+        t_vals = np.linspace(0.0, 2.0 / 3.0, 34)  # 34 points, step ≈ 0.02
+        sol_list = [[float(t), float(1.0 - t)] for t in t_vals]
+        return sol_list
 
     @staticmethod
     def define_players():
