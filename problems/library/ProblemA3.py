@@ -6,7 +6,6 @@ from typing import List
 
 class ProblemA3(BaseProblem):
     def __init__(self, players: List[Player] = None):
-        super().__init__(players)
         # --- Matrix Constants
         self.A1 = jnp.array([[20, 5, 3], [5, 5, -5], [3, -5, 15]])
         self.A2 = jnp.array([[11, -1], [-1, 9]])
@@ -19,6 +18,7 @@ class ProblemA3(BaseProblem):
         self.b1 = jnp.array([[1], [-1], [1]])
         self.b2 = jnp.array([[1], [0]])
         self.b3 = jnp.array([[-1], [2]])
+        super().__init__(players)
 
     def known_solution(self):
         value = [-0.38046562696258, -0.12266997083581, -0.99322817120517,

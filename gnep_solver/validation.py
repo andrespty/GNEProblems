@@ -72,75 +72,6 @@ def validate_player_functions(player_list: List[Player], obj_funcs: List[Callabl
 
 
 # BaseProblem validation wrappers
-def validate_derivative_functions(func):
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        der_funcs = func(self, *args, **kwargs)
-        # 1. Basic List Check
-        if not isinstance(der_funcs, list) or len(der_funcs) == 0:
-            raise TypeError(f"{func.__name__} must return a non-empty list of callables.")
-
-        if not self.players:
-            return der_funcs  # Can't validate shapes without players
-
-        num_players = len(self.players)
-        # We need the action sizes to check the inner shapes
-        action_sizes = [p.size for p in self.players]
-
-        for i, der_f in enumerate(der_funcs):
-            if not callable(der_f):
-                raise TypeError(f"Item {i} in {func.__name__} is not callable.")
-
-            # 2. Signature Check: Must take exactly 1 argument (x_structured)
-            sig = inspect.signature(der_f)
-            if len(sig.parameters) != 1:
-                raise ValueError(f"Derivative function {i} must take exactly 1 argument.")
-
-            # 3. Structural "Dry Run" Check
-            # Create a dummy input matching the expected structure
-            dummy_x = [jnp.zeros((size,)) for size in action_sizes]
-            try:
-                out = der_f(dummy_x)
-                if not isinstance(out, (list, tuple)):
-                    raise TypeError(f"Derivative {i} must return a list/tuple of gradients.")
-
-                if len(out) != num_players:
-                    raise ValueError(
-                        f"Derivative {i} returned {len(out)} gradient components, "
-                        f"but there are {num_players} players."
-                    )
-            except Exception as e:
-                raise ValueError(f"Derivative {i} failed structural validation: {e}")
-        return der_funcs
-
-    return wrapper
-
-def validate_math_functions(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        items = func(*args, **kwargs)
-
-        # 1. Ensure it's a list
-        if not isinstance(items, list) or len(items) == 0:
-            raise TypeError(f"{func.__name__} must return a non-empty list of callables.")
-
-        for i, item in enumerate(items):
-            # 2. Ensure elements are actually callable
-            if not callable(item):
-                raise TypeError(f"Item {i} in {func.__name__} is not a function/callable.")
-
-            # 3. Check only receives one x (Must have exactly 1 parameter) only re
-            sig = inspect.signature(item)
-            params = sig.parameters
-            if len(params) != 1:
-                raise ValueError(
-                    f"Function {item.__name__ if hasattr(item, '__name__') else i} "
-                    f"in {func.__name__} must have exactly 1 parameter. Found: {len(params)}"
-                )
-        return items
-
-    return wrapper
-
 def validate_problem_functions(derivative=False):
     def decorator(func):
         @wraps(func)
@@ -170,20 +101,23 @@ def validate_problem_functions(derivative=False):
                 # 3. Structural "Dry Run" Check
                 # Create a dummy input matching the expected structure
                 dummy_x = [jnp.zeros((size,)) for size in action_sizes]
-                try:
-                    out = f(dummy_x)
-                    if not isinstance(out, (list, tuple)):
-                        raise TypeError(f"Derivative {i} must return a list/tuple of gradients.")
 
-                    if len(out) != num_players:
-                        raise ValueError(
-                            f"Derivative {i} returned {len(out)} gradient components, "
-                            f"but there are {num_players} players."
-                        )
-                except Exception as e:
-                    raise ValueError(f"Derivative {i} failed structural validation: {e}")
+                if derivative:
+                    try:
+                        out = f(dummy_x)
+                        if not isinstance(out, (list, tuple)):
+                            raise TypeError(f"Derivative {i} must return a list/tuple of gradients.")
+
+                        if len(out) != num_players:
+                            raise ValueError(
+                                f"Derivative {i} returned {len(out)} gradient components, "
+                                f"but there are {num_players} players."
+                            )
+                    except Exception as e:
+                        raise ValueError(f"Derivative {i} failed structural validation: {e}")
+                else:
+                    validate_scalar_output(f, action_sizes)
             return func_list
-
         return wrapper
-
+    return decorator
 

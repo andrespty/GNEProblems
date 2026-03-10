@@ -4,15 +4,67 @@ from .schema import *
 from typing import List
 from .Player import Player
 from .GeneralizedGame import GeneralizedGame
-from .validation import validate_math_functions
+from .validation import validate_problem_functions
 
 class BaseProblem(ABC):
     def __init__(self, players: List[Player] = None):
         self.players = players if players is not None else self.define_players()
+        self.primal_ip = None
+        self.dual_ip = None
+        self.engine = GeneralizedGame(
+            self.objectives(),
+            self.constraints(),
+            self.players
+        )
 
     @property
     def players(self):
         return self._players
+
+    @property
+    def primal_ip(self):
+        return self._primal_ip
+
+    @primal_ip.setter
+    def primal_ip(self, value):
+        if value is None:
+            self._primal_ip = None
+            return
+
+        if self.players is None:
+            raise ValueError("Cannot set primal_ip before players are defined.")
+
+        value_arr = jnp.asarray(value)
+        total_vars = sum(p.size for p in self.players)
+
+        if value_arr.size != total_vars:
+            raise ValueError(
+                f"Primal IP size mismatch. Provided: {value_arr.size}, "
+                f"Expected (sum of player sizes): {total_vars}"
+            )
+
+        self._primal_ip = value
+
+    @property
+    def dual_ip(self):
+        return self._dual_ip
+
+    @dual_ip.setter
+    def dual_ip(self, value):
+        if value is None:
+            self._dual_ip = None
+            return
+
+        value_arr = jnp.asarray(value)
+        num_constraints = len(self.constraints())
+
+        if value_arr.size != num_constraints:
+            raise ValueError(
+                f"Dual IP size mismatch. Provided: {value_arr.size}, "
+                f"Expected (number of constraints): {num_constraints}"
+            )
+
+        self._dual_ip = value
 
     @players.setter
     def players(self, value):
@@ -35,13 +87,13 @@ class BaseProblem(ABC):
         self._players = value
 
     @abstractmethod
-    @validate_math_functions
+    @validate_problem_functions(derivative=False)
     def objectives(self):
         """Return a list of the objectives of the problem."""
         pass
 
     @abstractmethod
-    @validate_math_functions
+    @validate_problem_functions(derivative=False)
     def constraints(self):
         """Return a list of the constraints of the problem."""
         pass
@@ -54,27 +106,42 @@ class BaseProblem(ABC):
         """
         pass
 
-    def add_players(self, players: List[Player]):
-        """Add players to the problem."""
-        if self.players is not None:
-            print(f"Warning: Overwriting existing players in {self.__class__.__name__}")
-        self.players = players
-
     def known_solution(self):
         """Return a list of the known solutions of the problem."""
         raise NotImplementedError(
             f"{self.__class__.__name__} does not provide a known solution."
         )
 
-    def solver(self) -> GeneralizedGame:
+    def set_initial_point(self, primal_x, dual_x):
+        if isinstance(primal_x, list):
+            self.primal_ip = primal_x
+        if isinstance(primal_x, float):
+            n_vars = sum(p.size for p in self.players)
+            self.primal_ip = [primal_x for _ in range(n_vars)]
+        else:
+            raise TypeError("Primal IP must be a list or a float.")
+
+        if isinstance(dual_x, list):
+            self.dual_ip = dual_x
+        elif isinstance(dual_x, float):
+            self.dual_ip = [dual_x for _ in range(len(self.constraints()))]
+        else:
+            raise TypeError("Dual IP must be a list or a float.")
+
+        return self.primal_ip, self.dual_ip
+
+    def summary(self):
+        """Return a string summary of the problem."""
+        return self.engine.summary()
+
+    def check_kkt(self, primal, dual, tol=1e-6):
+        return self.engine.check_kkt(jnp.array(primal), jnp.array(dual), tol)
+
+    def solve(self):
         """Solve the problem."""
-        if self.players is None:
-            raise ValueError(
-            f"Cannot solve {self.__class__.__name__}: No players defined. "
-            "Pass them to __init__ or implement define_players()."
-        )
-        return GeneralizedGame(
-            self.objectives(),
-            self.constraints(),
-            self.players
-        )
+        ip = jnp.array(self.primal_ip + self.dual_ip)
+        res, time = self.engine.solve_game(ip)
+        primal_vars = sum(self.engine.action_sizes)
+        primal_x = res.x[:primal_vars]
+        dual_x = res.x[primal_vars:]
+        return primal_x, dual_x
