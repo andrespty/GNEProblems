@@ -134,6 +134,12 @@ class BaseProblem(ABC):
         """Return a string summary of the problem."""
         return self.engine.summary()
 
+    def check_gradient(self, actions: jnp.ndarray) -> List[jnp.ndarray]:
+        return self.engine.grad_val(actions)
+
+    def check_energy(self, actions: jnp.ndarray) -> float:
+        return self.engine.energy_val(actions)
+
     def check_kkt(self, primal, dual, tol=1e-6):
         return self.engine.check_kkt(jnp.array(primal), jnp.array(dual), tol)
 
@@ -145,3 +151,6 @@ class BaseProblem(ABC):
         primal_x = res.x[:primal_vars]
         dual_x = res.x[primal_vars:]
         return primal_x, dual_x
+
+    def get_solver(self):
+        return self.engine

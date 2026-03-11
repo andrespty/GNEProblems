@@ -40,8 +40,8 @@ class EnergyMethod:
         ub_list = []
         for i, (lb, ub) in enumerate(bounds):
             # Repeat the bounds for each decision variable the player owns
-            lb_list.append(jnp.full((action_sizes[i],), lb))
-            ub_list.append(jnp.full((action_sizes[i],), ub))
+            lb_list.append(lb)
+            ub_list.append(ub)
 
         # Store these as JAX arrays for the energy_handler to use
         self.lb_vector = jnp.concatenate(lb_list).reshape(-1, 1)
@@ -51,8 +51,6 @@ class EnergyMethod:
 
     @partial(jax.jit, static_argnums=(0,))
     def _jit_min_func(self, x):
-        # Move ALL the math from your current min_func into here
-        # No np.array, no list conversions, no print statements
         actions = x[:self.total_actions].reshape(-1, 1)
         dual_actions = x[self.total_actions:].reshape(-1, 1)
 
@@ -75,9 +73,9 @@ class EnergyMethod:
             Total energy of the system.
         """
         x_jax = jnp.asarray(x)
-        return np.float32(self._jit_min_func(x_jax))
+        return np.float64(self._jit_min_func(x_jax))
 
-    def grad_min_func(self, x: jnp.ndarray) -> jnp.ndarray:
+    def grad_min_func(self, x: jnp.ndarray):
         return np.array(self._grad_func_jit(x))
 
     @staticmethod
@@ -98,7 +96,7 @@ class EnergyMethod:
         )
 
 
-    def primal_energy_function(self, actions: Vector, dual_actions: Vector) -> tuple[Array, ...]:
+    def primal_energy_function(self, actions: Vector, dual_actions: Vector):
         """
         Compute the energy contribution of primal players.
 
@@ -152,27 +150,31 @@ class EnergyMethod:
         vector of shape (sum(action_sizes), 1)
             Gradient of primal energy with respect to actions.
         """
-        vector_actions = construct_vectors(actions, self.action_sizes)
-        result = jnp.zeros_like(actions) # shape (-1,1)
+        vector_actions = construct_vectors(actions, self.action_sizes) # List of jnp.array shape (action_size[i], 1)
 
-        # Primal Gradients from objectives
-        for obj_idx, obj_der in enumerate(self.obj_derivatives):
-            grads = obj_der(vector_actions)
+        obj_grads_by_type = [der(vector_actions) for der in self.obj_derivatives]
+        primal_grads = []
+        for p_idx, obj_type_idx in enumerate(self.player_obj_idx):
+            # Pull the specific gradient for player 'p_idx' from the correct objective logic
+            g = obj_grads_by_type[obj_type_idx][p_idx]
+            primal_grads.append(g.reshape(-1, 1))
 
-            for p_idx, assigned_obj_idx in enumerate(self.player_obj_idx):
-                if assigned_obj_idx == obj_idx:
-                    start = self.action_splits[p_idx]
-                    end = self.action_splits[p_idx + 1]
-                    result = result.at[start:end].set(grads[p_idx].reshape(-1, 1))
+        # Combine primal gradients into one vector
+        result = jnp.concatenate(primal_grads)
 
-        # Adding constraints, should be vectors with same size of result
-        for c_idx, const_der in enumerate(self.constraint_derivatives):
-            p_vector = self.player_const_idx_matrix[:, c_idx].reshape(-1,1) # one hot encoding
-            const_grad_list = const_der(vector_actions) # shape ([size of action of player 1],[size of action of player 2],[])
-            full_const_grad = jnp.concatenate([g.ravel() for g in const_grad_list]).reshape(-1, 1)
+        if self.constraint_derivatives:
+            all_c_grads = []
+            for const_der in self.constraint_derivatives:
+                c_grad_list = const_der(vector_actions)
+                # Flatten to a single column for this specific constraint
+                all_c_grads.append(jnp.concatenate([g.ravel() for g in c_grad_list]))
 
-            dual_encoding = p_vector * dual_actions[c_idx]
-            result += full_const_grad * dual_encoding
+            # This creates a (Total_Actions, Num_Constraints) matrix
+            jacobian_matrix = jnp.stack(all_c_grads, axis=1)
+            weighted_multipliers = self.player_const_idx_matrix * dual_actions.ravel() # (Total_actions, Num_constraints)
+            constraint_contribution = jnp.sum(jacobian_matrix * weighted_multipliers, axis=1)
+            result += constraint_contribution.reshape(-1, 1)
+
         return result
 
     def gradient_dual(self, actions: Vector, dual_actions: Vector) -> Vector:
@@ -191,13 +193,23 @@ class EnergyMethod:
         vector of shape (N_d, 1)
             Gradient of dual energy with respect to constraints.
         """
-        grad_dual = []
+        if not self.constraints:
+            return jnp.zeros((1, 1))
+
         actions_vectors = construct_vectors(actions, self.action_sizes)
-        for jdx, constraint in enumerate(self.constraints):
-            g = -constraint(actions_vectors)
-            dual_lb = jnp.zeros_like(dual_actions[jdx])
-            dual_ub = jnp.full_like(dual_actions[jdx], 1e6)
-            g = self.energy_handler(g, dual_actions[jdx], dual_lb, dual_ub)
-            grad_dual.append(g.flatten())
-        g_dual = jnp.concatenate(grad_dual).reshape(-1, 1)
-        return g_dual
+        g_values = jnp.array([-c(actions_vectors) for c in self.constraints])
+
+        # Ensure dual_actions is flat for the handler
+        lambdas = dual_actions.ravel()
+
+        # 3. Create vectorized bounds for the dual variables
+        # These match the size of the lambdas
+        dual_lb = jnp.zeros_like(lambdas)
+        dual_ub = jnp.full_like(lambdas, 100)
+
+        # 4. Run the energy_handler once on the entire vector
+        # JAX will parallelize the 'where' logic across all constraints
+        grad_dual_vec = self.energy_handler(g_values, lambdas, dual_lb, dual_ub)
+
+        # 5. Return as the expected column vector
+        return grad_dual_vec.reshape(-1, 1)

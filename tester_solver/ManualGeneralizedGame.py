@@ -80,14 +80,14 @@ class ManualGeneralizedGame(GeneralizedGame):
                 out = der_func(dummy_x)
 
                 if label == "Objective":
-                    # Expecting Sparse Dictionary: {player_idx: grad_array}
-                    if not isinstance(out, dict):
-                        raise TypeError(f"Objective derivative {i} must return a dict of index: grad.")
+                    # # Expecting Sparse Dictionary: {player_idx: grad_array}
+                    # if not isinstance(out, dict):
+                    #     raise TypeError(f"Objective derivative {i} must return a dict of index: grad.")
                     # Check only the provided indices
-                    for p_idx, grad_comp in out.items():
-                        if jnp.shape(grad_comp) != (self.action_sizes[p_idx],):
-                            raise ValueError(f"Obj {i}: Player {p_idx} grad shape mismatch.")
-
+                    # for p_idx, grad_comp in out.items():
+                    #     if jnp.shape(grad_comp) != (self.action_sizes[p_idx],):
+                    #         raise ValueError(f"Obj {i}: Player {p_idx} grad shape mismatch.")
+                    pass
                 else:
                     if not isinstance(out, (list, tuple)) or len(out) != len(self.action_sizes):
                         raise ValueError(f"Constraint {i} must return a list of length {len(self.action_sizes)}.")

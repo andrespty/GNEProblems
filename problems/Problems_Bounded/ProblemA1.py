@@ -67,7 +67,7 @@ class A1:
         B=1
         S = sum(x)
         # print(S)
-        obj = ((x - S) / S) ** 2 + (1 / B)
+        obj = 1 + (x - S)/(S**2)
         return obj
 
     # === Constraint Functions ===

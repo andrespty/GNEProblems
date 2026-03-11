@@ -2,7 +2,7 @@ from typing import List, Optional, Tuple
 
 from dataclasses import dataclass, field
 from typing import Optional, List, Tuple
-
+import jax.numpy as jnp
 
 @dataclass(frozen=True)
 class Player:
@@ -46,16 +46,44 @@ class Player:
         # Bounds validation
         # -------------------
         if self.bounds is not None:
-            if not isinstance(self.bounds, tuple) or len(self.bounds) != 2:
-                raise TypeError("bounds must be a tuple (lower, upper).")
+            # Handle single tuple case: (lower, upper)
+            if isinstance(self.bounds, tuple) and len(self.bounds) == 2:
+                self._validate_bound_pair(self.bounds)
 
-            lower, upper = self.bounds
+            # Handle list of tuples case: [(l1, u1), (l2, u2), ...]
+            elif isinstance(self.bounds, list):
+                if len(self.bounds) != self.size:
+                    raise ValueError(f"Player {self.name} has {self.size} variables but {len(self.bounds)} bounds.")
+                for b in self.bounds:
+                    self._validate_bound_pair(b)
+            else:
+                raise TypeError("bounds must be a tuple (lb, ub) or a list of tuples.")
 
-            if not isinstance(lower, (int, float)) or not isinstance(upper, (int, float)):
-                raise TypeError("Bounds must be numeric.")
 
-            if lower >= upper:
-                raise ValueError("Lower bound must be strictly less than upper bound.")
+    @staticmethod
+    def _validate_bound_pair(b):
+        if not isinstance(b, tuple) or len(b) != 2:
+            raise TypeError("Each bound must be a tuple (lower, upper).")
+        lower, upper = b
+        if not isinstance(lower, (int, float)) or not isinstance(upper, (int, float)):
+            raise TypeError("Bounds must be numeric.")
+        if lower >= upper:
+            raise ValueError(f"Lower bound {lower} must be less than upper bound {upper}.")
+
+    def get_full_bounds(self) -> Tuple[jnp.ndarray, jnp.ndarray]:
+        """Returns (lower_bounds, upper_bounds) as arrays of length self.size."""
+        if self.bounds is None:
+            # Default to large values if no bounds provided
+            return jnp.full((self.size,), -jnp.inf), jnp.full((self.size,), jnp.inf)
+
+        if isinstance(self.bounds, tuple):
+            lb, ub = self.bounds
+            return jnp.full((self.size,), lb), jnp.full((self.size,), ub)
+
+        # List case
+        lbs = jnp.array([b[0] for b in self.bounds]).reshape(-1, )
+        ubs = jnp.array([b[1] for b in self.bounds]).reshape(-1, )
+        return lbs, ubs
 
     # -------------------
     # Helper constructor
@@ -89,7 +117,7 @@ def players_to_lists(players: List[Player]):
         "sizes": [p.size for p in players],
         "objectives": [p.f_index for p in players],
         "constraints": [p.constraints for p in players],
-        "bounds": [p.bounds for p in players],
+        "bounds": [p.get_full_bounds() for p in players],
         "names": [p.name for p in players],
     }
 

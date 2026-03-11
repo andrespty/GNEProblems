@@ -168,7 +168,8 @@ class GeneralizedGame:
 
     def grad_val(self, actions: jnp.ndarray) -> List[jnp.ndarray]:
         x = construct_vectors(jnp.array(actions), self.action_sizes)
-        return [df(x) for df in self.obj_derivatives]
+        grads = [df(x) for df in self.obj_derivatives]
+        return [jnp.concatenate(arr) for arr in grads]
 
     def energy_val(self, actions: jnp.ndarray) -> float:
         return self.solver.min_func(actions)
@@ -178,7 +179,7 @@ class GeneralizedGame:
             method="SLSQP",
             tol=1e-9,
             # options={"eps": 1e-6}
-            jac=self.solver.grad_min_func,
+            # jac=self.solver.grad_min_func,
         )
 
         start = timeit.default_timer()
@@ -193,7 +194,8 @@ class GeneralizedGame:
             disp=True,
             # callback=stopping_criterion
         )
-        print(self.energy_val(jnp.array(result.x)))
+        print("Final Energy: ",self.energy_val(jnp.array(result.x)))
         stop = timeit.default_timer()
         elapsed_time = stop - start
+        print("Elapsed time: ", elapsed_time, " seconds")
         return result, elapsed_time
